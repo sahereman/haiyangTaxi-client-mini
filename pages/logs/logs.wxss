@@ -1,0 +1,98 @@
+.picBox{
+ text-align: center;
+ width: 100%;
+}
+.picBox .pic{
+  width: 260rpx;
+  height: 200rpx;
+  margin: 150rpx 0;
+}
+.iptBox{
+  padding: 0 30rpx;
+}
+.iptBox .phoneIptBox{
+  border-bottom: 1px solid #ebebeb;
+  padding-bottom: 10rpx;
+  margin-top: 10rpx;
+  position: relative;
+}
+.iptBox .phoneIptBox .iptImg{
+  width: 26rpx;
+  height: 34rpx;
+  position: absolute;
+  bottom: 28rpx;
+  left: 0;
+  display: inline-block;
+}
+.iptBox .phoneIptBox .phoneDelImg{
+  width: 30rpx;
+  height: 30rpx;
+  position: absolute;
+  bottom: 28rpx;
+  right: 0;
+  display: none;
+}
+.iptBox .phoneIptBox .phoneDelImgS{
+  width: 30rpx;
+  height: 30rpx;
+  position: absolute;
+  bottom: 28rpx;
+  right: 0;
+  display: inline-block
+}
+.iptBox .phoneIptBox>input{
+  width: 80%;
+  display: inline-block;
+  padding-left: 60rpx;
+  line-height: 66rpx;
+  height: 66rpx;
+}
+.iptBox .yzmIptBox>input{
+  width: 50%;
+}
+.iptBox .yzmIptBox>span{
+  display: inline-block;
+  float: right;
+  border-left: 1px solid #eaeaea; 
+  color: #53498e;
+  padding:0 40rpx;
+  font-weight: bold;
+  font-size: 26rpx;
+  margin-top: 15rpx;
+}
+.iptBox .yzmIptBox>image{
+  width: 30rpx;
+  height:36rpx;
+  position: absolute;
+  bottom: 28rpx;
+  left: 0;
+  display: inline-block;
+}
+.logIn{
+  padding: 0 30rpx;
+  margin-top: 120rpx;
+}
+.logIn>span{
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  height: 76rpx;
+  line-height: 76rpx;
+  
+  color: #ffffff;
+  border-radius: 5rpx;
+}
+.phcolor{
+  color: #bbbbbb;
+}
+.hiddenLog{
+  background: #cccccc;
+}
+.showLog{
+  background:#484b5a;
+}
+.timeDown{
+  display: inline-block;
+  color: #cbcbcb!important;
+  font-weight: normal!important;
+}

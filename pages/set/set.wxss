@@ -1,0 +1,18 @@
+/* pages/set/set.wxss */
+.main{
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  display:flex;
+  flex-direction:column;
+  background: #f3f4f6;
+}
+.main>view{
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  background: #fff;
+  color:#fe955c;
+  text-align: center;
+  margin-top: 20rpx;
+}

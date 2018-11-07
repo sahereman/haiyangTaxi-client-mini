@@ -1,0 +1,94 @@
+/**index.wxss**/
+.menu{
+  padding: 25rpx;
+}
+.menu>image{
+  width: 60rpx;
+  height: 42rpx;
+}
+page{  
+  height: 100%  
+}  
+/* 主页 */  
+.home {  
+  position: absolute;  
+  width: 750rpx;  
+  height: 100%;  
+  background-color: white;  
+  z-index: 1;  
+  transition: All 0.4s ease;  
+  -webkit-transition: All 0.4s ease;  
+}  
+.home .icon_user {  
+  width: 68rpx;  
+  height: 68rpx;  
+  margin-left: 20rpx;  
+  margin-top: 20rpx;  
+}  
+/* 遮罩层 */  
+.bg {    
+  display: none;    
+  position: fixed;    
+  top: 0%;    
+  left: 70%;    
+  width: 100%;    
+  height: 100%;    
+  background-color: black;    
+  z-index: 1001;    
+  -moz-opacity: 0.5;    
+  opacity: 0.50;    
+  transition:width 2s;  
+  filter: alpha(opacity=50);    
+}   
+ /* 侧滑栏 */  
+.page_tab {  
+  height: 100%;  
+  width: 750rpx;  
+  position: fixed;  
+  background-color: white;  
+  z-index: 0;  
+}  
+.page_tab_content{
+  padding-left:50rpx;
+}  
+.page_tab_content .wc {  
+  color: #000;  
+  position: relative;  
+  font-size: 32rpx;  
+  padding: 30rpx 0 30rpx 20rpx;  
+}  
+  
+.page_tab_content button {  
+  width: 280rpx;  
+  background: #fb9817;  
+  color: #fff;  
+  position: relative;  
+  right: 120rpx;  
+  top: 150rpx;  
+  height: 60rpx;  
+  line-height: 60rpx;  
+}  
+  
+.page_tab_content image {  
+  display: inline-block;  
+  height: 40rpx;  
+  width: 40rpx;  
+  margin-right: 20rpx;  
+  vertical-align: bottom;
+}  
+  
+.user_head {  
+  width: 120rpx;  
+  height: 120rpx;  
+  border-radius: 50%;  
+  text-align: center;  
+  margin: 80rpx 80rpx 0 205rpx;  
+}
+.user_name{
+  font-size: 30rpx; 
+  margin: 10rpx 80rpx 40rpx 217rpx;
+}
+.headBox{
+  border-bottom: 1px solid #ebebeb;
+  margin-bottom:30rpx;
+}

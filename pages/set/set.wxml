@@ -1,0 +1,7 @@
+<!--pages/set/set.wxml-->
+<view class="container">
+  <view class='bar'></view>
+  <view class='main'>
+    <view bindtap='popModal'>退出登陆</view>
+  </view>
+</view>

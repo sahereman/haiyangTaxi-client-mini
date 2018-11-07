@@ -1,0 +1,31 @@
+<!--logs.wxml-->
+<import src="../../components/toast/toast.wxml" />
+<template is="toast" data="{{ ..._toast_ }}" />
+<view class="container">
+<view class='bar'></view>
+  <view class='picBox'>
+    <image src='../../images/icon_denglu.png' class='pic'></image>
+  </view>
+  <view class='iptBox'>
+    <view class='phoneIptBox'>
+      <image src='../../images/aa.png' class='iptImg'></image>
+      <input type='number' placeholder='请输入手机号码' maxlength='11' value='{{phoneVal}}' placeholder-class="phcolor" bindinput="getPhone"></input>
+      <image src='../../images/del.png' class="{{isDelPho?'phoneDelImgS':'phoneDelImg'}}" bindtap='bindClose'></image>
+    </view>
+    <view class='phoneIptBox yzmIptBox'>
+      <image src='../../images/yanzhengma.png' class='iptImg'></image>
+      <input type='password' placeholder='请输入验证码' maxlength='4' placeholder-class="phcolor" bindinput='getCode'></input>
+      <block wx:if="{{!isTime}}">
+        <span bindtap="bindCode">获取验证码</span>
+      </block>
+      <block wx:else>
+        <span class="{{isTime?'timeDown':''}}">{{last_time}}s后获取</span>
+      </block>
+      
+
+    </view>
+  </view>
+  <view class='logIn'>
+    <span class="{{isLogin?'showLog':'hiddenLog'}}">登录</span>
+  </view>
+</view>

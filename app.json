@@ -1,0 +1,17 @@
+{
+  "pages": [
+    "pages/destination/destination",
+    "pages/index/index",
+    "pages/logs/logs",
+    "pages/order/order",
+    "pages/set/set",
+    
+    "pages/end-trip/end-trip"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "出租车打车",
+    "navigationBarTextStyle": "black"
+  }
+}
