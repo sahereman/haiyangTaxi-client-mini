@@ -1,13 +1,15 @@
 /**index.wxss**/
 .menu{
-  padding: 25rpx;
+  padding: 0 25rpx;
+  height: 7%;
 }
 .menu>image{
   width: 60rpx;
   height: 42rpx;
+  margin-top: 20rpx;
 }
 page{  
-  height: 100%  
+  height: 100%;  
 }  
 /* 主页 */  
 .home {  
@@ -17,7 +19,7 @@ page{
   background-color: white;  
   z-index: 1;  
   transition: All 0.4s ease;  
-  -webkit-transition: All 0.4s ease;  
+  -webkit-transition: All 0.4s ease;
 }  
 .home .icon_user {  
   width: 68rpx;  
@@ -34,7 +36,7 @@ page{
   width: 100%;    
   height: 100%;    
   background-color: black;    
-  z-index: 1001;    
+  z-index: 1901;    
   -moz-opacity: 0.5;    
   opacity: 0.50;    
   transition:width 2s;  
@@ -92,3 +94,60 @@ page{
   border-bottom: 1px solid #ebebeb;
   margin-bottom:30rpx;
 }
+.mapBox{
+  height: 70%;
+}
+.mapBottom{
+  width: 100%;
+  height: 23%;
+}
+.mapBottom .tip{
+  padding: 10rpx 20rpx;
+  border-bottom: 1px solid #ececec;
+}
+.mapBottom .tip image{
+  width: 45rpx;
+  height: 45rpx;
+  vertical-align: middle;
+  margin-right: 20rpx;
+}
+.mapBottom .tip span{
+  vertical-align: middle;
+  font-size: 24rpx;
+  color: #4d4d4d;
+}
+.mapBottom .starBox,.mapBottom .endBox{
+  margin-left: 70rpx;
+  border-bottom: 1px solid #ececec;
+  position: relative;
+  padding: 40rpx 0 10rpx;
+  color: #4c4c4c;
+}
+.mapBottom .starBox span{
+    display: inline-block;
+    width: 15rpx;
+    height: 15rpx;
+    background: #31bda0;
+    border-radius: 100%;
+    position: absolute;
+    top: 60rpx;
+    left: -35rpx;
+  }
+.mapBottom .starBox input,.mapBottom .endBox input{
+  width: 80%;
+  display: inline-block;
+}  
+.mapBottom .endBox{
+  padding: 20rpx 0 0;
+  border-bottom: none;
+}
+.mapBottom .endBox span{
+    display: inline-block;
+    width: 15rpx;
+    height: 15rpx;
+    background: #fd904d;
+    border-radius: 100%;
+    position: absolute;
+    top: 40rpx;
+    left: -35rpx;
+  }

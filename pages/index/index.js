@@ -7,11 +7,38 @@ const util = require("../../utils/util.js")
 Page({
   data: {
     windowWidth: wx.getSystemInfoSync().windowWidth,
-    user_name:""
+    user_name:"",
+    latitude: "",
+    longitude: "",
+    markers: [{
+      id: 1,
+      latitude: 36.091613,
+      longitude: 120.37479,
+      name: '起点',
+      iconPath:'/images/icon_qidiandingwei.png',
+      width:25,
+      height:45
+    }]
   },
   onLoad: function () {
     // toast组件实例
     new app.ToastPannel();
+  },
+  onReady:function(){
+    var that = this
+    wx.getLocation({
+      type: 'gcj02',
+      success: function (res) {
+        console.log(res)
+        var latitude = res.latitude
+        var longitude = res.longitude
+        that.setData({
+          latitude: latitude,
+          longitude: longitude
+        })
+      }
+    });
+    
   },
   // 滑动开始
   touchstart: function (e) {

@@ -45,6 +45,31 @@
       <view class='menu'>
         <image src='../../images/icon_menu.png' bindtap='bindSlide'></image>
       </view>
+      <view class="mapBox">
+        <map
+          id="myMap"
+          style="width: 100%; height: 100%;"
+          latitude="{{latitude}}"
+          longitude="{{longitude}}"
+          markers="{{markers}}"
+          enable-scroll = "true"
+          show-location 
+        ></map>
+      </view>
+      <view class='mapBottom'>
+        <view class='tip'>
+          <image src='../../images/icon_remind.png'></image>
+          <span>未成年人请勿独自乘车,须有监护人陪同</span>
+        </view>
+        <view class='starBox'>
+          <span></span>
+          <input type='text' value='7080中心-西门西南侧'></input>
+        </view>
+        <view class='endBox'>
+           <span></span>
+           <input type='text' value='' placeholder='您要去哪儿'></input> 
+        </view>
+      </view>
     </view>
   </view>
 </view>
