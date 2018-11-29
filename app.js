@@ -32,6 +32,7 @@ App({
     })
   },
   globalData: {
-    userInfo: null
+    userInfo: null,
+    qmapKey:"TYFBZ-R6U33-5JW3P-YSWZ5-LQZAH-4RBPQ"
   }
 })

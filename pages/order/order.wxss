@@ -1,1 +1,87 @@
 /* pages/order/order.wxss */
+.orderList .odrHead{
+  padding: 15rpx 20rpx;
+  background: #f3f4f6;
+  width: 100%;
+  color: #8a8a8c;
+  display: inline-block;
+  font-size: 24rpx;
+}
+.orderList .ongoingHead{
+  color: #f29258;
+}
+.orderList .odrItemBox{
+  padding: 20rpx 25rpx;
+}
+.orderList .odrItemBox .cartNumBox{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.orderList .odrItemBox:not(:last-child){
+  border-bottom: 1px solid #d2d2d2;
+}
+.orderList .odrItemBox .cartNumBox>view:first-child{
+  font-weight: bolder;
+}
+.orderList .odrItemBox .cartNumBox>view:last-child{
+  color: #7f7f7f;
+}
+.orderList .odrItemBox .ongoingStatue>view:last-child{
+  color: #f29258;
+}
+.orderList .odrItemBox .starPoint{
+  height: 50rpx;
+  line-height: 50rpx;
+  font-size: 24rpx;
+  color: #4e4e4e;
+  margin-top: 20rpx;
+  width: 100%;
+}
+.orderList .odrItemBox .starPoint>span{
+  width: 16rpx;
+  height: 16rpx;
+  background: #38bda2;
+  border-radius: 100%;
+  display: inline-block;
+  margin-right: 20rpx;
+}
+.orderList .odrItemBox .starPoint>view{
+  display: inline-block;
+}
+.orderList .odrItemBox .endPoint{
+  height: 50rpx;
+  line-height: 50rpx;
+  font-size: 24rpx;
+  color: #4e4e4e;
+}
+.orderList .odrItemBox .endPoint>view{
+  display: inline-block;
+}
+.orderList .odrItemBox .endPoint>span{
+    width: 16rpx;
+    height: 16rpx;
+    background: #ff8f53;
+    border-radius: 100%;
+    display: inline-block;
+    margin-right: 20rpx;
+}
+.orderList .odrItemBox .taxiTime{
+  margin-top: 20rpx;
+  height: 50rpx;
+  line-height: 50rpx;
+}
+.orderList .odrItemBox .taxiTime image{
+  width: 25rpx;
+  height: 25rpx;
+  margin-right: 15rpx;
+}
+.orderList .odrItemBox .taxiTime>view{
+  display: inline-block;
+  font-size: 24rpx;
+  color: #4e4e4e;
+}
+.orderList .odrItemBox .starDonePoint{
+  margin-top: 0;
+}

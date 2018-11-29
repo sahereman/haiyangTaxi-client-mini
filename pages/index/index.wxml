@@ -56,7 +56,7 @@
           show-location 
         ></map>
       </view>
-      <view class='mapBottom'>
+      <view class='mapBottom' style='display:{{isShow == false?"block":"none"}}'>
         <view class='tip'>
           <image src='../../images/icon_remind.png'></image>
           <span>未成年人请勿独自乘车,须有监护人陪同</span>
@@ -69,6 +69,13 @@
            <span></span>
            <input type='text' value='' placeholder='您要去哪儿' bindfocus='bindInputEnter'></input> 
         </view>
+      </view>
+      <view class='callingTaxis' style='display:{{isShow == false?"none":"block"}}'>
+          <view>
+              <image src='../../images/icon_bigyellowcar.png'></image>
+              <span>打表计价</span>
+          </view>
+          <button>呼叫出租车</button>
       </view>
     </view>
   </view>

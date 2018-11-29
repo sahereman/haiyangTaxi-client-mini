@@ -4,6 +4,9 @@ var start_clientX;
 var end_clientX;
 const app = getApp()
 const util = require("../../utils/util.js")
+var QQMapWX = require('../../lib/qqmap-wx-jssdk.min.js');
+var qqmapsdk; 
+var qmapKey = app.globalData.qmapKey;
 Page({
   data: {
     windowWidth: wx.getSystemInfoSync().windowWidth,
@@ -18,24 +21,54 @@ Page({
       iconPath:'/images/icon_qidiandingwei.png',
       width:25,
       height:45
-    }]
+    }],
+    isShow:false
   },
-  onLoad: function () {
+  onLoad: function (options) {
+    var that = this;
+    console.log(options.isGo);
+    if (options.isGo == "true"){
+        that.setData({
+          isShow:true
+        });
+        console.log(1);
+    }else{
+      that.setData({
+        isShow: false
+      });
+      console.log(2);
+    }
     // toast组件实例
     new app.ToastPannel();
+    qqmapsdk = new QQMapWX({
+      key: qmapKey
+    });
   },
   onReady:function(){
     var that = this
     wx.getLocation({
-      type: 'gcj02',
+      type: 'wgs84',
       success: function (res) {
-        // console.log(res)
+        console.log(res)
         var latitude = res.latitude
         var longitude = res.longitude
         that.setData({
           latitude: latitude,
           longitude: longitude
-        })
+        });
+        qqmapsdk.reverseGeocoder({
+          location: {
+            latitude: res.latitude,
+            longitude: res.longitude
+          },
+          success: function (res) {
+            console.log(res);  
+            var address_component = res.result.address_component;
+          },
+          fail: function (res) {
+            console.log("load data fail:", res);
+          }
+        });
       }
     });
     

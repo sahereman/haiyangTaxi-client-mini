@@ -1,12 +1,11 @@
-// pages/end-trip/end-trip.js
+// pages/cancel-order/cancel-order.js
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    cartNum: "鲁UT1138",
-    bill: "5"
+
   },
 
   /**

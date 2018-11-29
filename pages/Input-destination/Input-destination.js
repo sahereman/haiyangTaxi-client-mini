@@ -67,5 +67,10 @@ Page({
     wx.redirectTo({
       url: '../index/index',
     })
+  },
+  bindGoCart:function(){
+    wx.redirectTo({
+      url: '../index/index?isGo=true',
+    })
   }
 })

@@ -1,2 +1,65 @@
 <!--pages/order/order.wxml-->
-  <view>我的订单</view>
+  <view class="container">
+    <view class='bar'></view>
+    <view class='orderList'>
+        <view wx:if="{{ongoing}}">
+           <span class="odrHead ongoingHead"> 进行中订单</span>  
+              <view wx:if="{{item.type == 1}}" class='odrItemBox' wx:for="{{orderListArray}}" wx:key="type">
+                  <view class='cartNumBox ongoingStatue'>
+                      <view>{{item.plateNumber}}</view>
+                      <view>进行中</view>
+                  </view>
+                  <view class='starPoint'>
+                      <span></span>
+                      <view>{{item.starPoint}}</view>
+                  </view>
+                  <view class='endPoint'>
+                      <span></span>
+                      <view>{{item.endPoint}}</view>
+                  </view>
+              </view>
+        </view>
+        <view wx:if="{{cancelOrder}}">
+           <span class="odrHead">已取消订单</span>   
+              <view wx:if="{{item.type == 2}}" class='odrItemBox'  wx:for="{{orderListArray}}" wx:key="type">
+                  <view class='cartNumBox'>
+                      <view>{{item.plateNumber}}</view>
+                      <view>已取消</view>
+                  </view>
+                  <view class='taxiTime'>
+                      <image src='../../images/icon_time.png'></image>
+                      <view>{{item.taxiTime}}</view>
+                  </view>
+                  <view class='starPoint starDonePoint'>
+                      <span></span>
+                      <view>{{item.starPoint}}</view>
+                  </view>
+                  <view class='endPoint'>
+                      <span></span>
+                      <view>{{item.endPoint}}</view>
+                  </view>
+              </view> 
+        </view>
+        <view wx:if="{{completedlOrder}}">
+           <span class="odrHead">已完成订单</span>   
+              <view wx:if="{{item.type == 3}}" class='odrItemBox' wx:for="{{orderListArray}}" wx:key="type">
+                  <view class='cartNumBox'>
+                      <view>{{item.plateNumber}}</view>
+                      <view>已取消</view>
+                  </view>
+                  <view class='taxiTime'>
+                      <image src='../../images/icon_time.png'></image>
+                      <view>{{item.taxiTime}}</view>
+                  </view>
+                  <view class='starPoint starDonePoint'>
+                      <span></span>
+                      <view>{{item.starPoint}}</view>
+                  </view>
+                  <view class='endPoint'>
+                      <span></span>
+                      <view>{{item.endPoint}}</view>
+                  </view>
+              </view> 
+        </view>
+    </view> 
+  </view>

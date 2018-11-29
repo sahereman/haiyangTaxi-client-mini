@@ -1,1 +1,67 @@
 /* pages/end-trip/end-trip.wxss */
+.deHeadBox{
+  padding: 40rpx 30rpx; 
+  border-bottom: 1px solid #ebebeb;
+}
+.deHeadBox>view{
+  display: inline-block;
+}
+.deHeadBox>image{
+  width: 80rpx;
+  height: 80rpx;
+  float: right;
+}
+.deHeadBox .cartNum{
+  padding: 12rpx;
+  font-size: 40rpx;
+  background: #6a6c79;
+  color: #fff;
+  border-radius: 8rpx;
+  margin-right: 30rpx;
+}
+
+.deHeadBox .billBox{
+  color: #515151;
+  font-size: 26rpx;
+}
+.deHeadBox .billBox::before{
+    content:'\2022';
+    font-size: 40rpx;
+    color: #f8e96a;
+    margin-right: 7rpx;
+}
+.deHeadBox .billBox>span{
+  color: #a8a8a8;
+}
+.deMain{
+  display: flex;
+  flex-direction: column;
+  justify-content: content;
+  align-items: center;
+}
+.deMain>view:first-child{
+  color: #000;
+  font-weight: bold;
+  margin: 150rpx 0 10rpx 0;
+}
+.deMain .tip{
+  color: #545454;
+  margin: 10rpx 0 100rpx 0;
+  font-size: 26rpx;
+}
+.deMain>image{
+  width: 445rpx;
+  height: 335rpx;
+}
+.btn{
+  position: fixed;
+  bottom: 0;
+  left:0;
+  background: #484b5a;
+  color: #fff;
+  border-radius: 0;
+  width: 100%;
+  font-size: 30rpx;
+  padding: 5rpx 0;
+  font-weight: bold;
+}

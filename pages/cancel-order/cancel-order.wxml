@@ -1,0 +1,45 @@
+<!--pages/cancel-order/cancel-order.wxml-->
+<view class="container">
+  <view class='bar'></view>
+  <view class='cancelHead'>
+      <h1>取消订单的原因是:</h1>
+      <view>请选择一个您取消行程的原因</view>
+  </view> 
+  <view class='cancelList'>
+      <view class='itemReasons'>
+          <span>和司机一致商量取消订单</span>
+          <view>
+              <radio name="rea"></radio>
+              <span></span>
+          </view>
+      </view>
+      <view class='itemReasons'>
+          <span>司机距离太远</span>
+          <view>
+              <radio name="rea"></radio>
+              <span></span>
+          </view>
+      </view>
+      <view class='itemReasons'>
+          <span>行程有变，不需用车</span>
+          <view>
+              <radio name="rea"></radio>
+              <span></span>
+          </view>
+      </view>
+      <view class='itemReasons'>
+          <span>尝试多次，联系不到司机</span>
+          <view>
+              <radio name="rea"></radio>
+              <span></span>
+          </view>
+      </view>
+      <view class='itemReasons'>
+          <span>司机以各种理由不接我</span>
+          <view>
+              <radio name="rea"></radio>
+              <span></span>
+          </view>
+      </view>
+  </view> 
+</view>  

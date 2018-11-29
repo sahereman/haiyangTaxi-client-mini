@@ -1,2 +1,18 @@
 <!--pages/end-trip/end-trip.wxml-->
-<text>pages/end-trip/end-trip.wxml</text>
+<view class="container">
+  <view class='bar'></view>
+  <view class='deHeadBox'>
+    <view class='cartNum'>{{cartNum}}</view>
+    <view class='billBox'>
+      {{bill}}
+      <span>单</span>
+    </view>
+    <image src='../../images/phoneIn.png'></image>
+  </view>
+  <view class='deMain'> 
+    <view>行程结束</view>
+    <view class='tip'>请用现金开始支付</view>
+    <image src='../../images/icon_payment.png'></image>
+  </view>
+  <button class='btn'>返回首页</button>
+</view>

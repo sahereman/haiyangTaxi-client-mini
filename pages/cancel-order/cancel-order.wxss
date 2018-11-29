@@ -1,0 +1,25 @@
+/* pages/cancel-order/cancel-order.wxss */
+.cancelHead{
+  padding: 50rpx 25rpx;
+  border-bottom: 1px solid #ececec;
+}
+.cancelHead>h1{
+  font-weight: bold;
+  font-size: 28rpx;
+}
+.cancelHead>view{
+  font-size: 22rpx;
+  color: #a5a5a5;
+  margin-top: 5rpx;
+}
+.cancelList{
+  padding-left:25rpx; 
+}
+.cancelList .itemReasons{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eaeaea;
+  padding: 30rpx 25rpx 30rpx 0;
+}
