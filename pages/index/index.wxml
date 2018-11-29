@@ -63,11 +63,11 @@
         </view>
         <view class='starBox'>
           <span></span>
-          <input type='text' value='7080中心-西门西南侧'></input>
+          <input type='text' value='7080中心-西门西南侧' bindfocus='bindInputLocation'></input>
         </view>
         <view class='endBox'>
            <span></span>
-           <input type='text' value='' placeholder='您要去哪儿'></input> 
+           <input type='text' value='' placeholder='您要去哪儿' bindfocus='bindInputEnter'></input> 
         </view>
       </view>
     </view>

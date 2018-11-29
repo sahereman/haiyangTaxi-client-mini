@@ -1,0 +1,41 @@
+/* pages/Input-destination/Input-destination.wxss */
+.container{
+  background: #ebebeb;
+}
+.locationHead{
+  background: #fff;
+  margin-bottom: 15rpx;
+  padding: 10rpx 20rpx;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.locationHead>input{
+  width: 90%;
+}
+.locationHead>view{
+  color: #515151;
+}
+.addressList .addressItem{
+  background: #fff;
+  padding: 30rpx;
+  border-bottom: 1px solid #eaeaea;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+.addressList .addressItem image{
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 30rpx;
+}
+.addressList .addressItem>view .adsName{
+  color: #4b4b4b;
+}
+.addressList .addressItem>view .adsDetail{
+  color: #a2a2a2;
+  font-size: 26rpx;
+  margin-top: 10rpx;
+}

@@ -1,0 +1,17 @@
+<!--pages/Input-destination/Input-destination.wxml-->
+<view class="container">
+  <view class='bar'></view>
+  <view class='locationHead'>
+      <input type='text' placeholder='您要去哪'></input>
+      <view bindtap='cancel'>取消</view>
+  </view>
+  <view class='addressList' wx:for="{{nearAdsArr}}" wx:key="name">
+      <view class='addressItem'>
+          <image src='../../images/icon_nearby.png'></image>
+        <view>
+            <view class='adsName'>{{item.name}}</view>
+            <view class='adsDetail'>{{item.address}}</view>
+        </view>
+      </view>
+  </view>
+</view> 

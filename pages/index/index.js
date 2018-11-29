@@ -29,7 +29,7 @@ Page({
     wx.getLocation({
       type: 'gcj02',
       success: function (res) {
-        console.log(res)
+        // console.log(res)
         var latitude = res.latitude
         var longitude = res.longitude
         that.setData({
@@ -76,5 +76,15 @@ Page({
   bindNOne:function(){
     var that =this;
     that.show('功能建设中...');
+  },
+  bindInputLocation:function(){
+    wx.redirectTo({
+      url: '../Input-location/Input-location',
+    })
+  },
+  bindInputEnter:function(){
+    wx.redirectTo({
+      url: '../Input-destination/Input-destination',
+    })
   }
 })
