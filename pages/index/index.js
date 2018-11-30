@@ -47,7 +47,7 @@ Page({
   onReady:function(){
     var that = this
     wx.getLocation({
-      type: 'wgs84',
+      type: 'gcj02',
       success: function (res) {
         console.log(res)
         var latitude = res.latitude
@@ -58,9 +58,11 @@ Page({
         });
         qqmapsdk.reverseGeocoder({
           location: {
-            latitude: res.latitude,
-            longitude: res.longitude
+            latitude: "36.092484",
+            longitude: "120.380966",
           },
+          get_poi:1,
+          poi_options:"radius=500;page_size=20;policy=2",
           success: function (res) {
             console.log(res);  
             var address_component = res.result.address_component;

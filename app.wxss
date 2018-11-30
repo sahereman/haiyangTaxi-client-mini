@@ -1,6 +1,7 @@
 /**app.wxss**/
  /* 引用toast的样式 */
 @import "./components/toast/toast.wxss"; 
+@import "wxParse/wxParse.wxss";
 .container {
   padding: 0;
   margin: 0;

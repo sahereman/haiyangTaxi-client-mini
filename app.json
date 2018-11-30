@@ -2,12 +2,13 @@
   "pages": [
 
     "pages/index/index",
+    "pages/about-us/about-us",
+    
     "pages/calling-taxis/calling-taxis",
     "pages/waiting-someone/waiting-someone",
     "pages/cancel-order/cancel-order",
     "pages/end-trip/end-trip",
     "pages/destination/destination",
-    
     "pages/logs/logs",
     "pages/order/order",
     "pages/set/set",

@@ -23,10 +23,12 @@
             <text>我的行程</text>
           </view>
         </navigator>
-        <view class="wc" bindtap='bindNOne'>
-          <image src='../../images/icon_about.png'></image>
-          <text bindtap='tosat'>关于我们</text>
-        </view>
+        <navigator url='../about-us/about-us' hover-class="none">
+          <view class="wc">
+            <image src='../../images/icon_about.png'></image>
+            <text bindtap='tosat'>关于我们</text>
+          </view>
+        </navigator>  
         <view class="wc" bindtap='bindNOne'>
           <image src='../../images/icon_lipin.png'></image>
           <text>礼品活动</text>
