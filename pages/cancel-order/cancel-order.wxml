@@ -6,40 +6,64 @@
       <view>请选择一个您取消行程的原因</view>
   </view> 
   <view class='cancelList'>
+    <radio-group bindchange="radioChange" >
       <view class='itemReasons'>
           <span>和司机一致商量取消订单</span>
           <view>
-              <radio name="rea"></radio>
+              <radio color="#fc9351" value='和司机一致商量取消订单'></radio>
               <span></span>
           </view>
       </view>
       <view class='itemReasons'>
           <span>司机距离太远</span>
           <view>
-              <radio name="rea"></radio>
+              <radio color="#fc9351" value='司机距离太远'></radio>
               <span></span>
           </view>
       </view>
       <view class='itemReasons'>
           <span>行程有变，不需用车</span>
           <view>
-              <radio name="rea"></radio>
+              <radio color="#fc9351" value='行程有变，不需用车'></radio>
               <span></span>
           </view>
       </view>
       <view class='itemReasons'>
           <span>尝试多次，联系不到司机</span>
           <view>
-              <radio name="rea"></radio>
+              <radio color="#fc9351" value='尝试多次，联系不到司机'></radio>
               <span></span>
           </view>
       </view>
       <view class='itemReasons'>
           <span>司机以各种理由不接我</span>
           <view>
-              <radio name="rea"></radio>
+              <radio color="#fc9351" value='司机以各种理由不接我'></radio>
               <span></span>
           </view>
       </view>
+      <view class='itemReasons'>
+          <span>司机要求加价或现金交易</span>
+          <view>
+              <radio color="#fc9351" value='司机要求加价或现金交易'></radio>
+              <span></span>
+          </view>
+      </view>
+      <view class='itemReasons'>
+          <span>车辆信息与订单显示不符</span>
+          <view>
+              <radio color="#fc9351" value='车辆信息与订单显示不符'></radio>
+              <span></span>
+          </view>
+      </view>
+      <view class='itemReasons'>
+          <span>司机找不到上车位置</span>
+          <view>
+              <radio color="#fc9351" value='司机找不到上车位置'></radio>
+              <span></span>
+          </view>
+      </view>
+    </radio-group>
   </view> 
+  <button class='btn'>提交</button>
 </view>  
