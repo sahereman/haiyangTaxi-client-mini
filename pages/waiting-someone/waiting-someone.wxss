@@ -1,0 +1,70 @@
+/* pages/waiting-someone/waiting-someone.wxss */
+.container{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.deHeadBox{
+  padding: 0;
+  height: 15%;
+  line-height: 15%;
+}
+.deHeadBox .cartNum{
+  height:70rpx;
+  line-height: 70rpx; 
+  margin-top: 40rpx;
+  margin-left: 30rpx;
+}
+.distanceBox{
+  float: right;
+  color: #525252;
+  font-size: 32rpx;
+  letter-spacing: 5rpx;
+  margin-top: 80rpx;
+  margin-right: 30rpx;
+  height: 50rpx;
+}
+.distanceBox view{
+  display: inline-block;
+  font-size: 50rpx;
+  color: #fb9259;
+  font-weight: bolder;
+  
+}
+.waitingTip{
+  padding: 0 30rpx;
+  height: 9%;
+  border-bottom: 1px solid #d2d2d2;
+}
+.waitingTip image{
+  width: 50rpx;
+  height: 50rpx;
+  margin-top: 20rpx;
+  margin-right: 30rpx;
+}
+.waitingTip span{
+  font-size: 25rpx;
+  color: #4c4c4c;
+  width: 85%;
+  display: inline-block;
+  margin-top: 20rpx;
+  line-height: 35rpx;
+}
+.mapBox{
+  width: 100%;
+  height: 68%;
+}
+.btn{
+  padding: 0;
+  height: 8%;
+  padding-top: 10rpx;
+}
+@media all and (max-width:325px){
+  .btn{
+    padding: 0;
+    height: 8%;
+    padding-top: 0;
+  }
+}

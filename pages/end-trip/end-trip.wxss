@@ -1,38 +1,5 @@
 /* pages/end-trip/end-trip.wxss */
-.deHeadBox{
-  padding: 40rpx 30rpx; 
-  border-bottom: 1px solid #ebebeb;
-}
-.deHeadBox>view{
-  display: inline-block;
-}
-.deHeadBox>image{
-  width: 80rpx;
-  height: 80rpx;
-  float: right;
-}
-.deHeadBox .cartNum{
-  padding: 12rpx;
-  font-size: 40rpx;
-  background: #6a6c79;
-  color: #fff;
-  border-radius: 8rpx;
-  margin-right: 30rpx;
-}
 
-.deHeadBox .billBox{
-  color: #515151;
-  font-size: 26rpx;
-}
-.deHeadBox .billBox::before{
-    content:'\2022';
-    font-size: 40rpx;
-    color: #f8e96a;
-    margin-right: 7rpx;
-}
-.deHeadBox .billBox>span{
-  color: #a8a8a8;
-}
 .deMain{
   display: flex;
   flex-direction: column;

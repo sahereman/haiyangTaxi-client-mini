@@ -29,16 +29,3 @@
 .itemReasonsASActive{
   color: #4d4d4d;
 }
-.btn{
-  width: 100%;
-  background: #484b5a;
-  color: #fff;
-  border-radius: 0;
-  margin-top: 20rpx;
-  font-size: 15px;
-  font-weight: bold;
-  padding: 6rpx 0;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-}

@@ -1,0 +1,15 @@
+/* pages/calling-taxis/calling-taxis.wxss */
+.main{
+  display: flex;
+  flex-direction: column;
+  justify-content:  space-around;
+  align-items:  center;
+}
+.main span:first-child{
+  margin: 100rpx 0;
+  color: #525252;
+}
+.main .tip{
+  color: #f98753;
+  font-size: 26rpx;
+}

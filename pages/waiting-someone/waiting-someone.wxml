@@ -1,0 +1,30 @@
+<!--pages/waiting-someone/waiting-someone.wxml-->
+<view class="container">
+  <view class='bar'></view>
+  <view class='deHeadBox'>
+    <view class='cartNum'>{{cartNum}}</view>
+    <view class='billBox'>
+      {{bill}}
+      <span>单</span>
+    </view>
+    <view class='distanceBox'>
+      据您<view>0.9</view>公里
+    </view>
+  </view>
+  <view class='waitingTip'>
+    <image src='../../images/icon_remind.png'></image>
+    <span>司机正赶来，请耐心等待。若您改变行程,可拨打电话联系司机进行取消。</span>
+  </view>
+  <view class="mapBox">
+    <map
+      id="myMap"
+      style="width: 100%; height: 100%;"
+      latitude="{{latitude}}"
+      longitude="{{longitude}}"
+      markers="{{markers}}"
+      enable-scroll = "true"
+      show-location 
+    ></map>
+  </view>
+  <button class='btn' bindtap='cancelOrder'>取消订单</button>
+</view>  

@@ -1,0 +1,10 @@
+<!--pages/calling-taxis/calling-taxis.wxml-->
+<view class="container">
+  <view class='bar'></view>
+  <view class='main'>
+    <span>收到，正在帮您叫车</span>
+    <canvas style="width: 260px; height: 260px;" canvas-id="secondCanvas"></canvas>
+    <span class="tip">60秒后无应答会为您优先安排</span>
+    <button class='btn'>取消叫车</button>
+  </view>
+</view>  

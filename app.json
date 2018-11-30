@@ -1,10 +1,13 @@
 {
   "pages": [
 
+    "pages/index/index",
+    "pages/calling-taxis/calling-taxis",
+    "pages/waiting-someone/waiting-someone",
     "pages/cancel-order/cancel-order",
     "pages/end-trip/end-trip",
     "pages/destination/destination",
-    "pages/index/index",
+    
     "pages/logs/logs",
     "pages/order/order",
     "pages/set/set",

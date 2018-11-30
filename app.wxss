@@ -11,6 +11,9 @@
   width: 100%;
   height: 1px;
   background: #ebebeb;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 .toast_content_box {  
   display: flex;  
@@ -34,3 +37,51 @@
   font-size: 28rpx;  
   text-align: center;  
 } 
+.btn{
+  width: 100%;
+  background: #484b5a;
+  color: #fff;
+  border-radius: 0;
+  margin-top: 20rpx;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 6rpx 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
+.deHeadBox{
+  padding: 40rpx 30rpx; 
+  border-bottom: 1px solid #ebebeb;
+}
+.deHeadBox>view{
+  display: inline-block;
+}
+.deHeadBox>image{
+  width: 80rpx;
+  height: 80rpx;
+  float: right;
+}
+.deHeadBox .cartNum{
+  padding: 12rpx;
+  font-size: 40rpx;
+  background: #6a6c79;
+  color: #fff;
+  border-radius: 8rpx;
+  margin-right: 30rpx;
+}
+
+.deHeadBox .billBox{
+  color: #515151;
+  font-size: 26rpx;
+}
+.deHeadBox .billBox::before{
+    content:'\2022';
+    font-size: 40rpx;
+    color: #f8e96a;
+    margin-right: 7rpx;
+}
+.deHeadBox .billBox>span{
+  color: #a8a8a8;
+}
