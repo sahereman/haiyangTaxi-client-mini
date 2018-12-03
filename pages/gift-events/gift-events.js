@@ -1,4 +1,4 @@
-// pages/about-us/about-us.js
+// pages/gift-events/gift-events.js
 var app = getApp();
 var WxParse = require('../../wxParse/wxParse.js');
 var interfaceUrl = app.globalData.interfaceUrl;
@@ -16,15 +16,15 @@ Page({
    */
   onLoad: function (options) {
     var that = this;
-    app.ajaxGetRequest(interfaceUrl +"articles/about",{},function(res){
-      if (res != null && res.data != null){
+    app.ajaxGetRequest(interfaceUrl + "articles/event", {}, function (res) {
+      if (res != null && res.data != null) {
         var article = res.data.content;
         WxParse.wxParse('article', 'html', article, that, 5);
       }
     });
 
 
-    
+
   },
 
   /**

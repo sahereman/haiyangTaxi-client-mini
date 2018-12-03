@@ -9,12 +9,12 @@
   <view class='iptBox'>
     <view class='phoneIptBox'>
       <image src='../../images/aa.png' class='iptImg'></image>
-      <input type='number' placeholder='请输入手机号码' maxlength='11' value='{{phoneVal}}' placeholder-class="phcolor" bindinput="getPhone"></input>
+      <input type='number' placeholder='请输入手机号码' maxlength='11' value='{{phoneVal}}' placeholder-class="phcolor" bindinput="getPhone" bindinput='bindChangeDel'></input>
       <image src='../../images/del.png' class="{{isDelPho?'phoneDelImgS':'phoneDelImg'}}" bindtap='bindClose'></image>
     </view>
     <view class='phoneIptBox yzmIptBox'>
       <image src='../../images/yanzhengma.png' class='iptImg'></image>
-      <input type='password' placeholder='请输入验证码' maxlength='4' placeholder-class="phcolor" bindinput='getCode'></input>
+      <input type='password' placeholder='请输入验证码' maxlength='4' placeholder-class="phcolor" value='{{codeVal}}' bindinput='bindChangeSms'></input>
       <block wx:if="{{!isTime}}">
         <span bindtap="bindCode">获取验证码</span>
       </block>
@@ -26,6 +26,6 @@
     </view>
   </view>
   <view class='logIn'>
-    <span class="{{isLogin?'showLog':'hiddenLog'}}">登录</span>
+    <span class="{{isLogin?'showLog':'hiddenLog'}}" bindtap="bindLogin">登录</span>
   </view>
 </view>

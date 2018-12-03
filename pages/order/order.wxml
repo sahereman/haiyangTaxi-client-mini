@@ -4,62 +4,48 @@
     <view class='orderList'>
         <view wx:if="{{ongoing}}">
            <span class="odrHead ongoingHead"> 进行中订单</span>  
-              <view wx:if="{{item.type == 1}}" class='odrItemBox' wx:for="{{orderListArray}}" wx:key="type">
+              <view class='odrItemBox' wx:for="{{loadTrippingOrderArr}}" wx:key="id">
                   <view class='cartNumBox ongoingStatue'>
-                      <view>{{item.plateNumber}}</view>
+                      <view>{{item.driver.cart_number}}</view>
                       <view>进行中</view>
                   </view>
                   <view class='starPoint'>
                       <span></span>
-                      <view>{{item.starPoint}}</view>
+                      <view>{{item.from_address}}</view>
                   </view>
                   <view class='endPoint'>
                       <span></span>
-                      <view>{{item.endPoint}}</view>
+                      <view>{{item.to_address}}</view>
                   </view>
               </view>
         </view>
-        <view wx:if="{{cancelOrder}}">
-           <span class="odrHead">已取消订单</span>   
-              <view wx:if="{{item.type == 2}}" class='odrItemBox'  wx:for="{{orderListArray}}" wx:key="type">
-                  <view class='cartNumBox'>
-                      <view>{{item.plateNumber}}</view>
-                      <view>已取消</view>
-                  </view>
-                  <view class='taxiTime'>
-                      <image src='../../images/icon_time.png'></image>
-                      <view>{{item.taxiTime}}</view>
-                  </view>
-                  <view class='starPoint starDonePoint'>
-                      <span></span>
-                      <view>{{item.starPoint}}</view>
-                  </view>
-                  <view class='endPoint'>
-                      <span></span>
-                      <view>{{item.endPoint}}</view>
-                  </view>
-              </view> 
-        </view>
-        <view wx:if="{{completedlOrder}}">
-           <span class="odrHead">已完成订单</span>   
-              <view wx:if="{{item.type == 3}}" class='odrItemBox' wx:for="{{orderListArray}}" wx:key="type">
-                  <view class='cartNumBox'>
-                      <view>{{item.plateNumber}}</view>
-                      <view>已取消</view>
-                  </view>
-                  <view class='taxiTime'>
-                      <image src='../../images/icon_time.png'></image>
-                      <view>{{item.taxiTime}}</view>
-                  </view>
-                  <view class='starPoint starDonePoint'>
-                      <span></span>
-                      <view>{{item.starPoint}}</view>
-                  </view>
-                  <view class='endPoint'>
-                      <span></span>
-                      <view>{{item.endPoint}}</view>
-                  </view>
-              </view> 
+        <view wx:if="{{orderList}}">
+          <span class="odrHead">订单列表</span>   
+          <view class='odrItemBox'  wx:for="{{loadNoTrippingOrderArr}}" wx:key="id">
+              <view class='cartNumBox'>
+                  <view>{{item.cart_number}}</view>
+                  <view>{{item.status_text}}</view>
+              </view>
+              <view class='taxiTime'>
+                  <image src='../../images/icon_time.png'></image>
+                  <view>{{item.created_at}}</view>
+              </view>
+              <view class='starPoint starDonePoint'>
+                  <span></span>
+                  <view>{{item.from_address}}</view>
+              </view>
+              <view class='endPoint'>
+                  <span></span>
+                  <view>{{item.to_address}}</view>
+              </view>
+          </view> 
+          <view class='loadingSwitch' style='display:{{loadingSwitch}}'> 
+              <image src='../../images/loading.gif'></image>
+              <span>加载中</span>
+          </view>
+          <view class='footerSwitch' style='display:{{footerSwitch}}'>
+              <span>没有更多</span>
+          </view>
         </view>
     </view> 
   </view>

@@ -1,4 +1,6 @@
 // pages/set/set.js
+var app = getApp();
+var interfaceUrl = app.globalData.interfaceUrl;
 Page({
 
   /**
@@ -64,17 +66,37 @@ Page({
 
   },
   popModal: function () {
-    wx.showModal({
-      title: '确定退出吗？',
-      // content: '确定退出吗？',
-      confirmColor: '#fe955c',
-      success(res) {
-        if (res.confirm) {
-          console.log('用户点击确定')
-        } else if (res.cancel) {
-          console.log('用户点击取消')
+    var token = wx.getStorageSync("token");
+    if (token != ""){
+      wx.showModal({
+        title: '确定退出吗？',
+        // content: '确定退出吗？',
+        confirmColor: '#fe955c',
+        success(res) {
+          if (res.confirm) {
+            console.log('用户点击确定')
+            //调用删除授权token接口
+            app.ajaxDeleteRequest(interfaceUrl + "authorizations", {}, function (res) { 
+              console.log('authorizations接口请求成功', res);
+            }, function (res) { 
+              console.log('authorizations接口请求失败', res);
+            }, token);
+            //删除token本地存储
+            wx.removeStorageSync("token");
+            wx.redirectTo({
+              url: '../index/index',
+            })
+          } else if (res.cancel) {
+            console.log('用户点击取消')
+          }
         }
-      }
-    })
+      })
+    }else{
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none',
+        duration: 2000
+      })
+    }
   }
 })

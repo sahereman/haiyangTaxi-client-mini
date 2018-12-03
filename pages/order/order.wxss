@@ -85,3 +85,25 @@
 .orderList .odrItemBox .starDonePoint{
   margin-top: 0;
 }
+.orderList .loadingSwitch{
+  width: 100%;
+  text-align: center;
+  border-top:1px solid #fff;
+  margin-top:-1px;
+  margin-bottom: 10rpx;
+  color:#7f7f7f;
+}
+.orderList .loadingSwitch image{
+  width:40rpx;
+  height:40rpx;
+  vertical-align:middle;
+  margin-right:20rpx;
+}
+.orderList .footerSwitch{
+  width: 100%;
+  text-align: center;
+  color: #7f7f7f;
+  border-top:1px solid #fff;
+  margin-top:-1px;
+  margin-bottom: 10rpx;
+}

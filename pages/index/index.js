@@ -7,10 +7,12 @@ const util = require("../../utils/util.js")
 var QQMapWX = require('../../lib/qqmap-wx-jssdk.min.js');
 var qqmapsdk; 
 var qmapKey = app.globalData.qmapKey;
+var interfaceUrl = app.globalData.interfaceUrl;
 Page({
   data: {
     windowWidth: wx.getSystemInfoSync().windowWidth,
     user_name:"",
+    user_head:"",
     latitude: "",
     longitude: "",
     markers: [{
@@ -26,30 +28,47 @@ Page({
   },
   onLoad: function (options) {
     var that = this;
-    console.log(options.isGo);
     if (options.isGo == "true"){
         that.setData({
           isShow:true
         });
-        console.log(1);
     }else{
       that.setData({
         isShow: false
       });
-      console.log(2);
     }
     // toast组件实例
     new app.ToastPannel();
     qqmapsdk = new QQMapWX({
       key: qmapKey
     });
+    that.getuserInfo(that);
+  },
+  //获取用户信息
+  getuserInfo:function(that){
+    var token = wx.getStorageSync("token");
+    if (token) {
+      app.ajaxGetRequest(interfaceUrl + "users/me", {}, function (res) {
+        console.log('users/me接口请求成功', res);
+        var phone = res.data.phone;
+        var mphone = phone.substr(3, 4);
+        var user_name =  phone.replace(mphone, "****");
+        var user_head = res.data.avatar_url
+        that.setData({
+          user_name: user_name,
+          user_head: user_head
+        });
+      }, function () {
+        console.log('users/me接口请求失败', res);
+      }, token);
+    }
   },
   onReady:function(){
     var that = this
     wx.getLocation({
       type: 'gcj02',
       success: function (res) {
-        console.log(res)
+        // console.log(res)
         var latitude = res.latitude
         var longitude = res.longitude
         that.setData({
@@ -64,11 +83,12 @@ Page({
           get_poi:1,
           poi_options:"radius=500;page_size=20;policy=2",
           success: function (res) {
-            console.log(res);  
+            // console.log(res);  
             var address_component = res.result.address_component;
           },
           fail: function (res) {
-            console.log("load data fail:", res);
+            // console.log("load data fail:", res);
+            
           }
         });
       }
@@ -107,19 +127,42 @@ Page({
       translate: '',
     })
   },
-  //点击未开发的模块
-  bindNOne:function(){
-    var that =this;
-    that.show('功能建设中...');
-  },
   bindInputLocation:function(){
-    wx.redirectTo({
-      url: '../Input-location/Input-location',
-    })
+    var token = wx.getStorageSync("token");
+    if(token != ""){
+      wx.redirectTo({
+        url: '../Input-location/Input-location',
+      })
+    }else{
+      wx.navigateTo({
+        url: '../logs/logs',
+      })
+    }
+    
   },
   bindInputEnter:function(){
-    wx.redirectTo({
-      url: '../Input-destination/Input-destination',
-    })
+    var token = wx.getStorageSync("token");
+    if (token != "") {
+      wx.redirectTo({
+        url: '../Input-destination/Input-destination',
+      })
+    } else {
+      wx.navigateTo({
+        url: '../logs/logs',
+      })
+    }
+  },
+  //点击我的行程
+  bindOrder:function(){
+    var token = wx.getStorageSync("token");
+    if (token) {
+      wx.navigateTo({
+        url: '../order/order',
+      })
+    }else{
+      wx.navigateTo({
+        url: '../logs/logs',
+      })
+    }
   }
 })

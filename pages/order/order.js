@@ -1,15 +1,19 @@
 // pages/order/order.js
+var app = getApp();
+var interfaceUrl = app.globalData.interfaceUrl;
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    orderListArray:[],
     ongoing:false,
-    cancelOrder: false,
-    completedlOrder: false
-
+    orderList: false,
+    loadTrippingOrderArr:[],
+    loadNoTrippingOrderArr:[],
+    footerSwitch: 'none',
+    loadingSwitch: 'block',
+    nextLink:null
   },
 
   /**
@@ -24,106 +28,85 @@ Page({
    */
   onReady: function () {
     var that = this;
-    that.data.orderListArray.push({
-      "type": 1,
-      "plateNumber": "鲁UT1138",
-      "starPoint": "延吉路万达广场",
-      "endPoint": "青岛火车站"
-    },
-      {
-        "type": 2,
-        "plateNumber": "鲁UT1131",
-        "taxiTime": "10月6号 09:44",
-        "starPoint": "延吉路万达广场",
-        "endPoint": "青岛火车站"
-      },
-      {
-        "type": 2,
-        "plateNumber": "鲁UT1132",
-        "taxiTime": "10月6号 09:44",
-        "starPoint": "延吉路万达广场",
-        "endPoint": "青岛火车站"
-      },
-      {
-        "type": 3,
-        "plateNumber": "鲁UT1133",
-        "taxiTime": "10月6号 09:44",
-        "starPoint": "延吉路万达广场",
-        "endPoint": "青岛火车站"
-      },
-      {
-        "type": 3,
-        "plateNumber": "鲁UT1134",
-        "taxiTime": "10月6号 09:44",
-        "starPoint": "延吉路万达广场",
-        "endPoint": "青岛火车站"
-      });
-      that.setData({
-        orderListArray: that.data.orderListArray
-      });
-    var typeArr = [];
-    for (var i = 0; i < that.data.orderListArray.length;i++){
-      var itemType = that.data.orderListArray[i].type;
-      typeArr.push(itemType);
-      }
-    if (typeArr.indexOf(1) != -1){
-        that.setData({
-          ongoing:true   
-        });
-    }
-    if (typeArr.indexOf(2) != -1){
-      that.setData({
-        cancelOrder: true
-      });
-    } 
-    if (typeArr.indexOf(3) != -1){
-      that.setData({
-        completedlOrder: true
-      });  
-    }
-    
+    var url = interfaceUrl + "orders";
+    that.loadTrippingOrderData();
+    that.loadNoTrippingOrderData(url);
   },
-
+  
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
 
   },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
+  //获取进行中订单数据
+  loadTrippingOrderData:function(){
+    var that = this;
+    var token = wx.getStorageSync("token");
+    app.ajaxGetRequest(interfaceUrl + "orders", {}, function (res) { 
+      console.log('orders接口请求成功Tripping', res);
+      if(res.data.data.length>0){
+        that.setData({
+          ongoing: true,
+          loadTrippingOrderArr: res.data.data
+        });
+      }
+    }, function (res) { 
+      console.log('orders接口请求失败', res);
+    }, token);
   },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
+  //获取非进行中订单数据
+  loadNoTrippingOrderData: function (url) {
+    var that = this;
+    var token = wx.getStorageSync("token");
+    app.ajaxGetRequest(url, { "status": "noTripping" }, function (res) {
+      console.log('orders接口请求成功NoTripping', res);
+      var array = res.data.data;
+      if (array.length > 0 && array != null && typeof (array) != 'undefined') {
+        for(var i=0;i<array.length;i++){
+          var cart_number = array[i].driver.cart_number;
+          var status_text = array[i].status_text;
+          var created_at = array[i].created_at;
+          var from_address = array[i].from_address;
+          var to_address = array[i].to_address;
+          that.data.loadNoTrippingOrderArr.push({ "cart_number": cart_number, "status_text": status_text, "created_at": created_at, "from_address": from_address, "to_address": to_address});
+        }
+        that.setData({
+          orderList: true,
+          loadNoTrippingOrderArr: that.data.loadNoTrippingOrderArr
+        });
+      }
+      var nextLink = res.data.meta.pagination.links.next;
+      if (nextLink!=null) {
+        that.setData({
+          nextLink: nextLink
+        });
+      }else{
+        that.setData({
+          nextLink: null,
+          loadingSwitch: "none",
+          footerSwitch: "block"
+        });
+      }
+    }, function (res) {
+      console.log('orders接口请求失败', res);
+    }, token);
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
-  },
+    var that = this;
+    var nextLink = that.data.nextLink;
+    if (nextLink != null){
+      that.loadNoTrippingOrderData(nextLink); 
+    }else{
+      that.setData({
+        loadingSwitch: "none",
+        footerSwitch: "block"
+      });
+    }
+  }
   
 })

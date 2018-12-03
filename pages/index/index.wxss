@@ -86,9 +86,13 @@ page{
   text-align: center;  
   margin: 80rpx 80rpx 0 205rpx;  
 }
+.user_name1{
+  font-size: 30rpx; 
+  margin: 10rpx 80rpx 40rpx 215rpx;
+}
 .user_name{
   font-size: 30rpx; 
-  margin: 10rpx 80rpx 40rpx 217rpx;
+  margin: 10rpx 80rpx 40rpx 180rpx;
 }
 .headBox{
   border-bottom: 1px solid #ebebeb;

@@ -1,8 +1,9 @@
 //logs.js
 const util = require('../../utils/util.js')
-var app = getApp()
+var app = getApp();
+var interfaceUrl = app.globalData.interfaceUrl;
 //短信发送倒计时器
-var countdown = 20;
+var countdown = 60;
 // 手机号验证正则
 var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(14[0-9]{1})|(19[0-9]{1})|(18[0-9]{1})|(17[0-9]{1}))+\d{8})$/;
 var settime = function (that) {
@@ -10,7 +11,7 @@ var settime = function (that) {
     that.setData({
       isTime: false
     });
-    countdown = 20;
+    countdown = 60;
     return;
   } else {
     that.setData({
@@ -23,15 +24,17 @@ var settime = function (that) {
     settime(that)
   }
     , 1000)
-}
+};
 
 Page({
   data: {
     phoneVal:null,
+    codeVal:null,
     isDelPho:false,
     isLogin:false,
     isTime:false,
-    last_time: ''
+    last_time: '',
+    verification_key:''
   },
   onLoad: function () {
     // toast组件实例
@@ -52,6 +55,29 @@ Page({
       });
     }
   },
+  //手机号改变事件
+  bindChangeDel:function(e){
+    var that = this;
+    that.setData({
+      phoneVal: e.detail.value
+    }); 
+  },
+  //短信码改变事件
+  bindChangeSms:function(e){
+    var that = this;
+    that.setData({
+      codeVal:e.detail.value
+    });
+    if (e.detail.value.length == 4 && that.data.phoneVal.length == 11) {
+      that.setData({
+        isLogin: true
+      });
+    } else {
+      that.setData({
+        isLogin: false
+      });
+    }
+  },
   //点击获取验证码
   bindCode:function(){
     var that = this;
@@ -67,21 +93,17 @@ Page({
       that.setData({
         isTime:true
       });
-
-      //手机号格式填写正确，调用后台接口TODO
-
-      
-    }
-  },
-  getCode:function(e){
-    var that = this;
-    if (e.detail.value.length == 4 && that.data.phoneVal.length == 11){
-      that.setData({
-        isLogin:true
-      });
-    }else{
-      that.setData({
-        isLogin: false
+      //手机号格式填写正确，调用后台接口发送短信验证码
+      var param = { "phone": phoneVal};
+      app.ajaxPostRequest(interfaceUrl +"sms/verification", param, function (res) {
+        that.setData({
+          verification_key:res.data.key
+        });
+        console.log('sms/verification接口请求数据成功', res);
+      },function(res){
+        console.log('sms/verification接口请求数据失败', res);
+        var errorTip = res.data.message;
+        that.show("短信发送失败，请稍后重试",1500);
       });
     }
   },
@@ -90,6 +112,50 @@ Page({
     that.setData({
       isDelPho: false,
       phoneVal:""
+    });
+  },
+  bindLogin:function(){
+    var that = this;
+    wx.showLoading({
+      title: '加载中',
+      icon: 'loading',
+      mask: true,
+      success: function () {
+          //请求登录接口
+        var loginDataParam = { "phone": that.data.phoneVal, "verification_key": that.data.verification_key, "verification_code": that.data.codeVal}
+        app.ajaxPostRequest(interfaceUrl +"authorizations", loginDataParam, function (res) {
+          if (res != null && res.data != null) {
+            console.log('接口请求成功', res);
+            that.show("登录成功", 1500)
+            //登录成功，获取token和有效期存入
+            var token = res.data.access_token;
+            var expires_in = res.data.expires_in;
+            console.log(token);
+            wx.setStorageSync("token", res.data.access_token);
+            wx.setStorageSync("expires_in", res.data.expires_in);
+            wx.redirectTo({
+              url: '../index/index',
+            })
+
+            wx.hideLoading();
+            } 
+          },function(res){
+            console.log('接口请求数据失败', res);
+            if (res != null && res.data != null){
+              if (res.data.errors.phone != undefined && res.data.errors.phone != null){
+                var tip = res.data.errors.phone[0];
+                that.show(tip, 1500)
+              } else if (res.data.errors.verification_key != undefined && res.data.errors.verification_key != null){
+                var tip = res.data.errors.verification_key[0];
+                that.show(tip, 1500)  
+              }else{
+                var tip = res.data.errors.verification_code[0];
+                that.show(tip, 1500)
+              }
+            }
+            wx.hideLoading();
+          });
+      }
     });
   }
 })

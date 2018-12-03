@@ -1,0 +1,6 @@
+<!--pages/gift-events/gift-events.wxml-->
+<import src="../../wxParse/wxParse.wxml" />
+<view class="container">
+  <view class='bar'></view>
+  <template is="wxParse" data="{{wxParseData:article.nodes}}"/>
+</view> 

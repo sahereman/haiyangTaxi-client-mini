@@ -9,30 +9,32 @@
       <block wx:if="{{user_name ===''}}">
         <navigator url='../logs/logs' class='headBox' hover-class="none">
           <image class='user_head' src='../../images/user_head.png'></image>
-          <view class='user_name'>未登录</view>
+          <view class='user_name1'>未登录</view>
         </navigator>
       </block>
       <block wx:else>
-        <image class='user_head headBox' src='{{user_head}}' hover-class="none"></image>
-        <view class='user_name'>{{user_name}}</view>
+        <view class='headBox'>
+            <image class='user_head headBox' src='{{user_head}}' hover-class="none"></image>
+            <view class='user_name'>{{user_name}}</view>
+        </view>
       </block>
       <view class="page_tab_content">
-        <navigator url='../order/order' hover-class="none">
-          <view class="wc">
+        <view class="wc" bindtap='bindOrder'>
             <image src='../../images/icon_xingcheng.png'></image>
             <text>我的行程</text>
           </view>
-        </navigator>
         <navigator url='../about-us/about-us' hover-class="none">
           <view class="wc">
             <image src='../../images/icon_about.png'></image>
             <text bindtap='tosat'>关于我们</text>
           </view>
         </navigator>  
-        <view class="wc" bindtap='bindNOne'>
-          <image src='../../images/icon_lipin.png'></image>
-          <text>礼品活动</text>
-        </view>
+        <navigator url='../gift-events/gift-events' hover-class="none">
+          <view class="wc" bindtap='bindNOne'>
+            <image src='../../images/icon_lipin.png'></image>
+            <text>礼品活动</text>
+          </view>
+        </navigator>   
         <navigator url='../set/set' hover-class="none">
           <view class="wc">
             <image src='../../images/icon_shezhi.png'></image>
