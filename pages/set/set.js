@@ -76,7 +76,7 @@ Page({
           if (res.confirm) {
             console.log('用户点击确定')
             //调用删除授权token接口
-            app.ajaxDeleteRequest(interfaceUrl + "authorizations", {}, function (res) { 
+            app.ajaxRequest("delete",interfaceUrl + "authorizations", {}, function (res) { 
               console.log('authorizations接口请求成功', res);
             }, function (res) { 
               console.log('authorizations接口请求失败', res);

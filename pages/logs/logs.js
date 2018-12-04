@@ -95,7 +95,7 @@ Page({
       });
       //手机号格式填写正确，调用后台接口发送短信验证码
       var param = { "phone": phoneVal};
-      app.ajaxPostRequest(interfaceUrl +"sms/verification", param, function (res) {
+      app.ajaxRequest("post",interfaceUrl +"sms/verification", param, function (res) {
         that.setData({
           verification_key:res.data.key
         });
@@ -123,7 +123,7 @@ Page({
       success: function () {
           //请求登录接口
         var loginDataParam = { "phone": that.data.phoneVal, "verification_key": that.data.verification_key, "verification_code": that.data.codeVal}
-        app.ajaxPostRequest(interfaceUrl +"authorizations", loginDataParam, function (res) {
+        app.ajaxRequest("post",interfaceUrl +"authorizations", loginDataParam, function (res) {
           if (res != null && res.data != null) {
             console.log('接口请求成功', res);
             that.show("登录成功", 1500)

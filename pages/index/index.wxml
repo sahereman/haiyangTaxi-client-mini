@@ -50,6 +50,7 @@
         <image src='../../images/icon_menu.png' bindtap='bindSlide'></image>
       </view>
       <view class="mapBox">
+        <image src='../../images/icon_back.png' style='display:{{isShow == false?"none":"block"}}' bindtap='backHome'></image>
         <map
           id="myMap"
           style="width: 100%; height: 100%;"
@@ -67,11 +68,11 @@
         </view>
         <view class='starBox'>
           <span></span>
-          <input type='text' value='7080中心-西门西南侧' bindfocus='bindInputLocation'></input>
+          <input type='text' value='{{nowLocation}}' bindfocus='bindInputLocation'></input>
         </view>
         <view class='endBox'>
            <span></span>
-           <input type='text' value='' placeholder='您要去哪儿' bindfocus='bindInputEnter'></input> 
+           <input type='text' value='{{chooseDestination}}' placeholder='您要去哪儿' bindfocus='bindInputEnter'></input> 
         </view>
       </view>
       <view class='callingTaxis' style='display:{{isShow == false?"none":"block"}}'>
@@ -79,7 +80,7 @@
               <image src='../../images/icon_bigyellowcar.png'></image>
               <span>打表计价</span>
           </view>
-          <button>呼叫出租车</button>
+          <button bindtap='callTaxi'>呼叫出租车</button>
       </view>
     </view>
   </view>

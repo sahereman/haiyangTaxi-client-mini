@@ -58,5 +58,10 @@ Page({
   },
   radioChange:function(e){
     console.log(e.detail.value);
+  },
+  subReason:function(){
+    wx.navigateTo({
+      url: '../index/index',
+    })
   }
 })

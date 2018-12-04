@@ -5,7 +5,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    tip:"60秒后无应答会为您优先安排"
   },
 
   /**
@@ -26,7 +26,7 @@ Page({
       time = null;// 计时器容器
 
     var animation_interval = 1000,// 每1秒运行一次计时器
-      n = 60; // 当前倒计时为10秒
+      n = 10; // 当前倒计时为10秒
     // 动画函数
     function animation() {
       if (step <= n) {
@@ -40,7 +40,6 @@ Page({
     // 画布绘画函数
     function ringMove(s, e) {
       var context = wx.createCanvasContext('secondCanvas')
-
       // 绘制圆环
       context.setStrokeStyle('#fd9153')
       context.beginPath()
@@ -48,7 +47,6 @@ Page({
       context.arc(120, 120, 100, s, e, true)
       context.stroke()
       context.closePath()
-
       // 绘制倒计时文本
       context.beginPath()
       context.setLineWidth(1)
@@ -59,11 +57,15 @@ Page({
       context.fillText(n - num + '', 120, 120, 100)
       context.fill()
       context.closePath()
-
       context.draw()
-
       // 每完成一次全程绘制就+1
       num++;
+      // if (e == s) {
+      //   console.log(123);
+      //   this.setData({
+      //     tip:"正在为您优先安排，请稍后..."
+      //   })
+      // }
     }
     // 倒计时前先绘制整圆的圆环
     ringMove(start, end);
@@ -112,5 +114,10 @@ Page({
   onShareAppMessage: function () {
 
   },
+  cancelTaxi:function(){
+    wx.navigateTo({
+      url: '../cancel-order/cancel-order',
+    })
+  }
 
 })

@@ -24,7 +24,9 @@ Page({
       width:25,
       height:45
     }],
-    isShow:false
+    isShow:false,
+    nowLocation:"7080广场西门",
+    chooseDestination:""
   },
   onLoad: function (options) {
     var that = this;
@@ -42,26 +44,19 @@ Page({
     qqmapsdk = new QQMapWX({
       key: qmapKey
     });
-    that.getuserInfo(that);
-  },
-  //获取用户信息
-  getuserInfo:function(that){
-    var token = wx.getStorageSync("token");
-    if (token) {
-      app.ajaxGetRequest(interfaceUrl + "users/me", {}, function (res) {
-        console.log('users/me接口请求成功', res);
-        var phone = res.data.phone;
-        var mphone = phone.substr(3, 4);
-        var user_name =  phone.replace(mphone, "****");
-        var user_head = res.data.avatar_url
-        that.setData({
-          user_name: user_name,
-          user_head: user_head
-        });
-      }, function () {
-        console.log('users/me接口请求失败', res);
-      }, token);
+    //接收上车与目的地传过来的value值
+    if (options != "" && options.choiceLocation !=undefined){
+      that.setData({
+        nowLocation: options.choiceLocation
+      });
     }
+    if (options != "" && options.chooseDestination != undefined) {
+      that.setData({
+        chooseDestination: options.chooseDestination
+      });
+    }
+    
+    that.getuserInfo(that);
   },
   onReady:function(){
     var that = this
@@ -83,11 +78,16 @@ Page({
           get_poi:1,
           poi_options:"radius=500;page_size=20;policy=2",
           success: function (res) {
-            // console.log(res);  
-            var address_component = res.result.address_component;
+            console.log(res);  
+            var city = res.result.address_component.city;
+            //存储城市用于目的地选择热门地点
+            wx.setStorageSync("city",city);
+            //定位附近地点数据缓存，用于从哪上车列举选项
+            var nearPoisArr = res.result.pois;
+            wx.setStorageSync("nearPoisArr", nearPoisArr);
           },
           fail: function (res) {
-            // console.log("load data fail:", res);
+            console.log("load data fail:", res);
             
           }
         });
@@ -164,5 +164,62 @@ Page({
         url: '../logs/logs',
       })
     }
+  },
+  //获取用户信息
+  getuserInfo: function (that) {
+    var token = wx.getStorageSync("token");
+    if (token) {
+      app.ajaxRequest("get",interfaceUrl + "users/me", {}, function (res) {
+        console.log('users/me接口请求成功', res);
+        var phone = res.data.phone;
+        var mphone = phone.substr(3, 4);
+        var user_name = phone.replace(mphone, "****");
+        var user_head = res.data.avatar_url
+        that.setData({
+          user_name: user_name,
+          user_head: user_head
+        });
+      }, function (res) {
+        console.log('users/me接口请求失败', res);
+        if (res.data.message == "Token has expired" && res.data.status_code == 401) {
+          console.log("token过期", interfaceUrl + "authorizations");
+          //刷新授权token
+          wx.request({
+            url: interfaceUrl + "authorizations",
+            method: 'PUT',
+            header: {
+              "Authorization": "Bearer " + token
+            },
+            success: function (res) {
+              console.log("authorizations", res);
+              if (res.data != null && res.data.status_code != 401) {
+                wx.setStorageSync("token", res.data.token);
+                getuserInfo();
+              } else {
+                wx.navigateTo({
+                  url: '../logs/logs',
+                })
+                wx.removeStorageSync("token");
+              }
+              console.log(token);
+            }
+          })
+        }
+      }, token);
+    }
+  },
+  //呼叫出租车
+  callTaxi:function(){
+    wx.navigateTo({
+      url: '../calling-taxis/calling-taxis',
+    })
+  },
+  //返回首页
+  backHome:function(){
+    var that = this;
+    that.setData({
+      isShow: false,
+      chooseDestination:""
+    });
   }
 })

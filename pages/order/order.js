@@ -13,7 +13,8 @@ Page({
     loadNoTrippingOrderArr:[],
     footerSwitch: 'none',
     loadingSwitch: 'block',
-    nextLink:null
+    nextLink:null,
+    localHistoryArr:[]
   },
 
   /**
@@ -40,10 +41,10 @@ Page({
 
   },
   //获取进行中订单数据
-  loadTrippingOrderData:function(){
+  loadTrippingOrderData:function(){ 
     var that = this;
     var token = wx.getStorageSync("token");
-    app.ajaxGetRequest(interfaceUrl + "orders", {}, function (res) { 
+    app.ajaxRequest("get",interfaceUrl + "orders", {}, function (res) { 
       console.log('orders接口请求成功Tripping', res);
       if(res.data.data.length>0){
         that.setData({
@@ -59,7 +60,7 @@ Page({
   loadNoTrippingOrderData: function (url) {
     var that = this;
     var token = wx.getStorageSync("token");
-    app.ajaxGetRequest(url, { "status": "noTripping" }, function (res) {
+    app.ajaxRequest("get",url, { "status": "noTripping" }, function (res) {
       console.log('orders接口请求成功NoTripping', res);
       var array = res.data.data;
       if (array.length > 0 && array != null && typeof (array) != 'undefined') {
@@ -70,6 +71,12 @@ Page({
           var from_address = array[i].from_address;
           var to_address = array[i].to_address;
           that.data.loadNoTrippingOrderArr.push({ "cart_number": cart_number, "status_text": status_text, "created_at": created_at, "from_address": from_address, "to_address": to_address});
+          that.data.localHistoryArr.push({ "to_address": to_address});
+        }
+        if (that.data.localHistoryArr.length<5){
+          wx.setStorageSync("localHistoryArr", that.data.localHistoryArr);
+        }else{
+          wx.setStorageSync("localHistoryArr", that.data.localHistoryArr.slice(0,5));
         }
         that.setData({
           orderList: true,

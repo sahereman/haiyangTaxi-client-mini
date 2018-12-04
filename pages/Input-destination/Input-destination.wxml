@@ -2,16 +2,24 @@
 <view class="container">
   <view class='bar'></view>
   <view class='locationHead'>
-      <input type='text' placeholder='您要去哪'></input>
+      <input type='text' placeholder='您要去哪' bindinput='valueChange'></input>
       <view bindtap='cancel'>取消</view>
   </view>
-  <view class='addressList' wx:for="{{nearAdsArr}}" wx:key="name">
-      <view class='addressItem' bindtap='bindGoCart'>
+  <view class='addressList' wx:for="{{localHistoryArr}}" wx:key="to_address">
+      <view class='addressItem' bindtap='bindGoCart' id="{{item.to_address}}">
+          <image src='../../images/icon_Historicalrecords.png'></image>
+          <view>
+              <view class='adsName'>{{item.to_address}}</view>
+          </view>
+      </view>
+  </view>
+  <view class='addressList' wx:for="{{hotLocalArr}}" wx:key="to_address">
+      <view class='addressItem' bindtap='bindGoCart' id="{{item.to_address}}">
           <image src='../../images/icon_nearby.png'></image>
-        <view>
-            <view class='adsName'>{{item.name}}</view>
-            <view class='adsDetail'>{{item.address}}</view>
-        </view>
+          <view>
+              <view class='adsName'>{{item.to_address}}</view>
+              <view class='adsDetail'>{{item.address}}</view>
+          </view>
       </view>
   </view>
 </view> 
