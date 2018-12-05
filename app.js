@@ -32,7 +32,8 @@ App({
     })
   },
   //数据请求
-  ajaxRequest: function (method,url, data, callback, error_func, token){
+  ajaxRequest: function (method,url, data, callback, error_func){
+    var token = wx.getStorageSync("token");
     wx.request({
       url: url,
       method: method,
@@ -62,6 +63,27 @@ App({
       }
     })
   },
+  //判断token是否刷新还是重新登录
+  checkExpires:function(callback){
+    var that = this;
+    console.log("刷新token的接口获取的旧token", wx.getStorageSync("token"));
+    that.ajaxRequest("put", that.globalData.interfaceUrl + "authorizations",{},function(res){
+      console.log("authorizations接口请求成功",res);
+      wx.setStorageSync("token", res.data.access_token);
+      console.log("更换的新token",wx.getStorageSync("token"));
+      callback(res.data);
+    },function(res){
+      console.log("authorizations接口请求失败", res);
+      if (res.data.status_code == 401){
+        //刷新授权token接口返回401，超过了14天，重新登录
+        wx.navigateTo({
+          url: '../logs/logs',
+        })
+      }
+    });
+  },
+
+
   globalData: {
     userInfo: null,
     qmapKey:"TYFBZ-R6U33-5JW3P-YSWZ5-LQZAH-4RBPQ",

@@ -101,11 +101,10 @@ page{
 .mapBox{
   height: 70%;
 }
-.mapBox>image{
+.coverImg{
   position:fixed;
-  z-index:66;
-  width:50rpx;
-  height:50rpx;
+  width:50rpx!important;
+  height:50rpx!important;
   float:left;
   top:110rpx;
   left:30rpx;

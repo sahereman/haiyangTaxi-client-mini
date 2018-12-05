@@ -31,21 +31,41 @@ Page({
    */
   onShow: function () {
     var that = this;
-    var localHistory = wx.getStorageSync("localHistoryArr");
-    that.setData({
-      localHistoryArr: localHistory
+    //获取历史行程订单接口
+    app.ajaxRequest("get", interfaceUrl + "orders", { "status": "noTripping" }, function (res) {
+      console.log('orders接口请求成功NoTripping', res);
+      var array = res.data.data;
+      if (array.length > 0 && array != null && typeof (array) != 'undefined') {
+        for (var i = 0; i < array.length; i++) {
+          var to_address = array[i].to_address;
+          that.data.localHistoryArr.push({ "to_address": to_address, "location": array[i].to_location });
+        }
+        if (that.data.localHistoryArr.length < 5) {
+          that.setData({
+            localHistoryArr: that.data.localHistoryArr
+          });
+        } else {
+          that.setData({
+            localHistoryArr: that.data.localHistoryArr.slice(0, 5)
+          });
+        }
+      }
+    }, function (res) {
+      console.log('orders接口请求失败', res);
     });
     //获取城市热门地点列表
     var city = wx.getStorageSync("city");
     app.ajaxRequest("get",interfaceUrl +"city_hot_addresses",{"city":city},function(res){
       console.log("city_hot_addresses接口请求成功:",res);
-      var hotLocalArr = res.data.city_hot_addresses;
-      for (var i = 0; i < hotLocalArr.length;i++){
-        that.data.hotLocalArr.push({ "to_address": hotLocalArr[i].address, "address": hotLocalArr[i].address_component});
+      if (res!=null&&res.data!=null&&res.data.data!=""){
+        var hotLocalArr = res.data.city_hot_addresses;
+        for (var i = 0; i < hotLocalArr.length; i++) {
+          that.data.hotLocalArr.push({ "to_address": hotLocalArr[i].address, "address": hotLocalArr[i].address_component, "location": hotLocalArr[i].location });
+        }
+        that.setData({
+          hotLocalArr: that.data.hotLocalArr
+        });
       }
-     that.setData({
-       hotLocalArr: that.data.hotLocalArr
-     });
     },function(res){
       console.log("city_hot_addresses接口请求失败:" , res);
     });
@@ -84,9 +104,12 @@ Page({
     })
   },
   bindGoCart:function(e){
-    var chooseDestination = e.currentTarget.id;
+    var chooseDestination = e.currentTarget.id.split(":");
+    var title = chooseDestination[0];
+    var lat = chooseDestination[1];
+    var lng = chooseDestination[2];
     wx.redirectTo({
-      url: '../index/index?isGo=true&chooseDestination=' + chooseDestination,
+      url: '../index/index?isGo=true&chooseDestinationTitle=' + title + '&chooseDestinationTat=' + lat + '&chooseDestinationLng=' + lng,
     })
   },
   //地方模糊搜索
@@ -103,7 +126,7 @@ Page({
           hotLocalArr: []
         });
         for (var i = 0; i < fuzzySearchArr.length; i++) {
-          that.data.hotLocalArr.push({ "to_address": fuzzySearchArr[i].title, "address": fuzzySearchArr[i].address });
+          that.data.hotLocalArr.push({ "to_address": fuzzySearchArr[i].title, "address": fuzzySearchArr[i].address, "location": fuzzySearchArr[i].location });
         }
         that.setData({
           hotLocalArr: that.data.hotLocalArr

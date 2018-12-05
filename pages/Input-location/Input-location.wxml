@@ -6,7 +6,7 @@
       <view bindtap='cancel'>取消</view>
   </view>
   <view class='addressList' wx:for="{{nearAdsArr}}" wx:key="name">
-      <view class='addressItem' bindtap='choiceLocation' id="{{item.title}}">
+      <view class='addressItem' bindtap='choiceLocation' id="{{item.title}}:{{item.location.lat}}:{{item.location.lng}}">
           <image src='../../images/icon_nearby.png'></image>
         <view>
             <view class='adsName'>{{item.title}}</view>

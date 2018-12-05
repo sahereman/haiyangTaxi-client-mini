@@ -23,12 +23,24 @@ Page({
       iconPath:'/images/icon_qidiandingwei.png',
       width:25,
       height:45
-    }],
+    },
+      {
+        id: 2,
+        latitude: 36.092484,
+        longitude: 120.380966,
+        name: '终点',
+        iconPath: '/images/icon_End.png',
+        width: 25,
+        height: 45
+      }
+    ],
     isShow:false,
-    nowLocation:"7080广场西门",
-    chooseDestination:""
+    nowLocation:"获取位置中...",
+    chooseDestination:"",
+    chooseNewLocal:false
   },
   onLoad: function (options) {
+    console.log(options);
     var that = this;
     if (options.isGo == "true"){
         that.setData({
@@ -39,23 +51,25 @@ Page({
         isShow: false
       });
     }
+   
     // toast组件实例
     new app.ToastPannel();
     qqmapsdk = new QQMapWX({
       key: qmapKey
     });
     //接收上车与目的地传过来的value值
-    if (options != "" && options.choiceLocation !=undefined){
+    if (options != "" && options.choiceLocationTitle !=undefined){
       that.setData({
-        nowLocation: options.choiceLocation
+        nowLocation: options.choiceLocationTitle,
+        chooseNewLocal:true
       });
     }
-    if (options != "" && options.chooseDestination != undefined) {
+    if (options != "" && options.chooseDestinationTitle != undefined) {
       that.setData({
-        chooseDestination: options.chooseDestination
+        chooseDestination: options.chooseDestinationTitle
       });
     }
-    
+    //获取用户信息
     that.getuserInfo(that);
   },
   onReady:function(){
@@ -63,7 +77,7 @@ Page({
     wx.getLocation({
       type: 'gcj02',
       success: function (res) {
-        // console.log(res)
+        console.log("wx.getLocation展示的数据",res)
         var latitude = res.latitude
         var longitude = res.longitude
         that.setData({
@@ -72,14 +86,20 @@ Page({
         });
         qqmapsdk.reverseGeocoder({
           location: {
-            latitude: "36.092484",
-            longitude: "120.380966",
+            latitude: latitude,
+            longitude: longitude,
           },
           get_poi:1,
           poi_options:"radius=500;page_size=20;policy=2",
           success: function (res) {
-            console.log(res);  
-            var city = res.result.address_component.city;
+            console.log("腾讯地图接口返回数据:",res);
+            if (that.data.chooseNewLocal == false){
+              var city = res.result.address_component.city;
+              that.setData({
+                nowLocation: res.result.formatted_addresses.recommend
+              });
+            }  
+            wx.removeStorageSync("city");
             //存储城市用于目的地选择热门地点
             wx.setStorageSync("city",city);
             //定位附近地点数据缓存，用于从哪上车列举选项
@@ -93,7 +113,6 @@ Page({
         });
       }
     });
-    
   },
   // 滑动开始
   touchstart: function (e) {
@@ -168,7 +187,7 @@ Page({
   //获取用户信息
   getuserInfo: function (that) {
     var token = wx.getStorageSync("token");
-    if (token) {
+    if (token && token!= undefined) {
       app.ajaxRequest("get",interfaceUrl + "users/me", {}, function (res) {
         console.log('users/me接口请求成功', res);
         var phone = res.data.phone;
@@ -182,30 +201,12 @@ Page({
       }, function (res) {
         console.log('users/me接口请求失败', res);
         if (res.data.message == "Token has expired" && res.data.status_code == 401) {
-          console.log("token过期", interfaceUrl + "authorizations");
-          //刷新授权token
-          wx.request({
-            url: interfaceUrl + "authorizations",
-            method: 'PUT',
-            header: {
-              "Authorization": "Bearer " + token
-            },
-            success: function (res) {
-              console.log("authorizations", res);
-              if (res.data != null && res.data.status_code != 401) {
-                wx.setStorageSync("token", res.data.token);
-                getuserInfo();
-              } else {
-                wx.navigateTo({
-                  url: '../logs/logs',
-                })
-                wx.removeStorageSync("token");
-              }
-              console.log(token);
-            }
-          })
+          console.log("token过期");
+          app.checkExpires(function (res) {
+            getuserInfo(that);
+          });
         }
-      }, token);
+      });
     }
   },
   //呼叫出租车

@@ -31,7 +31,6 @@ Page({
   onShow: function () {
     var that = this;
     var nearAdsArr = wx.getStorageSync("nearPoisArr");
-    
     that.setData({
       nearAdsArr: nearAdsArr,
     });
@@ -70,9 +69,12 @@ Page({
     })
   },
   choiceLocation:function(e){
-    var choiceLocation = e.currentTarget.id;
+    var choiceLocation = e.currentTarget.id.split(":");
+    var title = choiceLocation[0];
+    var lat = choiceLocation[1]; 
+    var lng = choiceLocation[2]; 
     wx.redirectTo({
-      url: '../index/index?choiceLocation=' + choiceLocation,
+      url: '../index/index?choiceLocationTitle=' + title + '&choiceLocationTat=' + lat +'&choiceLocationLng='+lng,
     })
   },
   //地方模糊搜索

@@ -80,7 +80,7 @@ Page({
               console.log('authorizations接口请求成功', res);
             }, function (res) { 
               console.log('authorizations接口请求失败', res);
-            }, token);
+            });
             //删除token本地存储
             wx.removeStorageSync("token");
             wx.redirectTo({

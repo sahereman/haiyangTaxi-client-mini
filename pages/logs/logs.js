@@ -130,13 +130,10 @@ Page({
             //登录成功，获取token和有效期存入
             var token = res.data.access_token;
             var expires_in = res.data.expires_in;
-            console.log(token);
             wx.setStorageSync("token", res.data.access_token);
-            wx.setStorageSync("expires_in", res.data.expires_in);
             wx.redirectTo({
               url: '../index/index',
             })
-
             wx.hideLoading();
             } 
           },function(res){
