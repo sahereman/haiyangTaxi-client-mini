@@ -102,13 +102,11 @@ page{
   height: 70%;
 }
 .coverImg{
-  position:fixed;
   width:50rpx!important;
   height:50rpx!important;
   float:left;
-  top:110rpx;
-  left:30rpx;
-
+  margin-top:30rpx;
+  margin-left:30rpx;
 }
 .mapBottom{
   width: 100%;
@@ -204,4 +202,8 @@ page{
     position: fixed;
     bottom: 0;
     left: 0;
+  }
+  .centerPoit{
+    width: 44rpx;
+    height: 80rpx;
   }

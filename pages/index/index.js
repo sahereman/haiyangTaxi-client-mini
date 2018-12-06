@@ -15,24 +15,8 @@ Page({
     user_head:"",
     latitude: "",
     longitude: "",
-    markers: [{
-      id: 1,
-      latitude: 36.091613,
-      longitude: 120.37479,
-      name: '起点',
-      iconPath:'/images/icon_qidiandingwei.png',
-      width:25,
-      height:45
-    },
-      {
-        id: 2,
-        latitude: 36.092484,
-        longitude: 120.380966,
-        name: '终点',
-        iconPath: '/images/icon_End.png',
-        width: 25,
-        height: 45
-      }
+    markers: [
+      
     ],
     isShow:false,
     nowLocation:"获取位置中...",
@@ -40,8 +24,10 @@ Page({
     chooseNewLocal:false
   },
   onLoad: function (options) {
-    console.log(options);
+    console.log("options",options);
     var that = this;
+    that.getPlace();
+    console.log("that.data.latitude",that.data.latitude);
     if (options.isGo == "true"){
         that.setData({
           isShow:true
@@ -50,65 +36,200 @@ Page({
       that.setData({
         isShow: false
       });
-    }
-   
+    };
     // toast组件实例
     new app.ToastPannel();
     qqmapsdk = new QQMapWX({
       key: qmapKey
     });
-    //接收上车与目的地传过来的value值
-    if (options != "" && options.choiceLocationTitle !=undefined){
-      that.setData({
-        nowLocation: options.choiceLocationTitle,
-        chooseNewLocal:true
-      });
+    //接收上车地点传过来的value值
+    if (options != "" && options.choiceLocationTitle != undefined && options.choiceLocationTat != undefined && options.choiceLocationLng!=undefined){
+      
+      if (wx.getStorageSync("endLocal") != "") {
+        that.setData({
+          chooseDestination: wx.getStorageSync("endLocal"),
+          markers: [{
+            id: 0,
+            latitude: options.choiceLocationTat,
+            longitude: options.choiceLocationLng,
+            title: options.choiceLocationTitle,
+            iconPath: '/images/icon_qidiandingwei.png',
+            callout: {
+              content: "从这里上车",
+              padding: 5,
+              display: 'ALWAYS',
+              textAlign: 'center',
+              borderRadius: 20,
+            }
+          }]
+        });
+        console.log(1);
+      }else{
+        console.log(2);
+        that.setData({
+          nowLocation: options.choiceLocationTitle,
+          chooseNewLocal: true,
+          markers: [{
+            id: 0,
+            latitude: options.choiceLocationTat,
+            longitude: options.choiceLocationLng,
+            title: options.choiceLocationTitle,
+            iconPath: '/images/icon_qidiandingwei.png',
+            callout: {
+              content: "从这里上车",
+              padding: 5,
+              display: 'ALWAYS',
+              textAlign: 'center',
+              borderRadius: 20,
+            }
+          }]
+        });
+      }
+      wx.setStorageSync("startLocal", options.choiceLocationTitle);
+      wx.setStorageSync("choiceLocationTat", options.choiceLocationTat);
+      wx.setStorageSync("choiceLocationLng", options.choiceLocationLng);
     }
+    //接收目的地传过来的value值
     if (options != "" && options.chooseDestinationTitle != undefined) {
       that.setData({
         chooseDestination: options.chooseDestinationTitle
       });
+      console.log(wx.getStorageSync("startLocal"));
+      if (wx.getStorageSync("startLocal") != ""){
+        that.setData({
+          nowLocation: wx.getStorageSync("startLocal"),
+          chooseNewLocal: true,
+          markers: [{
+            id: 0,
+            latitude: wx.getStorageSync("choiceLocationTat"),
+            longitude: wx.getStorageSync("choiceLocationLng"),
+            title: wx.getStorageSync("startLocal"),
+            iconPath: '/images/icon_Startingpoint.png',
+            label: {
+              content: "上车的地方名称",
+              display: 'ALWAYS',
+              textAlign: 'right'
+            }
+          },
+            {
+              id: 1,
+              latitude: options.chooseDestinationTat,
+              longitude: options.chooseDestinationLng,
+              title: options.chooseDestinationTitle,
+              iconPath: '/images/icon_End.png',
+              label: {
+                content: "目的地名称",
+                display: 'ALWAYS',
+                textAlign: 'right'
+              }
+
+            }]
+        });
+      }else{
+        console.log("aaa", wx.getStorageSync("latitude"), "-----------", wx.getStorageSync("longitude"), "--------", options);
+        //起点选用的默认起点
+        that.setData({
+          nowLocation: wx.getStorageSync("startLocal"),
+          chooseNewLocal: true,
+          markers: [{
+            id: 0,
+            latitude: wx.getStorageSync("latitude"),
+            longitude: wx.getStorageSync("longitude"),
+            // title: wx.getStorageSync("startLocal"),
+            iconPath: '/images/icon_Startingpoint.png',
+            label: {
+              content: "上车的地方名称",
+              display: 'ALWAYS',
+              textAlign: 'right'
+            }
+          },
+          {
+            id: 1,
+            latitude: options.chooseDestinationTat,
+            longitude: options.chooseDestinationLng,
+            title: options.chooseDestinationTitle,
+            iconPath: '/images/icon_End.png',
+            label: {
+              content: options.chooseDestinationTitle,
+              display: 'ALWAYS',
+              textAlign: 'right'
+            }
+
+          }]
+        });
+
+      }
+      wx.setStorageSync("endLocal", options.chooseDestinationTitle);
+      wx.setStorageSync("chooseDestinationTat", options.chooseDestinationTat);
+      wx.setStorageSync("chooseDestinationLng", options.chooseDestinationLng);
     }
     //获取用户信息
     that.getuserInfo(that);
   },
   onReady:function(){
+    
+  },
+  //获取位置
+  getPlace:function(){
     var that = this
     wx.getLocation({
       type: 'gcj02',
       success: function (res) {
-        console.log("wx.getLocation展示的数据",res)
+        console.log("wx.getLocation展示的数据", res)
         var latitude = res.latitude
         var longitude = res.longitude
+        wx.setStorageSync("latitude", latitude);
+        wx.setStorageSync("longitude", longitude);
         that.setData({
           latitude: latitude,
           longitude: longitude
         });
+        console.log("123", that.data.latitude);
         qqmapsdk.reverseGeocoder({
           location: {
             latitude: latitude,
             longitude: longitude,
           },
-          get_poi:1,
-          poi_options:"radius=500;page_size=20;policy=2",
+          get_poi: 1,
+          poi_options: "radius=500;page_size=20;policy=2",
           success: function (res) {
-            console.log("腾讯地图接口返回数据:",res);
-            if (that.data.chooseNewLocal == false){
-              var city = res.result.address_component.city;
+            console.log("腾讯地图接口返回数据:", res);
+            var startLatitude = res.result.pois[0].location.lat;
+            var startLLongitude = res.result.pois[0].location.lng;
+            var title = res.result.pois[0].title;
+            if (that.data.chooseNewLocal == false || wx.getStorageSync("startLocal") == "") {
               that.setData({
-                nowLocation: res.result.formatted_addresses.recommend
+                nowLocation: res.result.formatted_addresses.recommend,
+                markers: [{
+                  id: 0,
+                  latitude: startLatitude,
+                  longitude: startLLongitude,
+                  title: title,
+                  iconPath: '/images/icon_qidiandingwei.png',
+                  callout: {
+                    content: "从这里上车",
+                    padding: 5,
+                    display: 'ALWAYS',
+                    textAlign: 'center',
+                    borderRadius: 20,
+                  }
+                }]
               });
-            }  
-            wx.removeStorageSync("city");
+            } else {
+              that.setData({
+                nowLocation: wx.getStorageSync("startLocal")
+              });
+            }
+            var city = res.result.address_component.city;
             //存储城市用于目的地选择热门地点
-            wx.setStorageSync("city",city);
+            wx.setStorageSync("city", city);
             //定位附近地点数据缓存，用于从哪上车列举选项
             var nearPoisArr = res.result.pois;
             wx.setStorageSync("nearPoisArr", nearPoisArr);
           },
           fail: function (res) {
             console.log("load data fail:", res);
-            
+
           }
         });
       }
@@ -211,6 +332,9 @@ Page({
   },
   //呼叫出租车
   callTaxi:function(){
+    wx.removeStorageSync("endLocal");
+    wx.removeStorageSync("startLocal");
+    wx.removeStorageSync("nearPoisArr");
     wx.navigateTo({
       url: '../calling-taxis/calling-taxis',
     })
@@ -220,7 +344,26 @@ Page({
     var that = this;
     that.setData({
       isShow: false,
-      chooseDestination:""
+      chooseDestination:"",
+        markers: [{
+          id: 0,
+          latitude: that.data.latitude,
+          longitude: that.data.longitude,
+          iconPath: '/images/icon_qidiandingwei.png',
+          callout: {
+            content: "从这里上车",
+            padding: 5,
+            display: 'ALWAYS',
+            textAlign: 'center',
+            borderRadius: 20,
+          }
+        }]
     });
-  }
+    wx.removeStorageSync("endLocal");
+    wx.removeStorageSync("chooseDestinationTat");
+    wx.removeStorageSync("chooseDestinationLng");
+    wx.removeStorageSync("startLocal");
+    wx.removeStorageSync("choiceLocationTat");
+    wx.removeStorageSync("choiceLocationLng");
+  },
 })

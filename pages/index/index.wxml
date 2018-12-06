@@ -56,11 +56,15 @@
           latitude="{{latitude}}"
           longitude="{{longitude}}"
           markers="{{markers}}"
-          enable-scroll = "true"
+          show-compass = "true"
+          include-points="{{markers}}"
           show-location 
         >
         <cover-view>
-          <image src='../../images/icon_backa.png' style='display:{{isShow == false?"none":"block"}}' bindtap='backHome' class="coverImg"></image>
+          <cover-image src='../../images/icon_backa.png' style='display:{{isShow == false?"none":"block"}}'  bindtap='backHome' class="coverImg"/>
+        </cover-view>
+        <cover-view>
+          <cover-image src='../../images/icon_qidiandingwei.png'  class="centerPoit"/>
         </cover-view>
         </map>
       </view>
