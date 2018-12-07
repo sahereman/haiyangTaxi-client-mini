@@ -1,0 +1,40 @@
+/* pages/trip-cancelled/trip-cancelled.wxss */
+.container{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+.t-head{
+  width: 100%;
+  text-align: center;
+  height: 15%;
+  border-bottom: 1px solid #ebebeb;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.t-head span{
+  display: inline-block;
+  padding: 10rpx 20rpx;
+  background: #6a6c7a;
+  color: #fff;
+  border-radius: 6rpx;
+}
+.t-main{
+  width: 100%;
+  text-align: center;
+  /* height: 75%; */
+}
+.t-main>view:first-child{
+  margin-top: 100rpx;
+  font-weight: bolder;
+  margin-bottom: 30rpx;
+}
+.t-main image{
+  width: 456rpx;
+  height: 385rpx;
+  margin-top: 50rpx;
+}

@@ -58,17 +58,18 @@
           markers="{{markers}}"
           show-compass = "true"
           include-points="{{markers}}"
+          controls='{{controls}}'
+          scale="18"
+          enable-overlooking = "true"
+          bindregionchange='regionChange'
           show-location 
         >
         <cover-view>
           <cover-image src='../../images/icon_backa.png' style='display:{{isShow == false?"none":"block"}}'  bindtap='backHome' class="coverImg"/>
         </cover-view>
-        <cover-view>
-          <cover-image src='../../images/icon_qidiandingwei.png'  class="centerPoit"/>
-        </cover-view>
         </map>
       </view>
-      <view class='mapBottom' style='display:{{isShow == false?"block":"none"}}'>
+      <view class='mapBottom' style='display:{{isShow == false?"block":"none"}}' id='bottom-layout'>
         <view class='tip'>
           <image src='../../images/icon_remind.png'></image>
           <span>未成年人请勿独自乘车,须有监护人陪同</span>

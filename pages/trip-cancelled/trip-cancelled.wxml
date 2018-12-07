@@ -1,0 +1,13 @@
+<!--pages/trip-cancelled/trip-cancelled.wxml-->
+<view class='container'>
+  <view class='bar'></view>
+  <view class='t-head'>
+      <span>{{cartNum}}</span>
+  </view>
+  <view class='t-main'>
+      <view>司机已取消订单</view>
+      <view>原因:{{cancelReasons}}</view>
+      <image src='../../images/icon_Cancelthetrip.png'></image>
+  </view>
+  <button class='btn' bindtap='backHome'>返回首页</button>
+</view>
