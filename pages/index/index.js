@@ -21,7 +21,14 @@ Page({
     user_head: "",
     latitude: "",
     longitude: "",
-    markers: [],
+    markers: [
+    //   {
+    //   iconPath:"/images/icon_Startingpoint.png",
+    //   id : "1",
+    //   latitude: "36.167158",
+    //   longitude: "120.434272",
+    // }
+    ],
     chooseDestination: "",
     //中心指针，不随着地图拖动而移动
     controls: [],
@@ -37,7 +44,9 @@ Page({
     selectLocationLng: "",
     //选择地址后回调的实体类
     // callbackAddressInfo: null,
-    userSelectedPosition: false
+    userSelectedPosition: false,
+    //检测链接是否成功
+    socketOpen:false
   },
   onLoad: function (options) {
     var that = this;
@@ -75,7 +84,6 @@ Page({
 
     //获取用户信息
     that.getuserInfo(that);
-
   },
   onReady: function () {
 
@@ -84,6 +92,67 @@ Page({
     var that = this;
     that.changeMapHeight();
     that.getCenterLocation();
+    that.showCart();
+  },
+  //实时显示附近车辆
+  showCart:function(){
+    var that = this;
+    var token = wx.getStorageSync("token"); 
+    //建立连接
+    wx.connectSocket({
+      url: "ws://taxi.shangheweiman.com:5301?token=" + token,
+      success: function (res) {
+        console.log("connectSocket 成功",res)
+      },
+      fail: function (res) {
+        console.log("connectSocket 失败",res)
+      }
+    })
+    //连接成功
+    wx.onSocketOpen(function (res) {
+      var data = {
+        action: "nearby",
+        data : {
+          lat: wx.getStorageSync("fromLat"),
+          lng: wx.getStorageSync("fromLng"),
+        }
+      }
+      //发送数据
+      wx.sendSocketMessage({
+        data: JSON.stringify(data),
+        success:function(res){
+          console.log("sendSocketMessage 成功", res)
+        },
+        fail:function(res){
+          console.log("sendSocketMessage 失败", res)
+        }
+      });
+    })
+    //接收数据
+    wx.onSocketMessage(function (data) {
+      console.log(data);
+      var data = JSON.parse(data.data);
+      if (data.action == "nearby"){
+
+        var drivers = data.data.drivers;
+        var markersArr= [];
+        for (var i = 0; i < drivers.length;i++){
+          var rotate = Math.random() * 360 ;
+          markersArr.push({
+            id: drivers[i].id,
+            latitude: drivers[i].lat,
+            longitude: drivers[i].lng,
+            iconPath: '/images/icon_littleyellowcar.png',
+            width:31,
+            height:16,
+            rotate: rotate
+          });
+         }
+        that.setData({
+          markers: markersArr
+        });
+      }
+    })
   },
   /**
    * 拖动地图回调
@@ -163,6 +232,12 @@ Page({
    */
   regeocodingAddress: function () {
     var that = this;
+    if (that.data.centerLatitude == 0 || that.data.centerLatitude == 0){
+      that.setData({
+        centerLatitude: that.data.latitude,
+        centerLongitude: that.data.longitude
+      });
+    }
     qqmapsdk.reverseGeocoder({
       location: {
         latitude: that.data.centerLatitude,

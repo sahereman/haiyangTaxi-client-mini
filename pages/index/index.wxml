@@ -57,9 +57,7 @@
           longitude="{{longitude}}"
           markers="{{markers}}"
           show-compass = "true"
-          include-points="{{markers}}"
           controls='{{controls}}'
-          scale="18"
           enable-overlooking = "true"
           bindregionchange='regionChange'
           show-location 

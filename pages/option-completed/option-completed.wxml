@@ -58,8 +58,6 @@
           longitude="{{longitude}}"
           markers="{{markers}}"
           show-compass = "true"
-          include-points="{{markers}}"
-          scale="18"
           enable-overlooking = "true"
           show-location 
         >

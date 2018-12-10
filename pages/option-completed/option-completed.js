@@ -78,6 +78,8 @@ Page({
           longitude: wx.getStorageSync("fromLng"),
           title: wx.getStorageSync("fromAddress"),
           iconPath: '/images/icon_Startingpoint.png',
+          width:24,
+          height:44,
           label: {
             content: wx.getStorageSync("fromAddress"),
             display: 'ALWAYS',
@@ -90,6 +92,8 @@ Page({
           longitude: wx.getStorageSync("toLng"),
           title: wx.getStorageSync("toAddress"),
           iconPath: '/images/icon_End.png',
+          width: 24,
+          height: 44,
           label: {
             content: wx.getStorageSync("toAddress"),
             display: 'ALWAYS',
@@ -271,7 +275,7 @@ Page({
   callTaxi: function () {
     //remove掉选择了上车地点的标识
     wx.removeStorageSync("selectAds");
-    wx.navigateTo({
+    wx.redirectTo({
       url: '../calling-taxis/calling-taxis',
     })
   },
