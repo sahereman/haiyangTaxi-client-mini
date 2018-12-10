@@ -1,7 +1,5 @@
 {
   "pages": [
-
-    
     "pages/index/index",
     "pages/about-us/about-us",
     "pages/calling-taxis/calling-taxis",
@@ -15,8 +13,8 @@
     "pages/Input-location/Input-location",
     "pages/Input-destination/Input-destination",
     "pages/trip-cancelled/trip-cancelled",
-    "pages/gift-events/gift-events"
-   
+    "pages/gift-events/gift-events",
+    "pages/option-completed/option-completed"
   ],
   "window": {
     "backgroundTextStyle": "light",

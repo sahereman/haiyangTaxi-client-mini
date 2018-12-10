@@ -108,9 +108,15 @@ Page({
     var title = chooseDestination[0];
     var lat = chooseDestination[1];
     var lng = chooseDestination[2];
+    //把选择的下车经纬度和地点名称存到storage里，作为实时更新的下车数据
+    wx.setStorageSync("toLat", lat);
+    wx.setStorageSync("toLng", lng);
+    wx.setStorageSync("toAddress", title);
+    //作为选择了上车地点的标识
+    wx.setStorageSync("selectAds", true);
     wx.redirectTo({
-      url: '../index/index?isGo=true&chooseDestinationTitle=' + title + '&chooseDestinationTat=' + lat + '&chooseDestinationLng=' + lng,
-    })
+      url:'../option-completed/option-completed?from=endLocation'
+    });
   },
   //地方模糊搜索
   getAddress: function (keyword) {

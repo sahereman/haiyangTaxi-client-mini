@@ -1,3 +1,4 @@
+<!--pages/option-completed/option-completed.wxml-->
 <!--index.wxml-->
 <import src="../../components/toast/toast.wxml" />
 <template is="toast" data="{{ ..._toast_ }}" />
@@ -58,27 +59,21 @@
           markers="{{markers}}"
           show-compass = "true"
           include-points="{{markers}}"
-          controls='{{controls}}'
           scale="18"
           enable-overlooking = "true"
-          bindregionchange='regionChange'
           show-location 
         >
+        <cover-view>
+          <cover-image src='../../images/icon_backa.png' bindtap='backHome' class="coverImg"/>
+        </cover-view>
         </map>
       </view>
-      <view class='mapBottom' id='bottom-layout'>
-        <view class='tip'>
-          <image src='../../images/icon_remind.png'></image>
-          <span>未成年人请勿独自乘车,须有监护人陪同</span>
-        </view>
-        <view class='starBox'>
-          <span></span>
-          <input type='text' value='{{nowLocation}}' bindtap='bindInputLocation' disabled='disabled'></input>
-        </view>
-        <view class='endBox'>
-           <span></span>
-           <input type='text' value='{{chooseDestination}}' placeholder='您要去哪儿' bindtap='bindInputEnter' disabled='disabled'></input> 
-        </view>
+      <view class='callingTaxis'>
+          <view>
+              <image src='../../images/icon_bigyellowcar.png'></image>
+              <span>打表计价</span>
+          </view>
+          <button bindtap='callTaxi'>呼叫出租车</button>
       </view>
     </view>
   </view>
