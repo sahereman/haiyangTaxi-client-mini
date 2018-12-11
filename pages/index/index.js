@@ -14,6 +14,8 @@ var bottomHeight = 0;
 var windowHeight = 0;
 var windowWidth = 0;
 var mapId = 'myMap';
+var timer;
+var bTimer;
 Page({
   data: {
     windowWidth: wx.getSystemInfoSync().windowWidth,
@@ -21,14 +23,7 @@ Page({
     user_head: "",
     latitude: "",
     longitude: "",
-    markers: [
-    //   {
-    //   iconPath:"/images/icon_Startingpoint.png",
-    //   id : "1",
-    //   latitude: "36.167158",
-    //   longitude: "120.434272",
-    // }
-    ],
+    markers: [],
     chooseDestination: "",
     //中心指针，不随着地图拖动而移动
     controls: [],
@@ -46,9 +41,11 @@ Page({
     // callbackAddressInfo: null,
     userSelectedPosition: false,
     //检测链接是否成功
-    socketOpen:false
+    socketOpen:false,
+    beatLastReceiveveTime:""
   },
   onLoad: function (options) {
+    console.log("onLoad");
     var that = this;
     // toast组件实例
     new app.ToastPannel();
@@ -84,75 +81,159 @@ Page({
 
     //获取用户信息
     that.getuserInfo(that);
+    //连接socket
+    var token = wx.getStorageSync("token");
+    if (token) {
+      wx.connectSocket({
+        url: "ws://taxi.shangheweiman.com:5301?token=" + token,
+        success: function (res) {
+          console.log("connectSocket建立成功1")
+        },
+        fail: function (res) {
+          console.log("connectSocket建立失败2")
+        }
+      })
+    }
   },
   onReady: function () {
-
   },
   onShow: function () {
+    console.log("onShow");
     var that = this;
     that.changeMapHeight();
     that.getCenterLocation();
-    that.showCart();
-  },
-  //实时显示附近车辆
-  showCart:function(){
-    var that = this;
-    var token = wx.getStorageSync("token"); 
-    //建立连接
-    wx.connectSocket({
-      url: "ws://taxi.shangheweiman.com:5301?token=" + token,
-      success: function (res) {
-        console.log("connectSocket 成功",res)
-      },
-      fail: function (res) {
-        console.log("connectSocket 失败",res)
-      }
-    })
-    //连接成功
+    //socket连接成功
     wx.onSocketOpen(function (res) {
+      console.log("123",res);
+      //socket发送数据
+      that.updateCart(wx.getStorageSync("fromLat"), wx.getStorageSync("fromLng"))
+    })
+    //socket接收数据
+    wx.onSocketMessage(function (res) {
+      console.log("aaa--socket接收数据",res);
+      that.onmessage(res)
+    })
+    // that.updateCart(wx.getStorageSync("fromLat"), wx.getStorageSync("fromLng"));
+    //定时5秒钟刷新一次小车位置
+    // that.cartTimer();
+    //定时10秒钟刷新一次心跳包
+    that.beatTimer();
+  },
+  
+
+
+  //刷新小车位置
+  updateCart: function (lat, lng){
+    var that = this;
+    //连接成功
       var data = {
         action: "nearby",
-        data : {
-          lat: wx.getStorageSync("fromLat"),
-          lng: wx.getStorageSync("fromLng"),
+        data: {
+          lat: lat,
+          lng: lng,
         }
       }
       //发送数据
       wx.sendSocketMessage({
         data: JSON.stringify(data),
-        success:function(res){
+        success: function (res) {
           console.log("sendSocketMessage 成功", res)
         },
-        fail:function(res){
+        fail: function (res) {
           console.log("sendSocketMessage 失败", res)
         }
       });
-    })
-    //接收数据
-    wx.onSocketMessage(function (data) {
-      console.log(data);
-      var data = JSON.parse(data.data);
-      if (data.action == "nearby"){
-
-        var drivers = data.data.drivers;
-        var markersArr= [];
-        for (var i = 0; i < drivers.length;i++){
-          var rotate = Math.random() * 360 ;
-          markersArr.push({
-            id: drivers[i].id,
-            latitude: drivers[i].lat,
-            longitude: drivers[i].lng,
-            iconPath: '/images/icon_littleyellowcar.png',
-            width:31,
-            height:16,
-            rotate: rotate
-          });
-         }
-        that.setData({
-          markers: markersArr
+  },
+  //接收返回小车的位置数据
+  onmessage:function(data){
+    var that = this;
+    console.log("接收返回小车的位置数据");
+    var data = JSON.parse(data.data);
+    if (data.action == "nearby") {
+      var drivers = data.data.drivers;
+      var markersArr = [];
+      for (var i = 0; i < drivers.length; i++) {
+        var rotate = Math.random() * 360;
+        markersArr.push({
+          id: drivers[i].id,
+          latitude: drivers[i].lat,
+          longitude: drivers[i].lng,
+          iconPath: '/images/icon_littleyellowcar.png',
+          width: 31,
+          height: 16,
+          rotate: rotate
         });
       }
-    })
+      that.setData({
+        markers: markersArr
+      });
+    }
+  },
+  //定时5秒钟刷新一次小车位置
+  cartTimer:function () {
+    var that = this;
+    timer = setTimeout(function () {
+      that.updateCart(wx.getStorageSync("fromLat"), wx.getStorageSync("fromLng"));
+      that.cartTimer();
+    }, 5000);
+  },
+  //发送接收心跳包数据
+  beat: function (){
+    var that = this;
+    //连接成功
+    var data = {
+      "action": "beat"
+    }
+    //发送数据
+    wx.sendSocketMessage({
+      data: JSON.stringify(data),
+      success: function (res) {
+        console.log("sendSocketMessage 成功1", res)
+      },
+      fail: function (res) {
+        console.log("sendSocketMessage 失败2", res)
+      }
+    });
+    wx.onSocketMessage(function (res) {
+      console.log("接收心跳包返回数据", res);
+      var data = JSON.parse(res.data);
+      if (data.action == "beat" && data.status_code == "200"){
+        that.setData({
+          beatLastReceiveveTime : new Date().getTime()
+        });
+      }
+    });
+  },
+  //心跳包检测
+
+  beatTimer:function(){
+    var that = this;
+    
+    bTimer = setTimeout(function () {
+      that.beat();
+      var nowTime = new Date().getTime();
+      if (that.data.beatLastReceiveveTime != ""){
+        var cut = parseInt(nowTime) - parseInt(that.data.beatLastReceiveveTime);
+        console.log("cut", cut);
+        if (cut > 7000 * 2) {
+          //连接socket
+          var token = wx.getStorageSync("token");
+          if (token) {
+            wx.connectSocket({
+              url: "ws://taxi.shangheweiman.com:5301?token=" + token,
+              success: function (res) {
+                console.log("connectSocket建立成功1")
+              },
+              fail: function (res) {
+                console.log("connectSocket建立失败2")
+              }
+            })
+          }
+        }
+      }
+      
+      that.beatTimer();
+    }, 7000);
   },
   /**
    * 拖动地图回调
@@ -162,7 +243,9 @@ Page({
     // 改变中心点位置  
     if (res.type == "end") {
       that.getCenterLocation();
+      that.updateCart(wx.getStorageSync("fromLat"), wx.getStorageSync("fromLng"));
     }
+    
   },
   /**
    * 得到中心点坐标
@@ -330,7 +413,7 @@ Page({
         url: '../logs/logs',
       })
     }
-
+    clearTimeout(timer);
   },
   bindInputEnter: function () {
     var token = wx.getStorageSync("token");
@@ -343,6 +426,7 @@ Page({
         url: '../logs/logs',
       })
     }
+    clearTimeout(timer);
   },
   //点击我的行程
   bindOrder: function () {
@@ -356,6 +440,7 @@ Page({
         url: '../logs/logs',
       })
     }
+    clearTimeout(timer);
   },
   //获取用户信息
   getuserInfo: function (that) {
@@ -381,13 +466,5 @@ Page({
         }
       });
     }
-  },
-  //呼叫出租车
-  callTaxi: function () {
-    //remove掉选择了上车地点的标识
-    wx.removeStorageSync("selectAds");
-    wx.navigateTo({
-      url: '../calling-taxis/calling-taxis',
-    })
   }
 })
