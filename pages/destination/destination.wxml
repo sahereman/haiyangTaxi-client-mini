@@ -7,7 +7,7 @@
       {{bill}}
       <span>单</span>
     </view>
-    <image src='../../images/phoneIn.png'></image>
+    <image src='../../images/phoneIn.png' bindtap='bindPhone'></image>
   </view>
   <view class='deMain'>
     <view>正在前往目的地</view>

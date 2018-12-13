@@ -22,10 +22,9 @@ Page({
     latitude: "",
     longitude: "",
     markers: [],
+    includePoints:[],
     chooseDestination: "",
     chooseNewLocal: false,
-    //中心指针，不随着地图拖动而移动
-    controls: [],
     //地图高度
     mapHeight: 0,
     //中心点的经纬度
@@ -100,8 +99,15 @@ Page({
             textAlign: 'right'
           }
         }],
-        controls: []
+        includePoints: [{
+          latitude: wx.getStorageSync("fromLat"),
+          longitude: wx.getStorageSync("fromLng"),
+        }, {
+          latitude: wx.getStorageSync("toLat"),
+          longitude: wx.getStorageSync("toLng"),
+        }]
       });
+      
     }
     that.setData({
       centerLatitude: that.data.latitude,

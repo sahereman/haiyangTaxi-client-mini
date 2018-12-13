@@ -5,8 +5,8 @@ Page({
    * 页面的初始数据
    */
   data: {
-    cartNum: "鲁UT1138",
-    bill: "5"
+    cartNum: "",
+    bill: ""
   },
 
   /**
@@ -27,7 +27,11 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    var that = this;
+    that.setData({
+      cartNum: wx.getStorageSync("driver").cart_number,
+      bill: wx.getStorageSync("driver").order_count
+    });
   },
 
   /**
@@ -63,5 +67,15 @@ Page({
    */
   onShareAppMessage: function () {
 
+  },
+  bindPhone:function(){
+    wx.makePhoneCall({
+      phoneNumber: wx.getStorageSync("driver").phone,
+    })
+  },
+  backHome:function(){
+    wx.redirectTo({
+      url: '../index/index',
+    })
   }
 })

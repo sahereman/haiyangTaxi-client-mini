@@ -68,3 +68,10 @@
     padding-top: 0;
   }
 }
+.coverImg{
+  width: 100rpx;
+  height: 100rpx;
+  float: right;
+  margin-top: 20rpx;
+  margin-right: 20rpx;
+}

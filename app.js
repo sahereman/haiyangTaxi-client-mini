@@ -31,18 +31,18 @@ App({
       }
     })
     // //连接socket
-    // var token = wx.getStorageSync("token");
-    // if (token){
-    //   wx.connectSocket({
-    //     url: "ws://taxi.shangheweiman.com:5301?token=" + token,
-    //     success: function (res) {
-    //       console.log("connectSocket建立成功")
-    //     },
-    //     fail: function (res) {
-    //       console.log("connectSocket建立失败")
-    //     }
-    //   })
-    // }
+    var token = wx.getStorageSync("token");
+    if (token){
+      wx.connectSocket({
+        url: "ws://taxi.shangheweiman.com:5301?token=" + token,
+        success: function (res) {
+          console.log("connectSocket建立成功")
+        },
+        fail: function (res) {
+          console.log("connectSocket建立失败")
+        }
+      })
+    }
     
     
     // wx.onSocketClose(function (res) {

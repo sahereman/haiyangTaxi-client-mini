@@ -5,8 +5,8 @@ Page({
    * 页面的初始数据
    */
   data: {
-    cartNum:"鲁UT1138",
-    bill:"5"
+    cartNum:"",
+    bill:""
   },
 
   /**
@@ -27,6 +27,28 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    var that = this;
+    that.setData({
+      cartNum: wx.getStorageSync("driver").cart_number,
+      bill: wx.getStorageSync("driver").order_count
+    });
+    //socket连接成功
+    wx.onSocketOpen(function (res) {
+      console.log("123", res);
+      //socket发送数据
+      // that.sendRefreshPosition();
+    })
+    // that.sendRefreshPosition();
+    //socket接收数据
+    wx.onSocketMessage(function (res) {
+      console.log("socket接收数据", JSON.parse(res.data));
+      if (JSON.parse(res.data).action == "reach" && JSON.parse(res.data).status_code == 200) {
+        wx.redirectTo({
+          url: '../end-trip/end-trip',
+        })
+      }
+    })
+
 
   },
 
@@ -63,5 +85,10 @@ Page({
    */
   onShareAppMessage: function () {
 
+  },
+  bindPhone:function(){
+    wx.makePhoneCall({
+      phoneNumber: wx.getStorageSync("driver").phone,
+    })
   }
 })

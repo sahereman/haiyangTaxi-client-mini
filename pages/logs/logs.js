@@ -131,6 +131,19 @@ Page({
             var token = res.data.access_token;
             var expires_in = res.data.expires_in;
             wx.setStorageSync("token", res.data.access_token);
+            //连接socket
+            var token = wx.getStorageSync("token");
+            if (token) {
+              wx.connectSocket({
+                url: "ws://taxi.shangheweiman.com:5301?token=" + token,
+                success: function (res) {
+                  console.log("connectSocket建立成功1")
+                },
+                fail: function (res) {
+                  console.log("connectSocket建立失败2")
+                }
+              })
+            }
             wx.redirectTo({
               url: '../index/index',
             })

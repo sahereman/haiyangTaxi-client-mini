@@ -5,7 +5,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    radioValue:""
   },
 
   /**
@@ -57,11 +57,54 @@ Page({
 
   },
   radioChange:function(e){
-    console.log(e.detail.value);
+    var that = this;
+    that.setData({
+      radioValue: e.detail.value
+    });
   },
   subReason:function(){
-    wx.navigateTo({
-      url: '../index/index',
+    var that = this;
+    //socket连接成功
+    wx.onSocketOpen(function (res) {
+      console.log("456", res);
+      //socket发送数据
+      that.submitReason()
     })
+    //socket接收数据
+    wx.onSocketMessage(function (res) {
+      console.log("vvcccc", res);
+      var data = JSON.parse(res.data);
+      if (data.action == "userCancel" && data.status_code == 200) {
+        wx.redirectTo({
+          url: '../index/index',
+        })
+      }
+    })
+    that.submitReason()
+    //删除存储的order_id
+    // wx.removeStorageSync("order_id");
+    // wx.removeStorageSync("driver");
+  },
+  submitReason:function(){
+    var that =this;
+    //连接成功
+    console.log(wx.getStorageSync("order_key"));
+    var data = {
+      "action": "userCancel",
+      "data": {
+        "close_reason": that.data.radioValue,
+        "order_id": wx.getStorageSync("order_id")
+      }
+    }
+    //发送数据
+    wx.sendSocketMessage({
+      data: JSON.stringify(data),
+      success: function (res) {
+        console.log("sendSocketMessage 成功1", res)
+      },
+      fail: function (res) {
+        console.log("sendSocketMessage 失败2", res)
+      }
+    });
   }
 })

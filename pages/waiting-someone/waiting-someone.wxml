@@ -8,7 +8,7 @@
       <span>单</span>
     </view>
     <view class='distanceBox'>
-      据您<view>0.9</view>公里
+      据您<view>{{distance}}</view>公里
     </view>
   </view>
   <view class='waitingTip'>
@@ -22,9 +22,15 @@
       latitude="{{latitude}}"
       longitude="{{longitude}}"
       markers="{{markers}}"
+      polyline="{{polyline}}"
+      include-points="{{includePoints}}"
       enable-scroll = "true"
       show-location 
-    ></map>
+    >
+    <cover-view>
+      <cover-image src='../../images/icon_Phone.png' bindtap='calling' class="coverImg"/>
+    </cover-view>
+    </map>
   </view>
   <button class='btn' bindtap='cancelOrder'>取消订单</button>
 </view>  

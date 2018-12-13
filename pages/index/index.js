@@ -42,10 +42,11 @@ Page({
     userSelectedPosition: false,
     //检测链接是否成功
     socketOpen:false,
-    beatLastReceiveveTime:""
+    beatLastReceiveveTime:"",
+    //检测是否发送成功
+    sendSocketMessage:true
   },
   onLoad: function (options) {
-    console.log("onLoad");
     var that = this;
     // toast组件实例
     new app.ToastPannel();
@@ -81,24 +82,10 @@ Page({
 
     //获取用户信息
     that.getuserInfo(that);
-    //连接socket
-    var token = wx.getStorageSync("token");
-    if (token) {
-      wx.connectSocket({
-        url: "ws://taxi.shangheweiman.com:5301?token=" + token,
-        success: function (res) {
-          console.log("connectSocket建立成功1")
-        },
-        fail: function (res) {
-          console.log("connectSocket建立失败2")
-        }
-      })
-    }
   },
   onReady: function () {
   },
   onShow: function () {
-    console.log("onShow");
     var that = this;
     that.changeMapHeight();
     that.getCenterLocation();
@@ -113,11 +100,12 @@ Page({
       console.log("aaa--socket接收数据",res);
       that.onmessage(res)
     })
-    // that.updateCart(wx.getStorageSync("fromLat"), wx.getStorageSync("fromLng"));
+    that.updateCart(wx.getStorageSync("fromLat"), wx.getStorageSync("fromLng"));
     //定时5秒钟刷新一次小车位置
     // that.cartTimer();
     //定时10秒钟刷新一次心跳包
-    that.beatTimer();
+    // that.beatTimer();
+    
   },
   
 
@@ -141,6 +129,9 @@ Page({
         },
         fail: function (res) {
           console.log("sendSocketMessage 失败", res)
+          that.setData({
+            sendSocketMessage:false
+          });
         }
       });
   },
@@ -174,8 +165,12 @@ Page({
     var that = this;
     timer = setTimeout(function () {
       that.updateCart(wx.getStorageSync("fromLat"), wx.getStorageSync("fromLng"));
-      that.cartTimer();
-    }, 5000);
+
+      if (that.data.sendSocketMessage != false){
+        that.cartTimer();
+      }
+     
+    }, 10000);
   },
   //发送接收心跳包数据
   beat: function (){
@@ -191,11 +186,14 @@ Page({
         console.log("sendSocketMessage 成功1", res)
       },
       fail: function (res) {
-        console.log("sendSocketMessage 失败2", res)
+        console.log("sendSocketMessage 失败2", res);
+        that.setData({
+          sendSocketMessage: false
+        });
       }
     });
     wx.onSocketMessage(function (res) {
-      console.log("接收心跳包返回数据", res);
+      console.log("接收心跳包返回数据aaa", res);
       var data = JSON.parse(res.data);
       if (data.action == "beat" && data.status_code == "200"){
         that.setData({
@@ -205,17 +203,15 @@ Page({
     });
   },
   //心跳包检测
-
   beatTimer:function(){
     var that = this;
-    
     bTimer = setTimeout(function () {
       that.beat();
       var nowTime = new Date().getTime();
       if (that.data.beatLastReceiveveTime != ""){
         var cut = parseInt(nowTime) - parseInt(that.data.beatLastReceiveveTime);
         console.log("cut", cut);
-        if (cut > 7000 * 2) {
+        if (cut > 20000 * 2) {
           //连接socket
           var token = wx.getStorageSync("token");
           if (token) {
@@ -231,9 +227,10 @@ Page({
           }
         }
       }
-      
-      that.beatTimer();
-    }, 7000);
+      if (that.data.sendSocketMessage != false) {
+        that.beatTimer();
+      }
+    }, 20000);
   },
   /**
    * 拖动地图回调

@@ -34,35 +34,6 @@ Page({
     that.setData({
       nearAdsArr: nearAdsArr,
     });
-    //socket连接成功
-    wx.onSocketOpen(function (res) {
-      console.log("456", res);
-      //socket发送数据
-      // that.oppen()
-    })
-    //socket接收数据
-    wx.onSocketMessage(function (res) {
-      console.log("vvcccc", res);
-      // that.aa();
-    })
-    that.oppen()
-  },
-  oppen: function (lat, lng) {
-    var that = this;
-    //连接成功
-    var data = {
-      "action": "beat"
-    }
-    //发送数据
-    wx.sendSocketMessage({
-      data: JSON.stringify(data),
-      success: function (res) {
-        console.log("sendSocketMessage 成功1", res)
-      },
-      fail: function (res) {
-        console.log("sendSocketMessage 失败2", res)
-      }
-    });
   },
 
 

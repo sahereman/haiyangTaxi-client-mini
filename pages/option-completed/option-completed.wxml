@@ -57,6 +57,7 @@
           latitude="{{latitude}}"
           longitude="{{longitude}}"
           markers="{{markers}}"
+          include-points="{{includePoints}}"
           show-compass = "true"
           enable-overlooking = "true"
           show-location 
