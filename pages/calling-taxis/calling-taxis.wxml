@@ -3,7 +3,9 @@
   <view class='bar'></view>
   <view class='main'>
     <span>收到，正在帮您叫车</span>
-    <canvas style="width: 260px; height: 260px;" canvas-id="secondCanvas"></canvas>
+    <!-- <canvas style="width: 260px; height: 260px;" canvas-id="secondCanvas"></canvas> -->
+    <image src='../../images/cut.gif'></image>
+    <div class=""></div>
     <span class="tip">{{tip}}</span>
     <button class='btn' bindtap='cancelTaxi'>取消叫车</button>
   </view>

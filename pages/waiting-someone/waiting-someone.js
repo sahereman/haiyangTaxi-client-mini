@@ -88,7 +88,7 @@ Page({
           wx.redirectTo({
             url: '../destination/destination',
           })
-        clearTimeout(pTimer);
+        clearInterval(pTimer);
       }
       //如果司机已取消订单，关闭定时器，跳转行程取消页面
       if (JSON.parse(res.data).action == "driverCancel" && JSON.parse(res.data).status_code == 200){
@@ -96,7 +96,7 @@ Page({
         wx.redirectTo({
           url: '../trip-cancelled/trip-cancelled?cancelReasons=' + cancelReasons,
         })
-        clearTimeout(pTimer);
+        clearInterval(pTimer);
       }
     })
     //刷新小车移动位置
@@ -201,12 +201,11 @@ Page({
   //5秒钟刷新一次车辆位置
   cartPositionTimer:function(){
     var that = this;
-     pTimer = setTimeout(function(){
+    pTimer = setInterval(function(){
        //重新发送数据
        that.sendRefreshPosition();
        //重新改变路线
        that.drivingPlan();
-       that.cartPositionTimer();
      },5000);
   },  
   /**
@@ -226,6 +225,7 @@ Page({
     wx.navigateTo({
       url: '../cancel-order/cancel-order',
     })
+    clearInterval(pTimer);
   },
   //拨打电话
   calling:function(){

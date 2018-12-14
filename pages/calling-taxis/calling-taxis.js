@@ -1,4 +1,5 @@
 // pages/calling-taxis/calling-taxis.js
+var time;
 Page({
 
   /**
@@ -61,12 +62,6 @@ Page({
       context.draw()
       // 每完成一次全程绘制就+1
       num++;
-      // if (e == s) {
-      //   console.log(123);
-      //   this.setData({
-      //     tip:"正在为您优先安排，请稍后..."
-      //   })
-      // }
     }
     // 倒计时前先绘制整圆的圆环
     ringMove(start, end);
@@ -140,6 +135,7 @@ Page({
       wx.redirectTo({
         url: '../waiting-someone/waiting-someone',
       })
+      clearInterval(time);
     }
   },
   /**
@@ -189,9 +185,11 @@ Page({
       console.log("vvcccc", res);
       var data = JSON.parse(res.data);
       if (data.action == "withdraw" && data.status_code == 200){
+        clearInterval(time);
          wx.redirectTo({
            url: '../index/index',
          }) 
+        
       }
     })
     that.oppena()

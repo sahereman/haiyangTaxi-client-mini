@@ -1,0 +1,61 @@
+/* pages/user/user.wxss */
+/* 侧滑栏 */  
+.page_tab {  
+  height: 100%;  
+  width: 100%;  
+  position: fixed;  
+  background-color: white;  
+  z-index: 0;  
+}  
+.page_tab_content{
+  padding-left:30rpx;
+}  
+.page_tab_content .wc {  
+  color: #000;  
+  position: relative;  
+  font-size: 32rpx;  
+  padding: 30rpx 0 30rpx 20rpx;  
+  border-bottom: 1px solid #eee;
+}  
+.page_tab_content .wc .more{
+  float: right;
+  width: 15rpx;
+  height: 20rpx;
+  margin-top: 10rpx;
+}  
+.page_tab_content button {  
+  width: 280rpx;  
+  background: #fb9817;  
+  color: #fff;  
+  position: relative;  
+  right: 120rpx;  
+  top: 150rpx;  
+  height: 60rpx;  
+  line-height: 60rpx;  
+}  
+  
+.page_tab_content image {  
+  display: inline-block;  
+  height: 40rpx;  
+  width: 40rpx;  
+  margin-right: 20rpx;  
+  vertical-align: bottom;
+}  
+  
+.user_head {  
+  width: 120rpx;  
+  height: 120rpx;  
+  border-radius: 50%;  
+  text-align: center;   
+}
+.user_name{
+  font-size: 30rpx; 
+  width: 100%;
+  text-align: center;
+}
+.headBoxs{
+  border-bottom: 1px solid #ebebeb;
+  margin-bottom:10rpx;
+  text-align: center;
+  padding: 40rpx 0;
+}

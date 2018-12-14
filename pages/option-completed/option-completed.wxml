@@ -44,9 +44,10 @@
         </navigator>
       </view>
     </view>
-    <view class="bg" bindtap='hideview' style='display:{{display}}'></view>
+    
     <!-- 主页 -->
     <view class="home" style="{{translate}}">
+    <view class="bg" bindtap='hideview' style='display:{{display}}'></view>
       <view class='menu'>
         <image src='../../images/icon_menu.png' bindtap='bindSlide'></image>
       </view>

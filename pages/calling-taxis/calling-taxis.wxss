@@ -13,3 +13,8 @@
   color: #f98753;
   font-size: 26rpx;
 }
+.main image{
+  width: 400rpx;
+  height: 400rpx;
+  margin-bottom: 30rpx;
+}

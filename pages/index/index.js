@@ -19,8 +19,7 @@ var bTimer;
 Page({
   data: {
     windowWidth: wx.getSystemInfoSync().windowWidth,
-    user_name: "",
-    user_head: "",
+    
     latitude: "",
     longitude: "",
     markers: [],
@@ -79,9 +78,6 @@ Page({
       centerLongitude: that.data.longitude
     })
     that.getPlace();
-
-    //获取用户信息
-    that.getuserInfo(that);
   },
   onReady: function () {
   },
@@ -100,16 +96,16 @@ Page({
       console.log("aaa--socket接收数据",res);
       that.onmessage(res)
     })
-    that.updateCart(wx.getStorageSync("fromLat"), wx.getStorageSync("fromLng"));
     //定时5秒钟刷新一次小车位置
-    that.cartTimer();
+    if (that.data.sendSocketMessage != false) {
+      // that.cartTimer();
+    }
     //定时10秒钟刷新一次心跳包
-    that.beatTimer();
+    if (that.data.sendSocketMessage != false) {
+      // that.beatTimer();
+    }
     
   },
-  
-
-
   //刷新小车位置
   updateCart: function (lat, lng){
     var that = this;
@@ -163,14 +159,9 @@ Page({
   //定时5秒钟刷新一次小车位置
   cartTimer:function () {
     var that = this;
-    timer = setTimeout(function () {
+    timer = setInterval(function () {
       that.updateCart(wx.getStorageSync("fromLat"), wx.getStorageSync("fromLng"));
-
-      if (that.data.sendSocketMessage != false){
-        that.cartTimer();
-      }
-     
-    }, 10000);
+    }, 5000);
   },
   //发送接收心跳包数据
   beat: function (){
@@ -205,7 +196,7 @@ Page({
   //心跳包检测
   beatTimer:function(){
     var that = this;
-    bTimer = setTimeout(function () {
+    bTimer = setInterval(function () {
       that.beat();
       var nowTime = new Date().getTime();
       if (that.data.beatLastReceiveveTime != ""){
@@ -227,10 +218,7 @@ Page({
           }
         }
       }
-      if (that.data.sendSocketMessage != false) {
-        that.beatTimer();
-      }
-    }, 20000);
+    }, 10000);
   },
   /**
    * 拖动地图回调
@@ -242,7 +230,6 @@ Page({
       that.getCenterLocation();
       that.updateCart(wx.getStorageSync("fromLat"), wx.getStorageSync("fromLng"));
     }
-    
   },
   /**
    * 得到中心点坐标
@@ -368,37 +355,12 @@ Page({
       }
     });
   },
-  // 滑动开始
-  touchstart: function (e) {
-    start_clientX = e.changedTouches[0].clientX
-  },
-  // 滑动结束
-  touchend: function (e) {
-    end_clientX = e.changedTouches[0].clientX;
-    if (end_clientX - start_clientX > 120) {
-      this.setData({
-        display: "block",
-        translate: 'transform: translateX(' + this.data.windowWidth * 0.7 + 'px);'
-      })
-    } else if (start_clientX - end_clientX > 0) {
-      this.setData({
-        display: "none",
-        translate: ''
-      })
-    }
-  },
   bindSlide: function () {
-    this.setData({
-      display: "block",
-      translate: 'transform: translateX(' + this.data.windowWidth * 0.7 + 'px);'
+    var that = this;
+    wx.navigateTo({
+      url: '../user/user',
     })
-  },
-  // 遮拦
-  hideview: function () {
-    this.setData({
-      display: "none",
-      translate: '',
-    })
+    clearInterval(timer);
   },
   bindInputLocation: function () {
     var token = wx.getStorageSync("token");
@@ -411,7 +373,7 @@ Page({
         url: '../logs/logs',
       })
     }
-    clearTimeout(timer);
+    clearInterval(timer);
   },
   bindInputEnter: function () {
     var token = wx.getStorageSync("token");
@@ -424,45 +386,6 @@ Page({
         url: '../logs/logs',
       })
     }
-    clearTimeout(timer);
-  },
-  //点击我的行程
-  bindOrder: function () {
-    var token = wx.getStorageSync("token");
-    if (token) {
-      wx.navigateTo({
-        url: '../order/order',
-      })
-    } else {
-      wx.navigateTo({
-        url: '../logs/logs',
-      })
-    }
-    clearTimeout(timer);
-  },
-  //获取用户信息
-  getuserInfo: function (that) {
-    var token = wx.getStorageSync("token");
-    if (token && token != undefined) {
-      app.ajaxRequest("get", interfaceUrl + "users/me", {}, function (res) {
-        console.log('users/me接口请求成功', res);
-        var phone = res.data.phone;
-        var mphone = phone.substr(3, 4);
-        var user_name = phone.replace(mphone, "****");
-        var user_head = res.data.avatar_url
-        that.setData({
-          user_name: user_name,
-          user_head: user_head
-        });
-      }, function (res) {
-        console.log('users/me接口请求失败', res);
-        if (res.data.message == "Token has expired" && res.data.status_code == 401) {
-          console.log("token过期");
-          app.checkExpires(function (res) {
-            getuserInfo(that);
-          });
-        }
-      });
-    }
+    clearInterval(timer);
   }
 })
