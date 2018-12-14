@@ -78,25 +78,30 @@ Page({
     //socket连接成功
     wx.onSocketOpen(function (res) {
       console.log("123", res);
-      //socket发送数据
-      // that.sendRefreshPosition();
     })
     that.sendRefreshPosition();
     //socket接收数据
     wx.onSocketMessage(function (res) {
-      console.log("socket接收数据", JSON.parse(res.data).action);
       that.onRefreshPosition(res);
+      //如果司机已到达，关闭定时器，跳转已上车页面
       if (JSON.parse(res.data).action == "received" && JSON.parse(res.data).status_code == 200){
           wx.redirectTo({
             url: '../destination/destination',
           })
         clearTimeout(pTimer);
       }
+      //如果司机已取消订单，关闭定时器，跳转行程取消页面
+      if (JSON.parse(res.data).action == "driverCancel" && JSON.parse(res.data).status_code == 200){
+        var cancelReasons = JSON.parse(res.data).data.order.close_reason;
+        wx.redirectTo({
+          url: '../trip-cancelled/trip-cancelled?cancelReasons=' + cancelReasons,
+        })
+        clearTimeout(pTimer);
+      }
     })
-
+    //刷新小车移动位置
     that.cartPositionTimer();
   },
-
 
   //小车距离起点的路线规划
   drivingPlan:function(){

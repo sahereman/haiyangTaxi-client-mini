@@ -38,13 +38,20 @@ Page({
       //socket发送数据
       // that.sendRefreshPosition();
     })
-    // that.sendRefreshPosition();
     //socket接收数据
     wx.onSocketMessage(function (res) {
       console.log("socket接收数据", JSON.parse(res.data));
+      //如果司机已到达，跳转行程结束页面
       if (JSON.parse(res.data).action == "reach" && JSON.parse(res.data).status_code == 200) {
         wx.redirectTo({
           url: '../end-trip/end-trip',
+        })
+      }
+      //如果司机已取消订单，跳转行程取消页面
+      if (JSON.parse(res.data).action == "driverCancel" && JSON.parse(res.data).status_code == 200) {
+        var cancelReasons = JSON.parse(res.data).data.order.close_reason;
+        wx.redirectTo({
+          url: '../trip-cancelled/trip-cancelled?cancelReasons=' + cancelReasons,
         })
       }
     })

@@ -102,9 +102,9 @@ Page({
     })
     that.updateCart(wx.getStorageSync("fromLat"), wx.getStorageSync("fromLng"));
     //定时5秒钟刷新一次小车位置
-    // that.cartTimer();
+    that.cartTimer();
     //定时10秒钟刷新一次心跳包
-    // that.beatTimer();
+    that.beatTimer();
     
   },
   
@@ -318,6 +318,7 @@ Page({
         centerLongitude: that.data.longitude
       });
     }
+    console.log("====",that.data.latitude, that.data.longitude);
     qqmapsdk.reverseGeocoder({
       location: {
         latitude: that.data.centerLatitude,

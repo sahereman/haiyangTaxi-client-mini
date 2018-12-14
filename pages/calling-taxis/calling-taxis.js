@@ -195,8 +195,6 @@ Page({
       }
     })
     that.oppena()
-    //删除存储的order_key
-    wx.removeStorageSync("order_key");
   },
    oppena: function (lat, lng) {
     var that = this;

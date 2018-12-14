@@ -5,15 +5,19 @@ Page({
    * 页面的初始数据
    */
   data: {
-    cartNum:"鲁UT1138",
-    cancelReasons:"乘客行程有变,不需用车"
+    cartNum:"",
+    cancelReasons:""
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    var that = this;
+    console.log(options);
+    that.setData({
+      cancelReasons: options.cancelReasons
+    });
   },
 
   /**
@@ -27,6 +31,10 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    var that = this;
+    that.setData({
+      cartNum:wx.getStorageSync("driver").cart_number
+    });
 
   },
   backHome:function(){

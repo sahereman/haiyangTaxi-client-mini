@@ -41,7 +41,6 @@ Page({
     isGo: false
   },
   onLoad: function (options) {
-    console.log("onLoad");
     console.log("options", options);
     var that = this;
     // toast组件实例
