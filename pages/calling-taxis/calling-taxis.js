@@ -21,52 +21,6 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-    var step = 1,//计数动画次数
-      num = 0,//计数倒计时秒数（n - num）
-      start = 1.5 * Math.PI,// 开始的弧度
-      end = -0.5 * Math.PI,// 结束的弧度
-      time = null;// 计时器容器
-
-    var animation_interval = 1000,// 每1秒运行一次计时器
-      n = 60; // 当前倒计时为10秒
-    // 动画函数
-    function animation() {
-      if (step <= n) {
-        end = end + 2 * Math.PI / n;
-        ringMove(start, end);
-        step++;
-      } else {
-        clearInterval(time);
-      }
-    };
-    // 画布绘画函数
-    function ringMove(s, e) {
-      var context = wx.createCanvasContext('secondCanvas')
-      // 绘制圆环
-      context.setStrokeStyle('#fd9153')
-      context.beginPath()
-      context.setLineWidth(1)
-      context.arc(120, 120, 100, s, e, true)
-      context.stroke()
-      context.closePath()
-      // 绘制倒计时文本
-      context.beginPath()
-      context.setLineWidth(1)
-      context.setFontSize(60)
-      context.setFillStyle('#fd9153')
-      context.setTextAlign('center')
-      context.setTextBaseline('middle')
-      context.fillText(n - num + '', 120, 120, 100)
-      context.fill()
-      context.closePath()
-      context.draw()
-      // 每完成一次全程绘制就+1
-      num++;
-    }
-    // 倒计时前先绘制整圆的圆环
-    ringMove(start, end);
-    // 创建倒计时m.h987yuitryuioihyhujik[jhgvfbnvnjmnbvbnm,nbvfcgklkjhg545545545u ]
-    time = setInterval(animation, animation_interval);
   },
 
   /**
@@ -87,21 +41,28 @@ Page({
     })
     that.oppen()
   },
-  oppen: function (lat, lng) {
+  oppen: function () {
     var that = this;
+    var from_address = wx.getStorageSync("fromAddress");
+    var to_address = wx.getStorageSync("toAddress");
+    var fromLat = wx.getStorageSync("fromLat");
+    var fromLng = wx.getStorageSync("fromLng");
+    var toLat = wx.getStorageSync("toLat");
+    var toLng = wx.getStorageSync("toLng");
+    console.log("fromLat", fromLat);
     //连接成功
     var data = {
       "action": "publish",
       "data": {
-        "from_address": "CBD万达广场",
+        "from_address": from_address,
         "from_location": {
-          "lat": "36.088436",
-          "lng": "120.379145"
+          "lat": fromLat,
+          "lng": fromLng
         },
-        "to_address": "五四广场",
+        "to_address": to_address,
         "to_location": {
-          "lat": "36.062030",
-          "lng": "120.384940"
+          "lat": toLat,
+          "lng": toLat
         }
       }
     }
@@ -194,7 +155,7 @@ Page({
     })
     that.oppena()
   },
-   oppena: function (lat, lng) {
+   oppena: function () {
     var that = this;
     //连接成功
      console.log(wx.getStorageSync("order_key"));
