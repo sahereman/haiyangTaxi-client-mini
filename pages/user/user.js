@@ -39,14 +39,16 @@ Page({
     if (token && token != undefined) {
       app.ajaxRequest("get", interfaceUrl + "users/me", {}, function (res) {
         console.log('users/me接口请求成功', res);
-        var phone = res.data.phone;
-        var mphone = phone.substr(3, 4);
-        var user_name = phone.replace(mphone, "****");
-        var user_head = res.data.avatar_url
-        that.setData({
-          user_name: user_name,
-          user_head: user_head
-        });
+        if (res.data != null && res.data!=""){
+          var phone = res.data.phone;
+          var mphone = phone.substr(3, 4);
+          var user_name = phone.replace(mphone, "****");
+          var user_head = res.data.avatar_url
+          that.setData({
+            user_name: user_name,
+            user_head: user_head
+          });
+        }
       }, function (res) {
         console.log('users/me接口请求失败', res);
         if (res.data.message == "Token has expired" && res.data.status_code == 401) {

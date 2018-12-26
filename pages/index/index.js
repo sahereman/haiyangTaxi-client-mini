@@ -140,7 +140,6 @@ Page({
       var drivers = data.data.drivers;
       var markersArr = [];
       for (var i = 0; i < drivers.length; i++) {
-        var rotate = Math.random() * 360;
         markersArr.push({
           id: drivers[i].id,
           latitude: drivers[i].lat,
@@ -148,7 +147,7 @@ Page({
           iconPath: '/images/icon_littleyellowcar.png',
           width: 31,
           height: 16,
-          rotate: rotate
+          rotate: drivers[i].angle
         });
       }
       that.setData({

@@ -4,47 +4,7 @@
 <template is="toast" data="{{ ..._toast_ }}" />
 <view class="container">
   <view class='bar'></view>
-  <view class="page" bindtouchend='touchend' bindtouchstart='touchstart'>
-    <!-- 侧滑栏 -->
-    <view class="page_tab">
-      <block wx:if="{{user_name ===''}}">
-        <navigator url='../logs/logs' class='headBox' hover-class="none">
-          <image class='user_head' src='../../images/user_head.png'></image>
-          <view class='user_name1'>未登录</view>
-        </navigator>
-      </block>
-      <block wx:else>
-        <view class='headBox'>
-            <image class='user_head headBox' src='{{user_head}}' hover-class="none"></image>
-            <view class='user_name'>{{user_name}}</view>
-        </view>
-      </block>
-      <view class="page_tab_content">
-        <view class="wc" bindtap='bindOrder'>
-            <image src='../../images/icon_xingcheng.png'></image>
-            <text>我的行程</text>
-          </view>
-        <navigator url='../about-us/about-us' hover-class="none">
-          <view class="wc">
-            <image src='../../images/icon_about.png'></image>
-            <text bindtap='tosat'>关于我们</text>
-          </view>
-        </navigator>  
-        <navigator url='../gift-events/gift-events' hover-class="none">
-          <view class="wc" bindtap='bindNOne'>
-            <image src='../../images/icon_lipin.png'></image>
-            <text>礼品活动</text>
-          </view>
-        </navigator>   
-        <navigator url='../set/set' hover-class="none">
-          <view class="wc">
-            <image src='../../images/icon_shezhi.png'></image>
-            <text>其他设置</text>
-          </view>
-        </navigator>
-      </view>
-    </view>
-    
+  <view class="page">
     <!-- 主页 -->
     <view class="home" style="{{translate}}">
     <view class="bg" bindtap='hideview' style='display:{{display}}'></view>

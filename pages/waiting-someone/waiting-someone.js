@@ -161,7 +161,7 @@ Page({
   onRefreshPosition:function(data){
     var that = this;
     var driver = JSON.parse(data.data).data.driver;
-    console.log("driver", driver);
+    console.log("driver", JSON.parse(data.data));
     if (driver != undefined){
       that.setData({
         distance: driver.distance / 1000,
