@@ -58,19 +58,19 @@ Page({
       },
       {
         id: 2,
-        latitude: driver.location.lat,
-        longitude: driver.location.lng,
+        latitude: driver.lat,
+        longitude: driver.lng,
         iconPath: '/images/icon_littleyellowcar.png',
         width: 31,
         height: 16,
-        rotate: 0
+        rotate: driver.angle
       }],
       includePoints:[{
         latitude: wx.getStorageSync("fromLat"),
         longitude: wx.getStorageSync("fromLng"),
       },{
-          latitude: driver.location.lat,
-          longitude: driver.location.lng,
+          latitude: driver.lat,
+          longitude: driver.lng,
       }]
     });
     //小车距离起点的路线规划
@@ -82,7 +82,11 @@ Page({
     that.sendRefreshPosition();
     //socket接收数据
     wx.onSocketMessage(function (res) {
-      that.onRefreshPosition(res);
+      console.log(res);
+      if (JSON.parse(res.data).action == "meetRefresh" && JSON.parse(res.data).status_code == 200){
+        console.log("123");
+        that.onRefreshPosition(res);
+      }
       //如果司机已到达，关闭定时器，跳转已上车页面
       if (JSON.parse(res.data).action == "received" && JSON.parse(res.data).status_code == 200){
           wx.redirectTo({
@@ -107,7 +111,7 @@ Page({
   drivingPlan:function(){
     var that = this;
     var driver = wx.getStorageSync("driver");
-    var qqParme = { "from": driver.location.lat + "," + driver.location.lng, "to": wx.getStorageSync("fromLat") + "," + wx.getStorageSync("fromLng"), "heading": 0, "key": qmapKey };
+    var qqParme = { "from": driver.lat + "," + driver.lng, "to": wx.getStorageSync("fromLat") + "," + wx.getStorageSync("fromLng"), "heading": 0, "key": qmapKey };
     app.ajaxRequest("get", "https://apis.map.qq.com/ws/direction/v1/driving", qqParme, function (res) {
       if (res != null && res.data != null & res.data.result != undefined){
         var coors = res.data.result.routes[0].polyline
@@ -160,11 +164,11 @@ Page({
   //得到刷新车辆正在来的位置数据
   onRefreshPosition:function(data){
     var that = this;
-    var driver = JSON.parse(data.data).data.driver;
-    console.log("driver", JSON.parse(data.data));
+    var driver = JSON.parse(data.data).data;
+    console.log("driver", JSON.parse(data.data).data);
     if (driver != undefined){
       that.setData({
-        distance: driver.distance / 1000,
+        distance: (driver.driver.distance/1000).toFixed(1),
         markers: [{
           id: 0,
           latitude: wx.getStorageSync("fromLat"),
@@ -181,19 +185,19 @@ Page({
         },
         {
           id: 2,
-          latitude: driver.location.lat,
-          longitude: driver.location.lng,
+          latitude: driver.driver.lat,
+          longitude: driver.driver.lng,
           iconPath: '/images/icon_littleyellowcar.png',
           width: 31,
           height: 16,
-          rotate: 0
+          rotate: driver.angle
         }],
         includePoints: [{
           latitude: wx.getStorageSync("fromLat"),
           longitude: wx.getStorageSync("fromLng"),
         }, {
-          latitude: driver.location.lat,
-          longitude: driver.location.lng,
+            latitude: driver.driver.lat,
+            longitude: driver.driver.lng,
         }]
       });
     }

@@ -6,7 +6,7 @@
       <view bindtap='cancel'>取消</view>
   </view>
   <view class='addressList' wx:for="{{localHistoryArr}}" wx:key="to_address">
-      <view class='addressItem' bindtap='bindGoCart' id="{{item.to_address}}:{{item.location.lat}}:{{item.location.lng}}">
+      <view class='addressItem' bindtap='bindGoCart' id="{{item.to_address}}:{{item.lat}}:{{item.lng}}">
           <image src='../../images/icon_Historicalrecords.png'></image>
           <view>
               <view class='adsName'>{{item.to_address}}</view>

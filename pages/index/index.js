@@ -94,6 +94,9 @@ Page({
     //socket接收数据
     wx.onSocketMessage(function (res) {
       console.log("aaa--socket接收数据",res);
+      
+
+
       that.onmessage(res)
     })
     //定时5秒钟刷新一次小车位置
@@ -102,7 +105,7 @@ Page({
     }
     //定时10秒钟刷新一次心跳包
     if (that.data.sendSocketMessage != false) {
-      // that.beatTimer();
+      that.beatTimer();
     }
     
   },
@@ -180,43 +183,56 @@ Page({
         that.setData({
           sendSocketMessage: false
         });
+        //连接socket
+        var token = wx.getStorageSync("token");
+        if (token) {
+          wx.connectSocket({
+            url: "ws://taxi.shangheweiman.com:5301?token=" + token,
+            success: function (res) {
+              console.log("connectSocket建立成功1")
+            },
+            fail: function (res) {
+              console.log("connectSocket建立失败2")
+            }
+          })
+        }
       }
     });
-    wx.onSocketMessage(function (res) {
-      console.log("接收心跳包返回数据aaa", res);
-      var data = JSON.parse(res.data);
-      if (data.action == "beat" && data.status_code == "200"){
-        that.setData({
-          beatLastReceiveveTime : new Date().getTime()
-        });
-      }
-    });
+    // wx.onSocketMessage(function (res) {
+    //   console.log("接收心跳包返回数据aaa", res);
+    //   var data = JSON.parse(res.data);
+    //   if (data.action == "beat" && data.status_code == "200"){
+    //     that.setData({
+    //       beatLastReceiveveTime : new Date().getTime()
+    //     });
+    //   }
+    // });
   },
   //心跳包检测
   beatTimer:function(){
     var that = this;
     bTimer = setInterval(function () {
       that.beat();
-      var nowTime = new Date().getTime();
-      if (that.data.beatLastReceiveveTime != ""){
-        var cut = parseInt(nowTime) - parseInt(that.data.beatLastReceiveveTime);
-        console.log("cut", cut);
-        if (cut > 20000 * 2) {
-          //连接socket
-          var token = wx.getStorageSync("token");
-          if (token) {
-            wx.connectSocket({
-              url: "ws://taxi.shangheweiman.com:5301?token=" + token,
-              success: function (res) {
-                console.log("connectSocket建立成功1")
-              },
-              fail: function (res) {
-                console.log("connectSocket建立失败2")
-              }
-            })
-          }
-        }
-      }
+      // var nowTime = new Date().getTime();
+      // if (that.data.beatLastReceiveveTime != ""){
+        // var cut = parseInt(nowTime) - parseInt(that.data.beatLastReceiveveTime);
+        // console.log("cut", cut);
+        // if (cut > 20000 * 2) {
+          // //连接socket
+          // var token = wx.getStorageSync("token");
+          // if (token) {
+          //   wx.connectSocket({
+          //     url: "ws://taxi.shangheweiman.com:5301?token=" + token,
+          //     success: function (res) {
+          //       console.log("connectSocket建立成功1")
+          //     },
+          //     fail: function (res) {
+          //       console.log("connectSocket建立失败2")
+          //     }
+          //   })
+          // }
+        // }
+      // }
     }, 10000);
   },
   /**
@@ -238,8 +254,6 @@ Page({
     var mapCtx = wx.createMapContext(mapId);
     mapCtx.getCenterLocation({
       success: function (res) {
-        // console.log('getCenterLocation----------------------->');
-        // console.log(res);
         that.setData({
           centerLatitude: res.latitude,
           centerLongitude: res.longitude

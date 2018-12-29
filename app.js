@@ -89,6 +89,7 @@ App({
   checkExpires:function(callback){
     var that = this;
     console.log("刷新token的接口获取的旧token", wx.getStorageSync("token"));
+    wx.removeStorageSync("token");
     that.ajaxRequest("put", that.globalData.interfaceUrl + "authorizations",{},function(res){
       console.log("authorizations接口请求成功",res);
       wx.setStorageSync("token", res.data.access_token);

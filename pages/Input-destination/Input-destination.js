@@ -32,13 +32,13 @@ Page({
   onShow: function () {
     var that = this;
     //获取历史行程订单接口
-    app.ajaxRequest("get", interfaceUrl + "orders", { "status": "noTripping" }, function (res) {
-      console.log('orders接口请求成功NoTripping', res);
-      var array = res.data.data;
+    app.ajaxRequest("get", interfaceUrl + "users/to_history", {}, function (res) {
+      console.log('users/to_history接口请求成功', res);
+      var array = res.data;
       if (array.length > 0 && array != null && typeof (array) != 'undefined') {
         for (var i = 0; i < array.length; i++) {
-          var to_address = array[i].to_address;
-          that.data.localHistoryArr.push({ "to_address": to_address, "location": array[i].to_location });
+          var to_address = array[i].address;
+          that.data.localHistoryArr.push({ "to_address": to_address, "lat": array[i].lat, "lng": array[i].lng });
         }
         if (that.data.localHistoryArr.length < 5) {
           that.setData({
@@ -51,14 +51,14 @@ Page({
         }
       }
     }, function (res) {
-      console.log('orders接口请求失败', res);
+      console.log('users/to_history接口请求失败', res);
     });
     //获取城市热门地点列表
     var city = wx.getStorageSync("city");
     app.ajaxRequest("get",interfaceUrl +"city_hot_addresses",{"city":city},function(res){
-      console.log("city_hot_addresses接口请求成功:",res);
+      console.log("city_hot_addresses接口请求成功:",res.data);
       if (res!=null&&res.data!=null&&res.data.data!=""){
-        var hotLocalArr = res.data.city_hot_addresses;
+        var hotLocalArr = res.data.data;
         for (var i = 0; i < hotLocalArr.length; i++) {
           that.data.hotLocalArr.push({ "to_address": hotLocalArr[i].address, "address": hotLocalArr[i].address_component, "location": hotLocalArr[i].location });
         }
