@@ -8,6 +8,7 @@ var QQMapWX = require('../../lib/qqmap-wx-jssdk.min.js');
 var qqmapsdk;
 var qmapKey = app.globalData.qmapKey;
 var interfaceUrl = app.globalData.interfaceUrl;
+var isScoket = app.globalData.isScoket;
 //定义全局变量
 var wxMarkerData = [];
 var bottomHeight = 0;
@@ -19,7 +20,7 @@ var bTimer;
 Page({
   data: {
     windowWidth: wx.getSystemInfoSync().windowWidth,
-    
+    isScoket:false,
     latitude: "",
     longitude: "",
     markers: [],
@@ -45,6 +46,7 @@ Page({
     //检测是否发送成功
     sendSocketMessage:true
   },
+  
   onLoad: function (options) {
     var that = this;
     // toast组件实例
@@ -52,6 +54,12 @@ Page({
     qqmapsdk = new QQMapWX({
       key: qmapKey
     });
+    //接收登录成功可以连接scoket的参数
+    if (options != "" && options.isScoket){
+        that.setData({
+          isScoket:true
+        });
+    }
     //接收上车地点传过来的value值
     if (options != "" && options.from == "startLocation" ) {
       that.setData({
@@ -85,28 +93,30 @@ Page({
     var that = this;
     that.changeMapHeight();
     that.getCenterLocation();
-    //socket连接成功
-    wx.onSocketOpen(function (res) {
-      console.log("123",res);
-      //socket发送数据
-      that.updateCart(wx.getStorageSync("fromLat"), wx.getStorageSync("fromLng"))
-    })
-    //socket接收数据
-    wx.onSocketMessage(function (res) {
-      console.log("aaa--socket接收数据",res);
-      
-
-
-      that.onmessage(res)
-    })
-    //定时5秒钟刷新一次小车位置
-    if (that.data.sendSocketMessage != false) {
-      // that.cartTimer();
+    //如果用户登陆了，才可以进行连接
+    console.log(app.globalData.isScoket, 454545, that.data.isScoket);
+    if (isScoket || that.data.isScoket){
+      //socket连接成功
+      wx.onSocketOpen(function (res) {
+        console.log("123", res);
+        //socket发送数据
+        that.updateCart(wx.getStorageSync("fromLat"), wx.getStorageSync("fromLng"))
+      })
+      //socket接收数据
+      wx.onSocketMessage(function (res) {
+        console.log("aaa--socket接收数据", res);
+        that.onmessage(res)
+      })
+      //定时5秒钟刷新一次小车位置
+      if (that.data.sendSocketMessage != false) {
+        // that.cartTimer();
+      }
+      //定时10秒钟刷新一次心跳包
+      if (that.data.sendSocketMessage != false) {
+        that.beatTimer();
+      }
     }
-    //定时10秒钟刷新一次心跳包
-    if (that.data.sendSocketMessage != false) {
-      that.beatTimer();
-    }
+    
     
   },
   //刷新小车位置
@@ -120,7 +130,8 @@ Page({
           lng: lng,
         }
       }
-      //发送数据
+    if (isScoket || that.data.isScoket){
+        //发送数据
       wx.sendSocketMessage({
         data: JSON.stringify(data),
         success: function (res) {
@@ -133,6 +144,8 @@ Page({
           });
         }
       });
+      }
+      
   },
   //接收返回小车的位置数据
   onmessage:function(data){
@@ -367,6 +380,7 @@ Page({
         
       }
     });
+    
   },
   bindSlide: function () {
     var that = this;

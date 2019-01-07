@@ -125,7 +125,7 @@ Page({
         var loginDataParam = { "phone": that.data.phoneVal, "verification_key": that.data.verification_key, "verification_code": that.data.codeVal}
         app.ajaxRequest("post",interfaceUrl +"authorizations", loginDataParam, function (res) {
           if (res != null && res.data != null) {
-            console.log('接口请求成功', res);
+            console.log('authorizations接口请求成功', res);
             that.show("登录成功", 1500)
             //登录成功，获取token和有效期存入
             var token = res.data.access_token;
@@ -145,9 +145,10 @@ Page({
               })
             }
             wx.redirectTo({
-              url: '../index/index',
+              url: '../index/index?isScoket=true',
             })
             wx.hideLoading();
+
             } 
           },function(res){
             console.log('接口请求数据失败', res);

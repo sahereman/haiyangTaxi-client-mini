@@ -42,6 +42,10 @@ App({
           console.log("connectSocket建立失败")
         }
       })
+      this.globalData.isScoket = true;
+    }else{
+      console.log("乘客未登录，没有连接scoket");
+      this.globalData.isScoket = false;
     }
     
     
@@ -111,5 +115,6 @@ App({
     userInfo: null,
     qmapKey:"TYFBZ-R6U33-5JW3P-YSWZ5-LQZAH-4RBPQ",
     interfaceUrl: "https://taxi.shangheweiman.com/api/client/",
+    isScoket:false
   }
 })
