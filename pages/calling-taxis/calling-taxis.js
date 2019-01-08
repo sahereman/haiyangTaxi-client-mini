@@ -49,7 +49,6 @@ Page({
     var fromLng = wx.getStorageSync("fromLng");
     var toLat = wx.getStorageSync("toLat");
     var toLng = wx.getStorageSync("toLng");
-    console.log("fromLat", fromLat);
     //连接成功
     var data = {
       "action": "publish",

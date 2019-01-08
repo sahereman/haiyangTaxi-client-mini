@@ -21,6 +21,7 @@
           include-points="{{includePoints}}"
           show-compass = "true"
           enable-overlooking = "true"
+          scale="10"
           show-location 
         >
         <cover-view>

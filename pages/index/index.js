@@ -200,7 +200,7 @@ Page({
         var token = wx.getStorageSync("token");
         if (token) {
           wx.connectSocket({
-            url: "ws://taxi.shangheweiman.com:5301?token=" + token,
+            url: "wss://taxi.shangheweiman.com:5301?token=" + token,
             success: function (res) {
               console.log("connectSocket建立成功1")
             },
@@ -340,6 +340,7 @@ Page({
       get_poi: 1,
       poi_options: "radius=500;page_size=20;policy=2",
       success: function (res) {
+        console.log(res);
         that.setData({
           nowLocation: res.result.formatted_addresses.recommend
         });
@@ -375,6 +376,7 @@ Page({
           //将初始化的经纬度传到storage里，作为实时改变的上车经纬度
           wx.setStorageSync("fromLat", that.data.latitude);
           wx.setStorageSync("fromLng", that.data.longitude);
+          // console.log(that.data.latitude, that.data.longitude);
           that.regeocodingAddress();
         }
         

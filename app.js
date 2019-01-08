@@ -34,7 +34,7 @@ App({
     var token = wx.getStorageSync("token");
     if (token){
       wx.connectSocket({
-        url: "ws://taxi.shangheweiman.com:5301?token=" + token,
+        url: "wss://taxi.shangheweiman.com:5301?token=" + token,
         success: function (res) {
           console.log("connectSocket建立成功")
         },

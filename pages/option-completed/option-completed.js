@@ -120,6 +120,22 @@ Page({
   },
   onReady: function () {
 
+    this.mapCtx = wx.createMapContext('myMap'); // myMap为地图的id
+    this.includePointsFn();
+  },
+  // 定义一个 includePointsFn 方法, 参数为需要显示的坐标点(可多个)
+  includePointsFn: function () {
+    // 缩放视野展示所有经纬度(小程序API提供)
+    this.mapCtx.includePoints({
+      padding: [80, 50, 80, 50],
+      points: [{
+        latitude: wx.getStorageSync("fromLat"),
+        longitude: wx.getStorageSync("fromLng"),
+      }, {
+        latitude: wx.getStorageSync("toLat"),
+        longitude: wx.getStorageSync("toLng"),
+      }]
+    })
   },
   onShow: function () {
     var that = this;
