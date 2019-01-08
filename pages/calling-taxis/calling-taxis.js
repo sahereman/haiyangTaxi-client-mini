@@ -62,7 +62,7 @@ Page({
         "to_address": to_address,
         "to_location": {
           "lat": toLat,
-          "lng": toLat
+          "lng": toLng
         }
       }
     }
