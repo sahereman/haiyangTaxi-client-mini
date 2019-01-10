@@ -1,6 +1,6 @@
 /* pages/order/order.wxss */
 .orderList .odrHead{
-  padding: 15rpx 20rpx;
+  padding: 15rpx 0;
   background: #f3f4f6;
   width: 100%;
   color: #8a8a8c;

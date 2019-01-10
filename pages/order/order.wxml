@@ -3,7 +3,7 @@
     <view class='bar'></view>
     <view class='orderList'>
         <view wx:if="{{ongoing}}">
-           <span class="odrHead ongoingHead"> 进行中订单</span>  
+           <span class="odrHead ongoingHead"><span style="width:20rpx;height:100%;display:inline-block;"></span> 进行中订单</span>  
               <view class='odrItemBox' wx:for="{{loadTrippingOrderArr}}" wx:key="id">
                   <view class='cartNumBox ongoingStatue'>
                       <view>{{item.driver.cart_number}}</view>
@@ -20,7 +20,7 @@
               </view>
         </view>
         <view wx:if="{{orderList}}">
-          <span class="odrHead">订单列表</span>   
+          <span class="odrHead"><span style="width:20rpx;height:100%;display:inline-block;"></span>订单列表</span>   
           <view class='odrItemBox'  wx:for="{{loadNoTrippingOrderArr}}" wx:key="id">
               <view class='cartNumBox'>
                   <view>{{item.cart_number}}</view>
