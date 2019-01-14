@@ -105,8 +105,8 @@ page{
   width:50rpx!important;
   height:50rpx!important;
   float:left;
-  margin-top:30rpx;
-  margin-left:30rpx;
+  margin-top:130rpx;
+  margin-left:40rpx;
 }
 .mapBottom{
   width: 100%;
