@@ -81,6 +81,12 @@ Page({
         });
       }
     }
+    //接收退出登录传过来的值，已断开连接，从而不进行心跳包
+    if (options != "" && options.closeStcoket){
+      console.log("接收退出登录传过来的值，已断开连接，关闭心跳包定时器和刷新小车位置定时器");
+      clearInterval(bTimer); 
+      clearInterval(timer);
+    }
     that.setData({
       centerLatitude: that.data.latitude,
       centerLongitude: that.data.longitude
@@ -94,7 +100,7 @@ Page({
     that.changeMapHeight();
     that.getCenterLocation();
     //如果用户登陆了，才可以进行连接
-    console.log(app.globalData.isScoket, 454545, that.data.isScoket);
+    console.log(isScoket, 454545, that.data.isScoket);
     if (isScoket || that.data.isScoket){
       //socket连接成功
       wx.onSocketOpen(function (res) {
@@ -104,12 +110,12 @@ Page({
       })
       //socket接收数据
       wx.onSocketMessage(function (res) {
-        console.log("aaa--socket接收数据", res);
+        console.log("socket接收数据", res);
         that.onmessage(res)
       })
       //定时5秒钟刷新一次小车位置
       if (that.data.sendSocketMessage != false) {
-        // that.cartTimer();
+        that.cartTimer();
       }
       //定时10秒钟刷新一次心跳包
       if (that.data.sendSocketMessage != false) {
@@ -150,7 +156,6 @@ Page({
   //接收返回小车的位置数据
   onmessage:function(data){
     var that = this;
-    console.log("接收返回小车的位置数据");
     var data = JSON.parse(data.data);
     if (data.action == "nearby") {
       var drivers = data.data.drivers;
@@ -340,7 +345,6 @@ Page({
       get_poi: 1,
       poi_options: "radius=500;page_size=20;policy=2",
       success: function (res) {
-        console.log(res);
         that.setData({
           nowLocation: res.result.formatted_addresses.recommend
         });

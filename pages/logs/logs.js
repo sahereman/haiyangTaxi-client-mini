@@ -131,6 +131,9 @@ Page({
             var token = res.data.access_token;
             var expires_in = res.data.expires_in;
             wx.setStorageSync("token", res.data.access_token);
+            var expiresIn = parseInt(new Date().getTime()) + parseInt(expires_in)*1000;
+            wx.setStorageSync("expiresIn", expiresIn);
+            console.log("expiresIn" + wx.getStorageSync("expiresIn") + "new Date().getTime()" + new Date().getTime() + "expires_in" + expires_in);
             //连接socket
             var token = wx.getStorageSync("token");
             if (token) {

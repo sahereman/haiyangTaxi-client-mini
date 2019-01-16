@@ -28,7 +28,9 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    wx.onSocketMessage(function (res) {
+      console.log("接收断开连接返回数据", res);
+    })
   },
 
   /**
@@ -74,17 +76,33 @@ Page({
         confirmColor: '#fe955c',
         success(res) {
           if (res.confirm) {
-            console.log('用户点击确定')
+            console.log('用户点击确定');
+            //断开连接
+            var data = {
+              action: "close"
+            }
+            //发送数据
+            wx.sendSocketMessage({
+              data: JSON.stringify(data),
+              success: function (res) {
+                console.log("断开连接发送成功", res)
+              },
+              fail: function (res) {
+                console.log("断开连接发送失败", res)
+              }
+            });
             //调用删除授权token接口
             app.ajaxRequest("delete",interfaceUrl + "authorizations", {}, function (res) { 
-              console.log('authorizations接口请求成功', res);
+              console.log('delete接口请求成功', res);
             }, function (res) { 
-              console.log('authorizations接口请求失败', res);
+              console.log('delete接口请求失败', res);
             });
-            //删除token本地存储
+            //删除token本地存储和有效期
             wx.removeStorageSync("token");
+            wx.removeStorageSync("expiresIn");
+            
             wx.redirectTo({
-              url: '../index/index',
+              url: '../index/index?closeStcoket=true',
             })
           } else if (res.cancel) {
             console.log('用户点击取消')

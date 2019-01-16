@@ -30,9 +30,15 @@ App({
         }
       }
     })
-    // //连接socket
+    // //连接socket,判断storage里是否有token,并且token值是否有效
     var token = wx.getStorageSync("token");
-    if (token){
+    var dateNow = new Date().getTime();
+    var expiresIn = wx.getStorageSync("expiresIn");
+    console.log(new Date());
+    console.log(parseInt(new Date().getTime())); 
+    console.log(parseInt(expiresIn));
+    console.log(parseInt(new Date().getTime()) < parseInt(expiresIn));
+    if (token && dateNow < expiresIn){
       wx.connectSocket({
         url: "wss://taxi.shangheweiman.com:5301?token=" + token,
         success: function (res) {
@@ -43,18 +49,17 @@ App({
         }
       })
       this.globalData.isScoket = true;
+    } else if (token && dateNow > expiresIn){
+      //有token但是token值过期了，从新调用接口获取新的token
+      console.log("有token但是token值过期了，从新调用接口获取新的token=====");
+      this.checkExpires();
     }else{
       console.log("乘客未登录，没有连接scoket");
       this.globalData.isScoket = false;
     }
     
     
-    // wx.onSocketClose(function (res) {
-    //   wx.connectSocket({
-    //     url: "ws://taxi.shangheweiman.com:5301?token=" + token,
-    //   })
-    //   console.log('WebSocket 已关闭！',res)
-    // })
+    
 
   },
   //数据请求
@@ -97,6 +102,8 @@ App({
     that.ajaxRequest("put", that.globalData.interfaceUrl + "authorizations",{},function(res){
       console.log("authorizations接口请求成功",res);
       wx.setStorageSync("token", res.data.access_token);
+      var expiresIn = parseInt(new Date().getTime()) + parseInt(res.data.expires_in)*1000;
+      wx.setStorageSync("expiresIn", expiresIn);
       console.log("更换的新token",wx.getStorageSync("token"));
       callback(res.data);
     },function(res){

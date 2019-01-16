@@ -17,13 +17,12 @@
   </view>
   <view class="mapBox">
     <map
-      id="myMap"
+      id="myMaps"
       style="width: 100%; height: 100%;"
       latitude="{{latitude}}"
       longitude="{{longitude}}"
       markers="{{markers}}"
       polyline="{{polyline}}"
-      include-points="{{includePoints}}"
       enable-scroll = "true"
       show-location 
     >

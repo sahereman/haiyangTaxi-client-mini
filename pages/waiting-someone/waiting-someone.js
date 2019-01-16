@@ -1,5 +1,6 @@
 // pages/waiting-someone/waiting-someone.js
 var app = getApp();
+var QQMapWX = require('../../lib/qqmap-wx-jssdk.min.js');
 var qmapKey = app.globalData.qmapKey;
 var pTimer;
 Page({
@@ -10,38 +11,26 @@ Page({
   data: {
     cartNum: "",
     bill: "",
-    latitude: 36.091613,
-    longitude: 120.37479,
+    latitude: "",
+    longitude: "",
     distance:"",
     markers: [],
     polyline: [],
-    includePoints:[]
+    lineLocation:[],
+    isDistance:true
   },
-
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function (options) {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
     var that = this;
+    wx.removeStorageSync("driverNow");
+    wx.removeStorageSync("distanceNow");
     var driver = wx.getStorageSync("driver");
     that.setData({
       cartNum: driver.cart_number,
       bill: driver.order_count,
-      distance: driver.distance/1000,
+      distance: (driver.distance / 1000).toFixed(1),
       markers: [{
         id: 0,
         latitude: wx.getStorageSync("fromLat"),
@@ -65,16 +54,20 @@ Page({
         height: 16,
         rotate: driver.angle
       }],
-      includePoints:[{
+    });
+    that.mapCtx = wx.createMapContext('myMaps'); // myMap为地图的id
+    that.mapCtx.includePoints({
+      padding: [70, 40, 70, 40],
+      points: [{
         latitude: wx.getStorageSync("fromLat"),
         longitude: wx.getStorageSync("fromLng"),
       },{
           latitude: driver.lat,
           longitude: driver.lng,
       }]
-    });
+    })
     //小车距离起点的路线规划
-    that.drivingPlan();  
+    that.drivingPlan(driver); 
     //socket连接成功
     wx.onSocketOpen(function (res) {
       console.log("123", res);
@@ -82,9 +75,7 @@ Page({
     that.sendRefreshPosition();
     //socket接收数据
     wx.onSocketMessage(function (res) {
-      console.log(res);
       if (JSON.parse(res.data).action == "meetRefresh" && JSON.parse(res.data).status_code == 200){
-        console.log("123");
         that.onRefreshPosition(res);
       }
       //如果司机已到达，关闭定时器，跳转已上车页面
@@ -103,14 +94,14 @@ Page({
         clearInterval(pTimer);
       }
     })
-    //刷新小车移动位置
+    //5秒钟发送一次请求司机位置信息
     that.cartPositionTimer();
   },
-
   //小车距离起点的路线规划
-  drivingPlan:function(){
+  drivingPlan: function (driver){
     var that = this;
-    var driver = wx.getStorageSync("driver");
+    // var driver = wx.getStorageSync("driverNow").driver;
+    console.log("12345" + JSON.stringify(driver));
     var qqParme = { "from": driver.lat + "," + driver.lng, "to": wx.getStorageSync("fromLat") + "," + wx.getStorageSync("fromLng"), "heading": 0, "key": qmapKey };
     app.ajaxRequest("get", "https://apis.map.qq.com/ws/direction/v1/driving", qqParme, function (res) {
       if (res != null && res.data != null & res.data.result != undefined){
@@ -125,14 +116,21 @@ Page({
             latitude: coors[i], longitude: coors[i + 1]
           };
         }
-        // console.log(b);
+        
         that.setData({
           polyline: [{
             points: b,
             color: "#6cc18a",
             width: 6,
-            dottedLine: false
+            dottedLine: false,
+            arrowLine:true
           }],
+          lineLocation:b
+        })
+        that.mapCtx = wx.createMapContext('myMaps'); // myMap为地图的id
+        that.mapCtx.includePoints({
+          padding: [70, 40, 70, 40],
+          points: that.data.lineLocation
         })
       } 
     })
@@ -166,6 +164,8 @@ Page({
     var that = this;
     var driver = JSON.parse(data.data).data;
     console.log("driver", JSON.parse(data.data).data);
+    //将刷新车辆位置信息数据存储起来，用于指定路线的实时更新
+    var driverNow = wx.setStorageSync("driverNow", driver);
     if (driver != undefined){
       that.setData({
         distance: (driver.driver.distance/1000).toFixed(1),
@@ -192,14 +192,23 @@ Page({
           height: 16,
           rotate: driver.angle
         }],
-        includePoints: [{
-          latitude: wx.getStorageSync("fromLat"),
-          longitude: wx.getStorageSync("fromLng"),
-        }, {
-            latitude: driver.driver.lat,
-            longitude: driver.driver.lng,
-        }]
       });
+    }
+    var distance = driver.driver.distance;
+    if (that.data.isDistance) {
+      wx.setStorageSync("distanceNow", distance);
+      that.setData({
+        isDistance: false
+      });
+    }
+    if (parseInt(distance) - parseInt(wx.getStorageSync("distanceNow")) >= 300) {
+      //重新改变路线
+      that.drivingPlan(driver);
+      wx.setStorageSync("distanceNow", distance);
+      that.setData({
+        isDistance: true
+      });
+      console.log("重新改变路线");
     }
   },
   //5秒钟刷新一次车辆位置
@@ -208,28 +217,15 @@ Page({
     pTimer = setInterval(function(){
        //重新发送数据
        that.sendRefreshPosition();
-       //重新改变路线
-       that.drivingPlan();
      },5000);
   },  
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
   cancelOrder:function(){
     wx.navigateTo({
       url: '../cancel-order/cancel-order',
     })
     clearInterval(pTimer);
+    wx.removeStorageSync("driverNow");
+    wx.removeStorageSync("distanceNow");
   },
   //拨打电话
   calling:function(){
