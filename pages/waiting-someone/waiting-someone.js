@@ -220,7 +220,7 @@ Page({
      },5000);
   },  
   cancelOrder:function(){
-    wx.navigateTo({
+    wx.redirectTo({
       url: '../cancel-order/cancel-order',
     })
     clearInterval(pTimer);

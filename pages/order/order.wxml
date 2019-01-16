@@ -2,6 +2,7 @@
   <view class="container">
     <view class='bar'></view>
     <view class='orderList'>
+        <view wx:if="{{notTrip}}" style='text-align:center;'>暂无订单行程</view>
         <view wx:if="{{ongoing}}">
            <span class="odrHead ongoingHead"><span style="width:20rpx;height:100%;display:inline-block;"></span> 进行中订单</span>  
               <view class='odrItemBox' wx:for="{{loadTrippingOrderArr}}" wx:key="id">

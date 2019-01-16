@@ -65,5 +65,8 @@
       </view>
     </radio-group>
   </view> 
-  <button class='btn' bindtap='subReason'>提交</button>
+  <view class='btnBox'>
+    <button bindtap='backBtn'>返回</button>
+    <button bindtap='subReason'>提交</button>
+  </view>
 </view>  

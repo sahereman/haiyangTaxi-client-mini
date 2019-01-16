@@ -56,6 +56,11 @@ Page({
   onReachBottom: function () {
 
   },
+  backBtn:function(){
+    wx.redirectTo({
+      url: '../waiting-someone/waiting-someone'
+    })
+  },
   radioChange:function(e){
     var that = this;
     that.setData({
@@ -72,7 +77,7 @@ Page({
     })
     //socket接收数据
     wx.onSocketMessage(function (res) {
-      console.log("vvcccc", res);
+      console.log("取消订单后接收到的数据:", res);
       var data = JSON.parse(res.data);
       if (data.action == "userCancel" && data.status_code == 200) {
         wx.redirectTo({

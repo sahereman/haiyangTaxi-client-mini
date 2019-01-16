@@ -29,3 +29,29 @@
 .itemReasonsASActive{
   color: #4d4d4d;
 }
+.btnBox{
+  width:100%;
+  color:#fff;
+  border-radius:0;
+  margin-top:20rpx;
+  font-size:15px;
+  font-weight:bold;
+  position:fixed;
+  bottom:0;
+  left:0;
+}
+.btnBox button{
+  width: 50%;
+  text-align: center;
+  height: 90rpx; 
+  line-height: 90rpx;
+  float: left;
+  color: #fff;
+  border-radius: 0;
+}
+.btnBox>button:first-child{
+  background: #fd904d;
+}
+.btnBox>button:last-child{
+  background: #484b5a;
+}

@@ -7,6 +7,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    notTrip:false,
     ongoing:false,
     orderList: false,
     loadTrippingOrderArr:[],
@@ -43,7 +44,7 @@ Page({
   //获取进行中订单数据
   loadTrippingOrderData:function(){ 
     var that = this;
-    app.ajaxRequest("get",interfaceUrl + "orders", {}, function (res) { 
+    app.ajaxRequest("get", interfaceUrl + "orders", { "status": "tripping"}, function (res) { 
       console.log('orders接口请求成功Tripping', res);
       if(res.data.data.length>0){
         that.setData({
@@ -75,7 +76,10 @@ Page({
           loadNoTrippingOrderArr: that.data.loadNoTrippingOrderArr
         });
       }
-      var nextLink = res.data.meta.pagination.links.next;
+      if (res.data.meta.pagination.links && res.data.meta.pagination.links != undefined && res.data.meta.pagination.links != null){
+        var nextLink = res.data.meta.pagination.links.next;
+      }
+      
       if (nextLink!=null) {
         that.setData({
           nextLink: nextLink
@@ -85,6 +89,12 @@ Page({
           nextLink: null,
           loadingSwitch: "none",
           footerSwitch: "block"
+        });
+      }
+      if (!that.data.ongoing && !that.data.orderList) {
+        console.log("123aaaaaaa");
+        that.setData({
+          notTrip: true
         });
       }
     }, function (res) {
