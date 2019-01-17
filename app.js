@@ -38,7 +38,7 @@ App({
     console.log(parseInt(new Date().getTime())); 
     console.log(parseInt(expiresIn));
     console.log(parseInt(new Date().getTime()) < parseInt(expiresIn));
-    if (token && dateNow < expiresIn){
+    if (token && parseInt(new Date().getTime()) < parseInt(expiresIn)){
       wx.connectSocket({
         url: "wss://taxi.shangheweiman.com:5301?token=" + token,
         success: function (res) {
@@ -52,14 +52,35 @@ App({
     } else if (token && dateNow > expiresIn){
       //有token但是token值过期了，从新调用接口获取新的token
       console.log("有token但是token值过期了，从新调用接口获取新的token=====");
-      this.checkExpires();
+      this.ajaxRequest("put", this.globalData.interfaceUrl + "authorizations", {}, function (res) {
+        console.log("authorizations接口请求成功", res);
+        wx.setStorageSync("token", res.data.access_token);
+        var expiresIn = parseInt(new Date().getTime()) + parseInt(res.data.expires_in) * 1000;
+        wx.setStorageSync("expiresIn", expiresIn);
+        console.log("更换的新token", wx.getStorageSync("token") + "===" + wx.getStorageSync("expiresIn"));
+        wx.connectSocket({
+          url: "wss://taxi.shangheweiman.com:5301?token=" + wx.getStorageSync("token"),
+          success: function (res) {
+            console.log("connectSocket建立成功")
+          },
+          fail: function (res) {
+            console.log("connectSocket建立失败")
+          }
+        })
+      }, function (res) {
+        console.log("authorizations接口请求失败", res);
+        if (res.data.status_code == 401) {
+          //刷新授权token接口返回401，超过了14天，重新登录
+          wx.navigateTo({
+            url: '../logs/logs',
+          })
+        }
+      });
+      this.globalData.isScoket = true;
     }else{
       console.log("乘客未登录，没有连接scoket");
       this.globalData.isScoket = false;
-    }
-    
-    
-    
+    } 
 
   },
   //数据请求
@@ -98,7 +119,6 @@ App({
   checkExpires:function(callback){
     var that = this;
     console.log("刷新token的接口获取的旧token", wx.getStorageSync("token"));
-    wx.removeStorageSync("token");
     that.ajaxRequest("put", that.globalData.interfaceUrl + "authorizations",{},function(res){
       console.log("authorizations接口请求成功",res);
       wx.setStorageSync("token", res.data.access_token);
