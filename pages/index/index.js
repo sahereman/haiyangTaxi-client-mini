@@ -44,7 +44,8 @@ Page({
     socketOpen:false,
     beatLastReceiveveTime:"",
     //检测是否发送成功
-    sendSocketMessage:true
+    sendSocketMessage:true,
+    closeTimer:false
   },
   
   onLoad: function (options) {
@@ -81,17 +82,21 @@ Page({
         });
       }
     }
-    //接收退出登录传过来的值，已断开连接，从而不进行心跳包
-    if (options != "" && options.closeStcoket){
-      console.log("接收退出登录传过来的值，已断开连接，关闭心跳包定时器和刷新小车位置定时器");
-      clearInterval(bTimer); 
-      clearInterval(timer);
-    }
+    
     that.setData({
       centerLatitude: that.data.latitude,
       centerLongitude: that.data.longitude
     })
     that.getPlace();
+    //接收退出登录传过来的值，已断开连接，从而不进行心跳包
+    if (options != "" && options.closeStcoket) {
+      that.setData({
+        closeTimer:true
+      });
+      console.log("接收退出登录传过来的值，已断开连接，关闭心跳包定时器和刷新小车位置定时器");
+      clearInterval(bTimer);
+      clearInterval(timer);
+    }
   },
   onReady: function () {
   },
@@ -115,11 +120,15 @@ Page({
       })
       //定时5秒钟刷新一次小车位置
       if (that.data.sendSocketMessage != false) {
-        that.cartTimer();
+        if (!that.data.closeTimer){
+          that.cartTimer();
+        } 
       }
       //定时10秒钟刷新一次心跳包
       if (that.data.sendSocketMessage != false) {
-        that.beatTimer();
+        if (!that.data.closeTimer) {
+          that.beatTimer();
+        }  
       }
     }
     
@@ -409,11 +418,22 @@ Page({
     clearInterval(timer);
   },
   bindInputEnter: function () {
+    var that = this;
     var token = wx.getStorageSync("token");
     if (token != "") {
-      wx.redirectTo({
-        url: '../Input-destination/Input-destination',
-      })
+      if (wx.getStorageSync("fromAddress") != "" && wx.getStorageSync("fromAddress") != undefined){
+        wx.redirectTo({
+          url: '../Input-destination/Input-destination',
+        })
+      }else{
+        wx.showToast({
+          title: '上车地点不能为空',
+          icon:'loading',
+          duration: 2000,
+          mask: true
+        })
+      }
+      
     } else {
       wx.navigateTo({
         url: '../logs/logs',
