@@ -34,15 +34,11 @@ App({
     var token = wx.getStorageSync("token");
     var dateNow = new Date().getTime();
     var expiresIn = wx.getStorageSync("expiresIn");
-    console.log(new Date());
-    console.log(parseInt(new Date().getTime())); 
-    console.log(parseInt(expiresIn));
-    console.log(parseInt(new Date().getTime()) < parseInt(expiresIn));
     if (token && parseInt(new Date().getTime()) < parseInt(expiresIn)){
       wx.connectSocket({
         url: "wss://taxi.shangheweiman.com:5301?token=" + token,
         success: function (res) {
-          console.log("connectSocket建立成功")
+          console.log("connectSocket建立成功333")
         },
         fail: function (res) {
           console.log("connectSocket建立失败")
@@ -51,17 +47,19 @@ App({
       this.globalData.isScoket = true;
     } else if (token && dateNow > expiresIn){
       //有token但是token值过期了，从新调用接口获取新的token
-      console.log("有token但是token值过期了，从新调用接口获取新的token=====");
+      console.log("刷新token的接口获取的旧token====", wx.getStorageSync("token"));
+      var _that = this;
       this.ajaxRequest("put", this.globalData.interfaceUrl + "authorizations", {}, function (res) {
         console.log("authorizations接口请求成功", res);
         wx.setStorageSync("token", res.data.access_token);
-        var expiresIn = parseInt(new Date().getTime()) + parseInt(res.data.expires_in) * 1000;
+        var expires_in = parseInt(res.data.expires_in) * 1000;
+        var expires_date = Number(new Date().getTime());
+        var expiresIn = expires_date + expires_in;
         wx.setStorageSync("expiresIn", expiresIn);
-        console.log("更换的新token", wx.getStorageSync("token") + "===" + wx.getStorageSync("expiresIn"));
         wx.connectSocket({
           url: "wss://taxi.shangheweiman.com:5301?token=" + wx.getStorageSync("token"),
           success: function (res) {
-            console.log("connectSocket建立成功")
+            console.log("connectSocket建立成功111")
           },
           fail: function (res) {
             console.log("connectSocket建立失败")
@@ -69,7 +67,7 @@ App({
         })
       }, function (res) {
         console.log("authorizations接口请求失败", res);
-        if (res.data.status_code == 401) {
+        if (res.data.status_code == 401 || res.data.status_code == 500) {
           //刷新授权token接口返回401，超过了14天，重新登录
           wx.navigateTo({
             url: '../logs/logs',
@@ -122,13 +120,14 @@ App({
     that.ajaxRequest("put", that.globalData.interfaceUrl + "authorizations",{},function(res){
       console.log("authorizations接口请求成功",res);
       wx.setStorageSync("token", res.data.access_token);
-      var expiresIn = parseInt(new Date().getTime()) + parseInt(res.data.expires_in)*1000;
+      var expires_in = parseInt(res.data.expires_in) * 1000;
+      var expires_date = Number(new Date().getTime());
+      var expiresIn = expires_date + expires_in;
       wx.setStorageSync("expiresIn", expiresIn);
-      console.log("更换的新token",wx.getStorageSync("token"));
       callback(res.data);
     },function(res){
       console.log("authorizations接口请求失败", res);
-      if (res.data.status_code == 401){
+      if (res.data.status_code == 401 || res.data.status_code == 500){
         //刷新授权token接口返回401，超过了14天，重新登录
         wx.navigateTo({
           url: '../logs/logs',

@@ -51,10 +51,10 @@ Page({
         }
       }, function (res) {
         console.log('users/me接口请求失败', res);
-        if (res.data.message == "Token has expired" && res.data.status_code == 401) {
+        if (res.data.status_code == 401) {
           console.log("token过期");
           app.checkExpires(function (res) {
-            getuserInfo(that);
+            that.getuserInfo(that);
           });
         }
       });

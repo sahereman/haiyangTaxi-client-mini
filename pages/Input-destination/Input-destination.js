@@ -32,6 +32,13 @@ Page({
   onShow: function () {
     var that = this;
     //获取历史行程订单接口
+    that.getHistory(that);
+    //获取城市热门地点列表
+    that.getCityHot(that);
+  },
+  //获取历史行程订单接口
+  getHistory:function(that){
+    var that = this;
     app.ajaxRequest("get", interfaceUrl + "users/to_history", {}, function (res) {
       console.log('users/to_history接口请求成功', res);
       var array = res.data;
@@ -52,12 +59,21 @@ Page({
       }
     }, function (res) {
       console.log('users/to_history接口请求失败', res);
+      if (res.data.message == "Token has expired" && res.data.status_code == 401) {
+        console.log("token过期");
+        app.checkExpires(function (res) {
+          getHistory(that);
+        });
+      }
     });
-    //获取城市热门地点列表
+  },
+  //获取城市热门地点列表
+  getCityHot:function(that){
+    var that = this;
     var city = wx.getStorageSync("city");
-    app.ajaxRequest("get",interfaceUrl +"city_hot_addresses",{"city":city},function(res){
-      console.log("city_hot_addresses接口请求成功:",res.data);
-      if (res!=null&&res.data!=null&&res.data.data!=""){
+    app.ajaxRequest("get", interfaceUrl + "city_hot_addresses", { "city": city }, function (res) {
+      console.log("city_hot_addresses接口请求成功:", res.data);
+      if (res != null && res.data != null && res.data.data != "") {
         var hotLocalArr = res.data.data;
         for (var i = 0; i < hotLocalArr.length; i++) {
           that.data.hotLocalArr.push({ "to_address": hotLocalArr[i].address, "address": hotLocalArr[i].address_component, "location": hotLocalArr[i].location });
@@ -66,11 +82,16 @@ Page({
           hotLocalArr: that.data.hotLocalArr
         });
       }
-    },function(res){
-      console.log("city_hot_addresses接口请求失败:" , res);
+    }, function (res) {
+      console.log("city_hot_addresses接口请求失败:", res);
+      if (res.data.message == "Token has expired" && res.data.status_code == 401) {
+        console.log("token过期");
+        app.checkExpires(function (res) {
+          getCityHot(that);
+        });
+      }
     });
   },
-
   /**
    * 生命周期函数--监听页面隐藏
    */

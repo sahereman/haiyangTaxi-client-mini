@@ -54,6 +54,12 @@ Page({
       }
     }, function (res) { 
       console.log('orders接口请求失败', res);
+      if (res.data.message == "Token has expired" && res.data.status_code == 401) {
+        console.log("token过期");
+        app.checkExpires(function (res) {
+          that.loadTrippingOrderData();
+        });
+      }
     });
   },
   //获取非进行中订单数据
@@ -92,13 +98,18 @@ Page({
         });
       }
       if (!that.data.ongoing && !that.data.orderList) {
-        console.log("123aaaaaaa");
         that.setData({
           notTrip: true
         });
       }
     }, function (res) {
       console.log('orders接口请求失败', res);
+      if (res.data.message == "Token has expired" && res.data.status_code == 401) {
+        console.log("token过期");
+        app.checkExpires(function (res) {
+          that.loadNoTrippingOrderData(url);
+        });
+      }
     });
   },
 

@@ -129,11 +129,12 @@ Page({
             that.show("登录成功", 1500)
             //登录成功，获取token和有效期存入
             var token = res.data.access_token;
-            var expires_in = res.data.expires_in;
             wx.setStorageSync("token", res.data.access_token);
-            var expiresIn = parseInt(new Date().getTime()) + parseInt(expires_in)*1000;
+            var expires_in = parseInt(res.data.expires_in) * 1000;
+            var expires_date = Number(new Date().getTime());
+            var expiresIn = expires_date + expires_in;
             wx.setStorageSync("expiresIn", expiresIn);
-            console.log("expiresIn" + wx.getStorageSync("expiresIn") + "new Date().getTime()" + new Date().getTime() + "expires_in" + expires_in);
+            console.log("总共的时间：" + wx.getStorageSync("expiresIn") + "现在的时间：" + expires_date + typeof (expires_date) + "需要的时间：" + expires_in + typeof (expires_in) + "===" + typeof (expiresIn));
             //连接socket
             var token = wx.getStorageSync("token");
             if (token) {

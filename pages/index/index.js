@@ -345,7 +345,6 @@ Page({
         centerLongitude: that.data.longitude
       });
     }
-    console.log("====",that.data.latitude, that.data.longitude);
     qqmapsdk.reverseGeocoder({
       location: {
         latitude: that.data.centerLatitude,
@@ -389,7 +388,6 @@ Page({
           //将初始化的经纬度传到storage里，作为实时改变的上车经纬度
           wx.setStorageSync("fromLat", that.data.latitude);
           wx.setStorageSync("fromLng", that.data.longitude);
-          // console.log(that.data.latitude, that.data.longitude);
           that.regeocodingAddress();
         }
         

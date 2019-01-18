@@ -48,7 +48,7 @@
   height: 66rpx;
 }
 .iptBox .yzmIptBox>input{
-  width: 50%;
+  width: 52%;
 }
 .iptBox .yzmIptBox>span{
   display: inline-block;

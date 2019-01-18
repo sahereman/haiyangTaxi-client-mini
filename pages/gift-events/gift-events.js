@@ -16,17 +16,25 @@ Page({
    */
   onLoad: function (options) {
     var that = this;
-    app.ajaxRequest("get",interfaceUrl + "articles/event", {}, function (res) {
+    that.getGift(that);
+  },
+  //关于礼物接口
+  getGift: function (that) {
+    app.ajaxRequest("get", interfaceUrl + "articles/event", {}, function (res) {
       if (res != null && res.data != null) {
         var article = res.data.content;
         WxParse.wxParse('article', 'html', article, that, 5);
       }
+    },function(res){
+      console.log('articles/about接口请求失败', res);
+      if (res.data.message == "Token has expired" && res.data.status_code == 401) {
+        console.log("token过期");
+        app.checkExpires(function (res) {
+          getGift(that);
+        });
+      }
     });
-
-
-
   },
-
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
