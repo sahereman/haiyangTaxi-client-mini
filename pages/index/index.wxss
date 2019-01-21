@@ -156,3 +156,17 @@ page{
      transform: rotate(0deg) scale(1) translate(75%,0%); 
     -webkit-transform: rotate(0deg) scale(1) translate(75%,0%);
   }
+  .cover-layout {
+  width: 150rpx;
+  height: 150rpx;
+  position: absolute;
+  bottom: 280rpx;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.self-location {
+  width: 76rpx;
+  height: 76rpx;
+}

@@ -115,18 +115,20 @@ Page({
       })
       //socket接收数据
       wx.onSocketMessage(function (res) {
-        console.log("socket接收数据", res);
+        console.log("首页socket接收数据", res);
         that.onmessage(res)
       })
       //定时5秒钟刷新一次小车位置
       if (that.data.sendSocketMessage != false) {
         if (!that.data.closeTimer){
+          console.log("定时5秒钟刷新一次小车位置");
           that.cartTimer();
         } 
       }
       //定时10秒钟刷新一次心跳包
       if (that.data.sendSocketMessage != false) {
         if (!that.data.closeTimer) {
+          console.log("定时10秒钟刷新一次心跳包");
           that.beatTimer();
         }  
       }
@@ -261,6 +263,19 @@ Page({
         // }
       // }
     }, 10000);
+  },
+  /**
+   * 回到定位点
+   */
+  selfLocationClick: function () {
+    var that = this;
+    console.log("回到定位点");
+    that.setData({
+      userSelectedPosition:false
+    });
+    
+    that.getPlace();
+    
   },
   /**
    * 拖动地图回调
