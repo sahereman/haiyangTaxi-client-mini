@@ -38,7 +38,8 @@ Page({
     //选择地址后回调的实体类
     // callbackAddressInfo: null,
     userSelectedPosition: false,
-    isGo: false
+    isGo: false,
+    defaultScale:10
   },
   onLoad: function (options) {
     console.log("options", options);
@@ -139,6 +140,53 @@ Page({
   },
   onShow: function () {
     var that = this;
+  },
+  /**
+   * 回到定位点
+   */
+  selfLocationClick: function () {
+    var that = this;
+    console.log("回到钟起点");
+    //显示起点和终点
+    that.setData({
+      markers: [{
+        id: 0,
+        latitude: wx.getStorageSync("fromLat"),
+        longitude: wx.getStorageSync("fromLng"),
+        title: wx.getStorageSync("fromAddress"),
+        iconPath: '/images/icon_Startingpoint.png',
+        width: 24,
+        height: 44,
+        label: {
+          content: wx.getStorageSync("fromAddress"),
+          display: 'ALWAYS',
+          textAlign: 'right'
+        }
+      },
+      {
+        id: 1,
+        latitude: wx.getStorageSync("toLat"),
+        longitude: wx.getStorageSync("toLng"),
+        title: wx.getStorageSync("toAddress"),
+        iconPath: '/images/icon_End.png',
+        width: 24,
+        height: 44,
+        label: {
+          content: wx.getStorageSync("toAddress"),
+          display: 'ALWAYS',
+          textAlign: 'right'
+        }
+      }],
+      includePoints: [{
+        latitude: wx.getStorageSync("fromLat"),
+        longitude: wx.getStorageSync("fromLng"),
+      }, {
+        latitude: wx.getStorageSync("toLat"),
+        longitude: wx.getStorageSync("toLng"),
+      }],
+      defaultScale:10
+    });
+    that.includePointsFn();
   },
   /**
    * 逆地址解析

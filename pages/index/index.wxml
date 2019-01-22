@@ -20,7 +20,8 @@
           controls='{{controls}}'
           enable-overlooking = "true"
           bindregionchange='regionChange'
-          show-location 
+          scale="{{defaultScale}}"
+          show-location="true"
         >
         </map>
         <!--定位当前位置-->

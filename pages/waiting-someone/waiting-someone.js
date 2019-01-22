@@ -50,9 +50,9 @@ Page({
         latitude: driver.lat,
         longitude: driver.lng,
         iconPath: '/images/icon_littleyellowcar.png',
-        width: 31,
-        height: 16,
-        rotate: driver.angle
+        width: 16,
+        height: 31,
+        rotate: Number(driver.angle) 
       }],
     });
     that.mapCtx = wx.createMapContext('myMaps'); // myMap为地图的id
@@ -186,9 +186,9 @@ Page({
           latitude: driver.driver.lat,
           longitude: driver.driver.lng,
           iconPath: '/images/icon_littleyellowcar.png',
-          width: 31,
-          height: 16,
-          rotate: driver.driver.angle
+          width: 16,
+          height: 31,
+          rotate: Number(driver.driver.angle)
         }],
       });
     }

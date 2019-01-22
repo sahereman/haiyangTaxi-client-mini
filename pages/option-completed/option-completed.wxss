@@ -106,7 +106,7 @@ page{
   height:60rpx!important;
   float:left;
   margin-top:130rpx;
-  margin-left:40rpx;
+  margin-left:35rpx;
 }
 .mapBottom{
   width: 100%;
@@ -207,3 +207,17 @@ page{
     width: 44rpx;
     height: 80rpx;
   }
+  .cover-layout {
+  width: 150rpx;
+  height: 150rpx;
+  position: absolute;
+  bottom: 320rpx;
+  right: 20rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.self-location {
+  width: 76rpx;
+  height: 76rpx;
+}

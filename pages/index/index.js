@@ -45,7 +45,8 @@ Page({
     beatLastReceiveveTime:"",
     //检测是否发送成功
     sendSocketMessage:true,
-    closeTimer:false
+    closeTimer:false,
+    defaultScale:17
   },
   
   onLoad: function (options) {
@@ -175,9 +176,9 @@ Page({
           latitude: drivers[i].lat,
           longitude: drivers[i].lng,
           iconPath: '/images/icon_littleyellowcar.png',
-          width: 31,
-          height: 16,
-          rotate: drivers[i].angle
+          width: 16,
+          height: 31,
+          rotate: parseInt(drivers[i].angle)
         });
       }
       that.setData({
@@ -269,9 +270,9 @@ Page({
     var that = this;
     console.log("回到定位点");
     that.setData({
-      userSelectedPosition:false
+      userSelectedPosition:false,
+      defaultScale:17
     });
-    
     that.getPlace();
     
   },
@@ -291,7 +292,7 @@ Page({
    */
   getCenterLocation: function () {
     var that = this;
-    var mapCtx = wx.createMapContext(mapId);
+    var mapCtx = wx.createMapContext("myMap");
     mapCtx.getCenterLocation({
       success: function (res) {
         that.setData({
@@ -348,6 +349,13 @@ Page({
     })
   },
   /**
+   * 移动到中心点
+   */
+  mapCtx: function () {
+    var mapCtx = wx.createMapContext("myMap");
+    mapCtx.moveToLocation();
+  },
+  /**
    * 逆地址解析
    */
   regeocodingAddress: function () {
@@ -398,10 +406,13 @@ Page({
             centerLatitude: latitude,
             centerLongitude: longitude
           });
+          var mapCtx = wx.createMapContext("myMap");
+          mapCtx.moveToLocation();
           //将初始化的经纬度传到storage里，作为实时改变的上车经纬度
           wx.setStorageSync("fromLat", that.data.latitude);
           wx.setStorageSync("fromLng", that.data.longitude);
           that.regeocodingAddress();
+          
         }
         
       }
