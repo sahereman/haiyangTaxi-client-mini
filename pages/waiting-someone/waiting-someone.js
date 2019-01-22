@@ -101,8 +101,6 @@ Page({
   drivingPlan: function (driver){
     var that = this;
     // var driver = wx.getStorageSync("driverNow").driver;
-    console.log("12345" + JSON.stringify(driver));
-    console.log(driver.lat + "==" + driver.lng);
     var qqParme = { "from": driver.lat + "," + driver.lng, "to": wx.getStorageSync("fromLat") + "," + wx.getStorageSync("fromLng"), "heading": 0, "key": qmapKey };
     app.ajaxRequest("get", "https://apis.map.qq.com/ws/direction/v1/driving", qqParme, function (res) {
       if (res != null && res.data != null & res.data.result != undefined){
@@ -128,7 +126,6 @@ Page({
           }],
           lineLocation:b
         })
-        console.log(b);
         that.mapCtx = wx.createMapContext('myMaps'); // myMap为地图的id
         that.mapCtx.includePoints({
           padding: [70, 40, 70, 40],
@@ -165,8 +162,6 @@ Page({
   onRefreshPosition:function(data){
     var that = this;
     var driver = JSON.parse(data.data).data;
-    console.log("driver12", JSON.parse(data.data).data);
-    console.log(driver.angle + "==" + driver.driver.angle);
     //将刷新车辆位置信息数据存储起来，用于指定路线的实时更新
     var driverNow = wx.setStorageSync("driverNow", driver);
     if (driver != undefined){
@@ -204,9 +199,6 @@ Page({
         isDistance: false
       });
     }
-    console.log(parseInt(distance)+"现在的距离");
-    console.log(parseInt(wx.getStorageSync("distanceNow"))+"上次存储的距离");
-    console.log(parseInt(wx.getStorageSync("distanceNow")) - parseInt(distance));
     if (parseInt(wx.getStorageSync("distanceNow")) - parseInt(distance)  > 10) {
       //重新改变路线
       that.drivingPlan(driver.driver);
