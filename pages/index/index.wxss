@@ -160,8 +160,8 @@ page{
   width: 150rpx;
   height: 150rpx;
   position: absolute;
-  bottom: 280rpx;
-  left: 0;
+  bottom: 300rpx;
+  right: 0;
   display: flex;
   justify-content: center;
   align-items: center;

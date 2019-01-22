@@ -81,7 +81,7 @@ Page({
       var data = JSON.parse(res.data);
       if (data.action == "userCancel" && data.status_code == 200) {
         wx.redirectTo({
-          url: '../index/index',
+          url: '../index/index?isScoket=true&isScoket=true',
         })
       }
     })

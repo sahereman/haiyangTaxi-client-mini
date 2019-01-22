@@ -39,7 +39,7 @@ Page({
   },
   backHome:function(){
     wx.redirectTo({
-      url: '../index/index',
+      url: '../index/index?isScoket=true',
     })
   },
 

@@ -102,8 +102,8 @@ page{
   height: 70%;
 }
 .coverImg{
-  width:50rpx!important;
-  height:50rpx!important;
+  width:60rpx!important;
+  height:60rpx!important;
   float:left;
   margin-top:130rpx;
   margin-left:40rpx;

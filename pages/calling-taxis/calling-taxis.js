@@ -147,7 +147,7 @@ Page({
       if (data.action == "withdraw" && data.status_code == 200){
         clearInterval(time);
          wx.redirectTo({
-           url: '../index/index',
+           url: '../index/index?isScoket=true',
          }) 
         
       }

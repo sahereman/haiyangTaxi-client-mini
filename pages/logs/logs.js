@@ -134,7 +134,6 @@ Page({
             var expires_date = Number(new Date().getTime());
             var expiresIn = expires_date + expires_in;
             wx.setStorageSync("expiresIn", expiresIn);
-            console.log("总共的时间：" + wx.getStorageSync("expiresIn") + "现在的时间：" + expires_date + typeof (expires_date) + "需要的时间：" + expires_in + typeof (expires_in) + "===" + typeof (expiresIn));
             //连接socket
             var token = wx.getStorageSync("token");
             if (token) {

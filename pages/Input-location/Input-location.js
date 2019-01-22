@@ -66,7 +66,7 @@ Page({
   },
   cancel: function () {
     wx.redirectTo({
-      url: '../index/index',
+      url: '../index/index?isScoket=true',
     })
   },
   choiceLocation: function (e) {
@@ -79,7 +79,7 @@ Page({
     wx.setStorageSync("fromLng", lng);
     wx.setStorageSync("fromAddress", title);
     wx.redirectTo({
-      url: '../index/index?from=startLocation',
+      url: '../index/index?from=startLocation&isScoket=true',
     })
   },
   //地方模糊搜索

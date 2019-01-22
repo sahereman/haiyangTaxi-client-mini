@@ -121,14 +121,12 @@ Page({
       //定时5秒钟刷新一次小车位置
       if (that.data.sendSocketMessage != false) {
         if (!that.data.closeTimer){
-          console.log("定时5秒钟刷新一次小车位置");
           that.cartTimer();
         } 
       }
       //定时10秒钟刷新一次心跳包
       if (that.data.sendSocketMessage != false) {
         if (!that.data.closeTimer) {
-          console.log("定时10秒钟刷新一次心跳包");
           that.beatTimer();
         }  
       }
