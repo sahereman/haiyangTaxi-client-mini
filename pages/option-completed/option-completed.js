@@ -39,7 +39,8 @@ Page({
     // callbackAddressInfo: null,
     userSelectedPosition: false,
     isGo: false,
-    defaultScale:10
+    defaultScale:16,
+    publish:false
   },
   onLoad: function (options) {
     console.log("options", options);
@@ -99,13 +100,13 @@ Page({
             textAlign: 'right'
           }
         }],
-        includePoints: [{
-          latitude: wx.getStorageSync("fromLat"),
-          longitude: wx.getStorageSync("fromLng"),
-        }, {
-          latitude: wx.getStorageSync("toLat"),
-          longitude: wx.getStorageSync("toLng"),
-        }]
+        // includePoints: [{
+        //   latitude: wx.getStorageSync("fromLat"),
+        //   longitude: wx.getStorageSync("fromLng"),
+        // }, {
+        //   latitude: wx.getStorageSync("toLat"),
+        //   longitude: wx.getStorageSync("toLng"),
+        // }]
       });
       
     }
@@ -140,13 +141,76 @@ Page({
   },
   onShow: function () {
     var that = this;
+    //socket接收数据
+    wx.onSocketMessage(function (res) {
+      console.log(JSON.parse(res.data));
+      if (JSON.parse(res.data).action == "publish" && JSON.parse(res.data).status_code == 200){
+        wx.redirectTo({
+          url: '../calling-taxis/calling-taxis',
+        })
+        wx.setStorageSync("order_key", JSON.parse(res.data).data.order_key);
+      } else if (JSON.parse(res.data).action == "publish" && JSON.parse(res.data).status_code == 429){
+        wx.showToast({
+          title: '网络繁忙，请重试',
+          icon: 'loading',
+          duration: 2000,
+          mask: true
+        })
+      } else if (JSON.parse(res.data).action == "publish" && JSON.parse(res.data).status_code == 422){
+        wx.showToast({
+          title: '呼叫失败',
+          icon: 'loading',
+          duration: 2000,
+          mask: true
+        })
+      }
+    })
+    
+
   },
+  oppen: function () {
+    var that = this;
+    var from_address = wx.getStorageSync("fromAddress");
+    var to_address = wx.getStorageSync("toAddress");
+    var fromLat = wx.getStorageSync("fromLat");
+    var fromLng = wx.getStorageSync("fromLng");
+    var toLat = wx.getStorageSync("toLat");
+    var toLng = wx.getStorageSync("toLng");
+    //连接成功
+    var data = {
+      "action": "publish",
+      "data": {
+        "from_address": from_address,
+        "from_location": {
+          "lat": fromLat,
+          "lng": fromLng
+        },
+        "to_address": to_address,
+        "to_location": {
+          "lat": toLat,
+          "lng": toLng
+        }
+      }
+    }
+    //发送数据
+    wx.sendSocketMessage({
+      data: JSON.stringify(data),
+      success: function (res) {
+        console.log("sendSocketMessage 成功1", res)
+      },
+      fail: function (res) {
+        console.log("sendSocketMessage 失败2", res)
+      }
+    });
+  },
+
+
+
   /**
    * 回到定位点
    */
   selfLocationClick: function () {
     var that = this;
-    console.log("回到钟起点");
     //显示起点和终点
     that.setData({
       markers: [{
@@ -177,14 +241,14 @@ Page({
           textAlign: 'right'
         }
       }],
-      includePoints: [{
-        latitude: wx.getStorageSync("fromLat"),
-        longitude: wx.getStorageSync("fromLng"),
-      }, {
-        latitude: wx.getStorageSync("toLat"),
-        longitude: wx.getStorageSync("toLng"),
-      }],
-      defaultScale:10
+      // includePoints: [{
+      //   latitude: wx.getStorageSync("fromLat"),
+      //   longitude: wx.getStorageSync("fromLng"),
+      // }, {
+      //   latitude: wx.getStorageSync("toLat"),
+      //   longitude: wx.getStorageSync("toLng"),
+      // }],
+      // defaultScale:16
     });
     that.includePointsFn();
   },
@@ -316,11 +380,13 @@ Page({
   },
   //呼叫出租车
   callTaxi: function () {
+    var that = this;
     //remove掉选择了上车地点的标识
     wx.removeStorageSync("selectAds");
-    wx.redirectTo({
-      url: '../calling-taxis/calling-taxis',
-    })
+    that.oppen();
+    //publish 发起打车订单寻找车辆，发送成功才能跳转
+    console.log("publish 发起打车订单寻找车辆，发送成功才能跳转" + that.data.publish);
+      
   },
   //返回首页
   backHome:function(){

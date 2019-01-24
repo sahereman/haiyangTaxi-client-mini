@@ -27,11 +27,11 @@
         <cover-view>
           <cover-image src='../../images/icon_backa.png' bindtap='backHome' class="coverImg"/>
         </cover-view>
-        </map>
         <!--定位当前位置-->
         <cover-view class='cover-layout' bindtouchstart='selfLocationClick'>
           <cover-image class='self-location' src='../../images/self-location.png'></cover-image>
         </cover-view>
+        </map>
       </view>
       <view class='callingTaxis'>
           <view>

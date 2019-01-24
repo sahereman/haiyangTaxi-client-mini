@@ -211,8 +211,8 @@ page{
   width: 150rpx;
   height: 150rpx;
   position: absolute;
-  bottom: 320rpx;
-  right: 20rpx;
+  bottom: 30rpx;
+  right: 10rpx;
   display: flex;
   justify-content: center;
   align-items: center;

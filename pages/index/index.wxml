@@ -6,28 +6,29 @@
   <view class="page">
     <!-- 主页 -->
     <view class="home">
-      <view class='menu'>
-        <image src='../../images/icon_menu.png' bindtap='bindSlide'></image>
-      </view>
-      <view class="mapBox">
+      <view class="mapBox" style='height:{{mapHeight}}'>
         <map
           id="myMap"
           style="width: 100%; height: 100%;"
           latitude="{{latitude}}"
           longitude="{{longitude}}"
           markers="{{markers}}"
-          show-compass = "true"
           controls='{{controls}}'
           enable-overlooking = "true"
           bindregionchange='regionChange'
           scale="{{defaultScale}}"
           show-location="true"
         >
-        </map>
+        <!-- 头部 -->
+        <cover-view class='menu'>
+            <cover-image src='../../images/icon_menu.png' bindtap='bindSlide' class='me_img'></cover-image>
+        </cover-view>
         <!--定位当前位置-->
-        <cover-view class='cover-layout' bindtouchstart='selfLocationClick'>
+        <cover-view class='cover-layout' bindtap='selfLocationClick'>
           <cover-image class='self-location' src='../../images/self-location.png'></cover-image>
         </cover-view>
+        </map>
+        
       </view>
       <view class='mapBottom' id='bottom-layout'>
         <view class='tip'>

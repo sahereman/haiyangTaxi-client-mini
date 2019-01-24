@@ -46,7 +46,9 @@ Page({
     //检测是否发送成功
     sendSocketMessage:true,
     closeTimer:false,
-    defaultScale:17
+    defaultScale:16,
+    closeStcoket:false,
+    locationCount:0
   },
   
   onLoad: function (options) {
@@ -92,7 +94,8 @@ Page({
     //接收退出登录传过来的值，已断开连接，从而不进行心跳包
     if (options != "" && options.closeStcoket) {
       that.setData({
-        closeTimer:true
+        closeTimer:true,
+        closeStcoket:true
       });
       console.log("接收退出登录传过来的值，已断开连接，关闭心跳包定时器和刷新小车位置定时器");
       clearInterval(bTimer);
@@ -106,11 +109,11 @@ Page({
     that.changeMapHeight();
     that.getCenterLocation();
     //如果用户登陆了，才可以进行连接
-    console.log(isScoket, 454545, that.data.isScoket);
-    if (isScoket || that.data.isScoket){
+    // console.log(isScoket, 454545, that.data.isScoket);
+    if (isScoket & !that.data.closeStcoket || that.data.isScoket && !that.data.closeStcoket){
       //socket连接成功
       wx.onSocketOpen(function (res) {
-        console.log("123", res);
+        // console.log("123", res);
         //socket发送数据
         that.updateCart(wx.getStorageSync("fromLat"), wx.getStorageSync("fromLng"))
       })
@@ -131,9 +134,30 @@ Page({
           that.beatTimer();
         }  
       }
-    }
-    
-    
+    }else{
+      //没有登录或者没有连接scoket的时候，模拟几辆假的小车
+      // console.log("没有登录或者没有连接scoket的时候，模拟几辆假的小车");
+
+
+      // var drivers = data.data.drivers;
+      // var markersArr = [];
+      // for (var i = 0; i < drivers.length; i++) {
+      //   markersArr.push({
+      //     id: drivers[i].id,
+      //     latitude: drivers[i].lat,
+      //     longitude: drivers[i].lng,
+      //     iconPath: '/images/icon_littleyellowcar.png',
+      //     width: 16,
+      //     height: 31,
+      //     rotate: parseInt(drivers[i].angle)
+      //   });
+      // }
+      // that.setData({
+      //   markers: markersArr
+      // });
+
+
+    }  
   },
   //刷新小车位置
   updateCart: function (lat, lng){
@@ -268,10 +292,9 @@ Page({
    */
   selfLocationClick: function () {
     var that = this;
-    console.log("回到定位点");
     that.setData({
       userSelectedPosition:false,
-      defaultScale:17
+      defaultScale:16
     });
     that.getPlace();
     
@@ -374,9 +397,20 @@ Page({
       get_poi: 1,
       poi_options: "radius=500;page_size=20;policy=2",
       success: function (res) {
-        that.setData({
-          nowLocation: res.result.formatted_addresses.recommend
-        });
+        if (res.result.pois[0]!=undefined && res.result.pois[0].title!=null){
+          that.setData({
+            nowLocation: res.result.pois[0].title,
+            // latitude: res.result.pois[0].location.lat,
+            // longitude: res.result.pois[0].location.lng
+          });   
+        }else{
+          that.setData({
+            nowLocation: res.result.address,
+            // latitude: res.result.location.lat,
+            // longitude: res.result.location.lng
+          }); 
+        }
+        
         var city = res.result.address_component.city;
         //存储城市用于目的地选择热门地点
         wx.setStorageSync("city", city);
@@ -387,18 +421,44 @@ Page({
         wx.setStorageSync("fromAddress", that.data.nowLocation);
       },
       fail: function (res) {
-        console.log(res);
+        console.log("逆地址解析失败,重新解析");
+        // that.regeocodingAddress();
       }
     });
   },
   //初始化获取位置
   getPlace: function () {
-    var that = this
+    var that = this;
     wx.getLocation({
       type: 'gcj02',
       success: function (res) {
         var latitude = res.latitude
         var longitude = res.longitude
+        if (latitude == 0 || longitude == 0){
+          that.data.locationCount = that.data.locationCount + 1;
+          if (that.data.locationCount > 5) {
+            wx.showModal({
+              title: '定位失败，是否重试？',
+              // content: '确定退出吗？',
+              confirmColor: '#fe955c',
+              success(res) {
+                if (res.confirm) {
+                  //点击确定
+                  that.getPlace();
+                  that.setData({
+                    locationCount: 0
+                  });
+                } else if (res.cancel) {
+                  //用户点击取消
+                  console.log("用户点击取消");
+                }
+              }
+            })
+          }
+          else {
+            that.getPlace();
+          }
+        }
         if (!that.data.userSelectedPosition){
           that.setData({
             latitude: latitude,
@@ -412,10 +472,35 @@ Page({
           wx.setStorageSync("fromLat", that.data.latitude);
           wx.setStorageSync("fromLng", that.data.longitude);
           that.regeocodingAddress();
-          
+        }
+      },
+      fail:function(){
+        console.log("定位失败");
+        that.data.locationCount = that.data.locationCount+1;
+        if (that.data.locationCount >5){
+          wx.showModal({
+            title: '定位失败，是否重试？',
+            // content: '确定退出吗？',
+            confirmColor: '#fe955c',
+            success(res) {
+              if (res.confirm) {
+                //点击确定
+                that.getPlace();
+                that.setData({
+                  locationCount:0
+                });
+              } else if (res.cancel) {
+                //用户点击取消
+                console.log("用户点击取消");
+              }
+            }
+          })
+        }
+        else{
+          that.getPlace();
         }
         
-      }
+      }  
     });
     
   },

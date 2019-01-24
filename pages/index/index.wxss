@@ -1,9 +1,10 @@
 /**index.wxss**/
 .menu{
   padding: 0 25rpx;
-  height: 7%;
+  height: 40px;
+  background: #fff;
 }
-.menu>image{
+.menu .me_img{
   width: 60rpx;
   height: 42rpx;
   margin-top: 20rpx;
@@ -160,8 +161,8 @@ page{
   width: 150rpx;
   height: 150rpx;
   position: absolute;
-  bottom: 320rpx;
-  right: 20rpx;
+  bottom: 30rpx;
+  right: 10rpx;
   display: flex;
   justify-content: center;
   align-items: center;

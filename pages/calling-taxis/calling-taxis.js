@@ -36,58 +36,52 @@ Page({
     })
     //socket接收数据
     wx.onSocketMessage(function (res) {
-      // console.log("vvcccc", res.data);
       that.searchTaxis(res.data);
     })
-    that.oppen()
+    // that.oppen()
   },
-  oppen: function () {
-    var that = this;
-    var from_address = wx.getStorageSync("fromAddress");
-    var to_address = wx.getStorageSync("toAddress");
-    var fromLat = wx.getStorageSync("fromLat");
-    var fromLng = wx.getStorageSync("fromLng");
-    var toLat = wx.getStorageSync("toLat");
-    var toLng = wx.getStorageSync("toLng");
-    //连接成功
-    var data = {
-      "action": "publish",
-      "data": {
-        "from_address": from_address,
-        "from_location": {
-          "lat": fromLat,
-          "lng": fromLng
-        },
-        "to_address": to_address,
-        "to_location": {
-          "lat": toLat,
-          "lng": toLng
-        }
-      }
-    }
-    //发送数据
-    wx.sendSocketMessage({
-      data: JSON.stringify(data),
-      success: function (res) {
-        console.log("sendSocketMessage 成功1", res)
-      },
-      fail: function (res) {
-        console.log("sendSocketMessage 失败2", res)
-      }
-    });
-  },
+  // oppen: function () {
+  //   var that = this;
+  //   var from_address = wx.getStorageSync("fromAddress");
+  //   var to_address = wx.getStorageSync("toAddress");
+  //   var fromLat = wx.getStorageSync("fromLat");
+  //   var fromLng = wx.getStorageSync("fromLng");
+  //   var toLat = wx.getStorageSync("toLat");
+  //   var toLng = wx.getStorageSync("toLng");
+  //   //连接成功
+  //   var data = {
+  //     "action": "publish",
+  //     "data": {
+  //       "from_address": from_address,
+  //       "from_location": {
+  //         "lat": fromLat,
+  //         "lng": fromLng
+  //       },
+  //       "to_address": to_address,
+  //       "to_location": {
+  //         "lat": toLat,
+  //         "lng": toLng
+  //       }
+  //     }
+  //   }
+  //   //发送数据
+  //   wx.sendSocketMessage({
+  //     data: JSON.stringify(data),
+  //     success: function (res) {
+  //       console.log("sendSocketMessage 成功1", res)
+  //     },
+  //     fail: function (res) {
+  //       console.log("sendSocketMessage 失败2", res)
+  //     }
+  //   });
+  // },
   //寻找出租车
   searchTaxis:function(data){
     var that = this;
     var data = JSON.parse(data);
     console.log("正在寻找车辆中", data);
-    if (data.action == "publish"){
-      wx.setStorageSync("order_key", data.data.order_key);
-      that.setData({
-        lookingTaxis:true
-      });
-    }
-    if (that.data.lookingTaxis && data.action == "meet"){
+    
+    if (data.action == "meet"){
       //车辆已接单，正在赶来，将赶来的车辆信息记录下来，用于下一页面的展示
       wx.setStorageSync("driver", data.data.driver);
       //将赶来车辆的订单号记录下来，用于下一页面取消叫车的发送参数

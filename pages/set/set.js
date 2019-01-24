@@ -76,7 +76,6 @@ Page({
         confirmColor: '#fe955c',
         success(res) {
           if (res.confirm) {
-            console.log('用户点击确定');
             //断开连接
             var data = {
               action: "close"
