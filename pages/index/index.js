@@ -58,6 +58,7 @@ Page({
     that.setData({
       latitude: '-80.546518',
       longitude: '4.042969',
+      nowLocation: "获取位置中..."
     });
 
     // toast组件实例
@@ -391,13 +392,26 @@ Page({
       poi_options: "radius=500;page_size=20;policy=2",
       success: function (res) {
         if (res.result.pois[0]!=undefined && res.result.pois[0].title!=null){
-          that.setData({
-            nowLocation: res.result.pois[0].title
-          });   
+          if (res.result.pois[0].title == "南极洲"){
+            that.setData({
+              nowLocation: "获取位置中..."
+            });
+          }else{
+            that.setData({
+              nowLocation: res.result.pois[0].title
+            });
+          }  
         }else{
-          that.setData({
-            nowLocation: res.result.address
-          }); 
+          if (res.result.address == "南极洲"){
+            that.setData({
+              nowLocation: "获取位置中..."
+            });
+          }else{
+            that.setData({
+              nowLocation: res.result.address
+            });  
+          }
+           
         }
         
         var city = res.result.address_component.city;
@@ -431,7 +445,9 @@ Page({
             centerLatitude: latitude,
             centerLongitude: longitude
           });
-
+          that.setData({
+            mapOn: true
+          });
           //将初始化的经纬度传到storage里，作为实时改变的上车经纬度
           wx.setStorage({
             key: 'fromLatLng',
