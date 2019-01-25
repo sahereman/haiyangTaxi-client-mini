@@ -75,12 +75,24 @@ Page({
     var lat = choiceLocation[1];
     var lng = choiceLocation[2];
     //把选择的上车经纬度和地点名称存到storage里，作为实时更新的上车数据
-    wx.setStorageSync("fromLat", lat);
-    wx.setStorageSync("fromLng", lng);
-    wx.setStorageSync("fromAddress", title);
-    wx.redirectTo({
-      url: '../index/index?from=startLocation&isScoket=true',
-    })
+    // wx.setStorageSync("fromLat", lat);
+    // wx.setStorageSync("fromLng", lng);
+    wx.setStorage({
+      key: 'fromLatLng',
+      data: {
+        lat: lat,
+        lng: lng
+      },
+      success: function () {
+        wx.setStorageSync("fromAddress", title); 
+        wx.redirectTo({
+          url: '../index/index?froms=startLocation&isScoket=true',
+        })
+      },
+      fail:function(){
+        console.log("存储失败");  
+      }
+    }) 
   },
   //地方模糊搜索
   getAddress: function (keyword) {

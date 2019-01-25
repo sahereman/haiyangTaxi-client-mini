@@ -34,7 +34,7 @@ Page({
     });
     //socket连接成功
     wx.onSocketOpen(function (res) {
-      console.log("123", res);
+      // console.log("123", res);
       //socket发送数据
       // that.sendRefreshPosition();
     })

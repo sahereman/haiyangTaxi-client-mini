@@ -27,44 +27,49 @@ Page({
     wx.removeStorageSync("driverNow");
     wx.removeStorageSync("distanceNow");
     var driver = wx.getStorageSync("driver");
-    that.setData({
-      cartNum: driver.cart_number,
-      bill: driver.order_count,
-      distance: (driver.distance / 1000).toFixed(1),
-      markers: [{
-        id: 0,
-        latitude: wx.getStorageSync("fromLat"),
-        longitude: wx.getStorageSync("fromLng"),
-        title: wx.getStorageSync("fromAddress"),
-        iconPath: '/images/icon_Startingpoint.png',
-        width: 24,
-        height: 44,
-        label: {
-          content: wx.getStorageSync("fromAddress"),
-          display: 'ALWAYS',
-          textAlign: 'right'
-        }
-      },
-      {
-        id: 2,
-        latitude: driver.lat,
-        longitude: driver.lng,
-        iconPath: '/images/icon_littleyellowcar.png',
-        width: 16,
-        height: 31,
-        rotate: Number(driver.angle) 
-      }],
-    });
-    that.mapCtx = wx.createMapContext('myMaps'); // myMap为地图的id
-    that.mapCtx.includePoints({
-      padding: [70, 40, 70, 40],
-      points: [{
-        latitude: wx.getStorageSync("fromLat"),
-        longitude: wx.getStorageSync("fromLng"),
-      },{
-          latitude: driver.lat,
-          longitude: driver.lng,
-      }]
+    wx.getStorage({
+      key: 'fromLatLng',
+      success(res) {
+        that.setData({
+          cartNum: driver.cart_number,
+          bill: driver.order_count,
+          distance: (driver.distance / 1000).toFixed(1),
+          markers: [{
+            id: 0,
+            latitude: res.data.lat,
+            longitude: res.data.lng,
+            title: wx.getStorageSync("fromAddress"),
+            iconPath: '/images/icon_Startingpoint.png',
+            width: 24,
+            height: 44,
+            label: {
+              content: wx.getStorageSync("fromAddress"),
+              display: 'ALWAYS',
+              textAlign: 'right'
+            }
+          },
+          {
+            id: 2,
+            latitude: driver.lat,
+            longitude: driver.lng,
+            iconPath: '/images/icon_littleyellowcar.png',
+            width: 16,
+            height: 31,
+            rotate: Number(driver.angle)
+          }],
+        });
+        that.mapCtx = wx.createMapContext('myMaps'); // myMap为地图的id
+        that.mapCtx.includePoints({
+          padding: [70, 40, 70, 40],
+          points: [{
+            latitude: res.data.lat,
+            longitude: res.data.lng,
+          }, {
+            latitude: driver.lat,
+            longitude: driver.lng,
+          }]
+        })
+      }
     })
     //小车距离起点的路线规划
     that.drivingPlan(driver); 
@@ -97,41 +102,45 @@ Page({
     //5秒钟发送一次请求司机位置信息
     that.cartPositionTimer();
   },
+
   //小车距离起点的路线规划
   drivingPlan: function (driver){
     var that = this;
-    // var driver = wx.getStorageSync("driverNow").driver;
-    var qqParme = { "from": driver.lat + "," + driver.lng, "to": wx.getStorageSync("fromLat") + "," + wx.getStorageSync("fromLng"), "heading": 0, "key": qmapKey };
-    app.ajaxRequest("get", "https://apis.map.qq.com/ws/direction/v1/driving", qqParme, function (res) {
-      if (res != null && res.data != null & res.data.result != undefined){
-        var coors = res.data.result.routes[0].polyline
-        for (var i = 2; i < coors.length; i++) {
-          coors[i] = coors[i - 2] + coors[i] / 1000000
-        }
-        //划线
-        var b = [];
-        for (var i = 0; i < coors.length; i = i + 2) {
-          b[i / 2] = {
-            latitude: coors[i], longitude: coors[i + 1]
-          };
-        }
-        
-        that.setData({
-          polyline: [{
-            points: b,
-            color: "#6cc18a",
-            width: 6,
-            dottedLine: false,
-            arrowLine:true
-          }],
-          lineLocation:b
+    wx.getStorage({
+      key: 'fromLatLng',
+      success(res) {
+        var qqParme = { "from": driver.lat + "," + driver.lng, "to": res.data.lat + "," + res.data.lng, "heading": 0, "key": qmapKey };
+        app.ajaxRequest("get", "https://apis.map.qq.com/ws/direction/v1/driving", qqParme, function (res) {
+          if (res != null && res.data != null & res.data.result != undefined) {
+            var coors = res.data.result.routes[0].polyline
+            for (var i = 2; i < coors.length; i++) {
+              coors[i] = coors[i - 2] + coors[i] / 1000000
+            }
+            //划线
+            var b = [];
+            for (var i = 0; i < coors.length; i = i + 2) {
+              b[i / 2] = {
+                latitude: coors[i], longitude: coors[i + 1]
+              };
+            }
+            that.setData({
+              polyline: [{
+                points: b,
+                color: "#6cc18a",
+                width: 6,
+                dottedLine: false,
+                arrowLine: true
+              }],
+              lineLocation: b
+            })
+            that.mapCtx = wx.createMapContext('myMaps'); // myMap为地图的id
+            that.mapCtx.includePoints({
+              padding: [70, 40, 70, 40],
+              points: that.data.lineLocation
+            })
+          }
         })
-        that.mapCtx = wx.createMapContext('myMaps'); // myMap为地图的id
-        that.mapCtx.includePoints({
-          padding: [70, 40, 70, 40],
-          points: that.data.lineLocation
-        })
-      } 
+      }
     })
   },
   //发送刷新车辆正在来的位置数据
@@ -148,7 +157,7 @@ Page({
     wx.sendSocketMessage({
       data: JSON.stringify(data),
       success: function (res) {
-        console.log("sendSocketMessage 成功", res)
+        // console.log("sendSocketMessage 成功", res)
       },
       fail: function (res) {
         console.log("sendSocketMessage 失败", res)
@@ -165,32 +174,37 @@ Page({
     //将刷新车辆位置信息数据存储起来，用于指定路线的实时更新
     var driverNow = wx.setStorageSync("driverNow", driver);
     if (driver != undefined){
-      that.setData({
-        distance: (driver.driver.distance/1000).toFixed(1),
-        markers: [{
-          id: 0,
-          latitude: wx.getStorageSync("fromLat"),
-          longitude: wx.getStorageSync("fromLng"),
-          title: wx.getStorageSync("fromAddress"),
-          iconPath: '/images/icon_Startingpoint.png',
-          width: 24,
-          height: 44,
-          label: {
-            content: wx.getStorageSync("fromAddress"),
-            display: 'ALWAYS',
-            textAlign: 'right'
-          }
-        },
-        {
-          id: 2,
-          latitude: driver.driver.lat,
-          longitude: driver.driver.lng,
-          iconPath: '/images/icon_littleyellowcar.png',
-          width: 16,
-          height: 31,
-          rotate: Number(driver.driver.angle)
-        }],
-      });
+      wx.getStorage({
+        key: 'fromLatLng',
+        success(res) {
+          that.setData({
+            distance: (driver.driver.distance / 1000).toFixed(1),
+            markers: [{
+              id: 0,
+              latitude: res.data.lat,
+              longitude: res.data.lng,
+              title: wx.getStorageSync("fromAddress"),
+              iconPath: '/images/icon_Startingpoint.png',
+              width: 24,
+              height: 44,
+              label: {
+                content: wx.getStorageSync("fromAddress"),
+                display: 'ALWAYS',
+                textAlign: 'right'
+              }
+            },
+            {
+              id: 2,
+              latitude: driver.driver.lat,
+              longitude: driver.driver.lng,
+              iconPath: '/images/icon_littleyellowcar.png',
+              width: 16,
+              height: 31,
+              rotate: Number(driver.driver.angle)
+            }],
+          });
+        }
+      })  
     }
     var distance = driver.driver.distance;
     if (that.data.isDistance) {

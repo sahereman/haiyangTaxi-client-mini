@@ -48,11 +48,18 @@ Page({
     closeTimer:false,
     defaultScale:16,
     closeStcoket:false,
-    locationCount:0
+    locationCount:0,
+    mapOn:false
   },
   
   onLoad: function (options) {
     var that = this;
+
+    that.setData({
+      latitude: '-80.546518',
+      longitude: '4.042969',
+    });
+
     // toast组件实例
     new app.ToastPannel();
     qqmapsdk = new QQMapWX({
@@ -65,61 +72,78 @@ Page({
         });
     }
     //接收上车地点传过来的value值
-    if (options != "" && options.from == "startLocation" ) {
+    if (options != "" && options.froms == "startLocation" ) {
       that.setData({
-        latitude: wx.getStorageSync("fromLat"),
-        longitude: wx.getStorageSync("fromLng"),
-        userSelectedPosition:true
+        mapOn: true
       });
-    }
-    //接收目的地传过来的value值
-    if (options != "" && options.from == "endLocation") {
-      that.setData({
-        chooseDestination: wx.getStorageSync("toAddress"),
-        latitude: wx.getStorageSync("fromLat"),
-        longitude: wx.getStorageSync("fromLng")
-      });
-      if (wx.getStorageSync("selectAds") != ""){
-        that.setData({
-          userSelectedPosition: true
-        });
-      }
+      wx.getStorage({
+        key: 'fromLatLng',
+        success(res) {
+          that.setData({
+            latitude: res.data.lat,
+            longitude: res.data.lng,
+            centerLatitude: res.data.lat,
+            centerLongitude: res.data.lng,
+            userSelectedPosition: true
+          });
+          that.setData({
+            nowLocation: wx.getStorageSync("fromAddress")
+          }); 
+
+
+        }
+      })
     }
     
-    that.setData({
-      centerLatitude: that.data.latitude,
-      centerLongitude: that.data.longitude
-    })
-    that.getPlace();
-    //接收退出登录传过来的值，已断开连接，从而不进行心跳包
+    // that.setData({
+    //   centerLatitude: that.data.latitude,
+    //   centerLongitude: that.data.longitude
+    // })
+    
+    //接收退出登录传过来的值，已断开连接，关闭心跳包定时器和刷新小车位置定时器
     if (options != "" && options.closeStcoket) {
       that.setData({
         closeTimer:true,
         closeStcoket:true
       });
-      console.log("接收退出登录传过来的值，已断开连接，关闭心跳包定时器和刷新小车位置定时器");
       clearInterval(bTimer);
       clearInterval(timer);
     }
+
+    this.changeMapHeight();
+
+    //如果是从选择列表中选择的上车地点（无效）
+    if (that.data.userSelectedPosition) {
+      that.setData({
+        nowLocation: wx.getStorageSync("fromAddress")
+      });
+    } else {
+      //刚进入页面初次定位时
+      that.getPlace(that.selfLocationClick);
+    }
+
   },
   onReady: function () {
   },
   onShow: function () {
     var that = this;
-    that.changeMapHeight();
-    that.getCenterLocation();
+    
+
     //如果用户登陆了，才可以进行连接
-    // console.log(isScoket, 454545, that.data.isScoket);
     if (isScoket & !that.data.closeStcoket || that.data.isScoket && !that.data.closeStcoket){
       //socket连接成功
       wx.onSocketOpen(function (res) {
-        // console.log("123", res);
         //socket发送数据
-        that.updateCart(wx.getStorageSync("fromLat"), wx.getStorageSync("fromLng"))
+        wx.getStorage({
+          key: 'fromLatLng',
+          success(res) {
+            that.updateCart(res.data.lat, res.data.lng);
+          }
+        })
       })
       //socket接收数据
       wx.onSocketMessage(function (res) {
-        console.log("首页socket接收数据", res);
+        // console.log("首页socket接收数据", res);
         that.onmessage(res)
       })
       //定时5秒钟刷新一次小车位置
@@ -137,26 +161,6 @@ Page({
     }else{
       //没有登录或者没有连接scoket的时候，模拟几辆假的小车
       // console.log("没有登录或者没有连接scoket的时候，模拟几辆假的小车");
-
-
-      // var drivers = data.data.drivers;
-      // var markersArr = [];
-      // for (var i = 0; i < drivers.length; i++) {
-      //   markersArr.push({
-      //     id: drivers[i].id,
-      //     latitude: drivers[i].lat,
-      //     longitude: drivers[i].lng,
-      //     iconPath: '/images/icon_littleyellowcar.png',
-      //     width: 16,
-      //     height: 31,
-      //     rotate: parseInt(drivers[i].angle)
-      //   });
-      // }
-      // that.setData({
-      //   markers: markersArr
-      // });
-
-
     }  
   },
   //刷新小车位置
@@ -175,7 +179,7 @@ Page({
       wx.sendSocketMessage({
         data: JSON.stringify(data),
         success: function (res) {
-          console.log("sendSocketMessage 成功", res)
+          // console.log("sendSocketMessage 成功", res)
         },
         fail: function (res) {
           console.log("sendSocketMessage 失败", res)
@@ -214,7 +218,13 @@ Page({
   cartTimer:function () {
     var that = this;
     timer = setInterval(function () {
-      that.updateCart(wx.getStorageSync("fromLat"), wx.getStorageSync("fromLng"));
+      wx.getStorage({
+        key: 'fromLatLng',
+        success(res) {
+          that.updateCart(res.data.lat, res.data.lng);
+        }
+      })
+      
     }, 5000);
   },
   //发送接收心跳包数据
@@ -228,7 +238,7 @@ Page({
     wx.sendSocketMessage({
       data: JSON.stringify(data),
       success: function (res) {
-        console.log("sendSocketMessage 成功1", res)
+        // console.log("sendSocketMessage 成功1", res)
       },
       fail: function (res) {
         console.log("sendSocketMessage 失败2", res);
@@ -250,41 +260,12 @@ Page({
         }
       }
     });
-    // wx.onSocketMessage(function (res) {
-    //   console.log("接收心跳包返回数据aaa", res);
-    //   var data = JSON.parse(res.data);
-    //   if (data.action == "beat" && data.status_code == "200"){
-    //     that.setData({
-    //       beatLastReceiveveTime : new Date().getTime()
-    //     });
-    //   }
-    // });
   },
   //心跳包检测
   beatTimer:function(){
     var that = this;
     bTimer = setInterval(function () {
       that.beat();
-      // var nowTime = new Date().getTime();
-      // if (that.data.beatLastReceiveveTime != ""){
-        // var cut = parseInt(nowTime) - parseInt(that.data.beatLastReceiveveTime);
-        // console.log("cut", cut);
-        // if (cut > 20000 * 2) {
-          // //连接socket
-          // var token = wx.getStorageSync("token");
-          // if (token) {
-          //   wx.connectSocket({
-          //     url: "ws://taxi.shangheweiman.com:5301?token=" + token,
-          //     success: function (res) {
-          //       console.log("connectSocket建立成功1")
-          //     },
-          //     fail: function (res) {
-          //       console.log("connectSocket建立失败2")
-          //     }
-          //   })
-          // }
-        // }
-      // }
     }, 10000);
   },
   /**
@@ -307,11 +288,16 @@ Page({
     // 改变中心点位置  
     if (res.type == "end") {
       that.getCenterLocation();
-      that.updateCart(wx.getStorageSync("fromLat"), wx.getStorageSync("fromLng"));
+      wx.getStorage({
+        key: 'fromLatLng',
+        success(res) {
+          that.updateCart(res.data.lat, res.data.lng);
+        }
+      })
     }
   },
   /**
-   * 得到中心点坐标
+   * 获取当前地图中心的经纬度。返回的是 gcj02 坐标系
    */
   getCenterLocation: function () {
     var that = this;
@@ -323,10 +309,17 @@ Page({
           centerLongitude: res.longitude
         });
         //将移动后的经纬度传到storeage里作为实时更换的上车经纬度
-        wx.setStorageSync("fromLat", that.data.centerLatitude);
-        wx.setStorageSync("fromLng", that.data.centerLongitude);
-        //逆地址解析得到中心点地点名
-        that.regeocodingAddress();
+        wx.setStorage({
+          key: 'fromLatLng',
+          data: {
+            lat: that.data.latitude,
+            lng: that.data.longitude,
+          },
+          success:function(){
+            //逆地址解析得到中心点地点名
+            that.regeocodingAddress(); 
+          }
+        })  
       }
     })
   },
@@ -383,7 +376,7 @@ Page({
    */
   regeocodingAddress: function () {
     var that = this;
-    if (that.data.centerLatitude == 0 || that.data.centerLatitude == 0){
+    if (that.data.centerLatitude == 0 || that.data.centerLongitude == 0){
       that.setData({
         centerLatitude: that.data.latitude,
         centerLongitude: that.data.longitude
@@ -399,15 +392,11 @@ Page({
       success: function (res) {
         if (res.result.pois[0]!=undefined && res.result.pois[0].title!=null){
           that.setData({
-            nowLocation: res.result.pois[0].title,
-            // latitude: res.result.pois[0].location.lat,
-            // longitude: res.result.pois[0].location.lng
+            nowLocation: res.result.pois[0].title
           });   
         }else{
           that.setData({
-            nowLocation: res.result.address,
-            // latitude: res.result.location.lat,
-            // longitude: res.result.location.lng
+            nowLocation: res.result.address
           }); 
         }
         
@@ -422,43 +411,19 @@ Page({
       },
       fail: function (res) {
         console.log("逆地址解析失败,重新解析");
-        // that.regeocodingAddress();
       }
     });
   },
   //初始化获取位置
-  getPlace: function () {
+  getPlace: function (callback) {
     var that = this;
     wx.getLocation({
       type: 'gcj02',
       success: function (res) {
         var latitude = res.latitude
         var longitude = res.longitude
-        if (latitude == 0 || longitude == 0){
-          that.data.locationCount = that.data.locationCount + 1;
-          if (that.data.locationCount > 5) {
-            wx.showModal({
-              title: '定位失败，是否重试？',
-              // content: '确定退出吗？',
-              confirmColor: '#fe955c',
-              success(res) {
-                if (res.confirm) {
-                  //点击确定
-                  that.getPlace();
-                  that.setData({
-                    locationCount: 0
-                  });
-                } else if (res.cancel) {
-                  //用户点击取消
-                  console.log("用户点击取消");
-                }
-              }
-            })
-          }
-          else {
-            that.getPlace();
-          }
-        }
+        console.log("初始化获取位置" + latitude + "===" + longitude);
+
         if (!that.data.userSelectedPosition){
           that.setData({
             latitude: latitude,
@@ -466,12 +431,29 @@ Page({
             centerLatitude: latitude,
             centerLongitude: longitude
           });
-          var mapCtx = wx.createMapContext("myMap");
-          mapCtx.moveToLocation();
+
           //将初始化的经纬度传到storage里，作为实时改变的上车经纬度
-          wx.setStorageSync("fromLat", that.data.latitude);
-          wx.setStorageSync("fromLng", that.data.longitude);
-          that.regeocodingAddress();
+          wx.setStorage({
+            key: 'fromLatLng',
+            data: {
+              lat: that.data.latitude,
+              lng: that.data.longitude
+            },
+            success : function()
+            {
+              that.setData({
+                mapOn:true
+              });
+              that.regeocodingAddress();
+
+              if (callback != undefined) {
+                callback();
+              }
+            }
+          })
+
+
+          
         }
       },
       fail:function(){
@@ -485,7 +467,7 @@ Page({
             success(res) {
               if (res.confirm) {
                 //点击确定
-                that.getPlace();
+                that.getPlace(callback);
                 that.setData({
                   locationCount:0
                 });
@@ -497,7 +479,7 @@ Page({
           })
         }
         else{
-          that.getPlace();
+          that.getPlace(callback);
         }
         
       }  

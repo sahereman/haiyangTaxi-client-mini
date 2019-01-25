@@ -94,7 +94,7 @@ page{
     left: -35rpx;
   }
 .mapBottom .starBox input,.mapBottom .endBox input{
-  width: 80%;
+  width: 85%;
   display: inline-block;
 }  
 .mapBottom .endBox{

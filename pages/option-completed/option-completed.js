@@ -43,107 +43,93 @@ Page({
     publish:false
   },
   onLoad: function (options) {
-    console.log("options", options);
     var that = this;
     // toast组件实例
     new app.ToastPannel();
     qqmapsdk = new QQMapWX({
       key: qmapKey
     });
-    //接收上车地点传过来的value值
-    if (options != "" && options.from == "startLocation") {
-      that.setData({
-        latitude: wx.getStorageSync("fromLat"),
-        longitude: wx.getStorageSync("fromLng"),
-        userSelectedPosition: true
-      });
-    }
     //接收目的地传过来的value值
     if (options != "" && options.from == "endLocation") {
-      that.setData({
-        chooseDestination: wx.getStorageSync("toAddress"),
-        latitude: wx.getStorageSync("fromLat"),
-        longitude: wx.getStorageSync("fromLng")
-      });
-      if (wx.getStorageSync("selectAds") != "") {
-        that.setData({
-          userSelectedPosition: true
-        });
-      }
-      //显示起点和终点
-      that.setData({
-        markers: [{
-          id: 0,
-          latitude: wx.getStorageSync("fromLat"),
-          longitude: wx.getStorageSync("fromLng"),
-          title: wx.getStorageSync("fromAddress"),
-          iconPath: '/images/icon_Startingpoint.png',
-          width:24,
-          height:44,
-          label: {
-            content: wx.getStorageSync("fromAddress"),
-            display: 'ALWAYS',
-            textAlign: 'right'
-          }
-        },
-        {
-          id: 1,
-          latitude: wx.getStorageSync("toLat"),
-          longitude: wx.getStorageSync("toLng"),
-          title: wx.getStorageSync("toAddress"),
-          iconPath: '/images/icon_End.png',
-          width: 24,
-          height: 44,
-          label: {
-            content: wx.getStorageSync("toAddress"),
-            display: 'ALWAYS',
-            textAlign: 'right'
-          }
-        }],
-        // includePoints: [{
-        //   latitude: wx.getStorageSync("fromLat"),
-        //   longitude: wx.getStorageSync("fromLng"),
-        // }, {
-        //   latitude: wx.getStorageSync("toLat"),
-        //   longitude: wx.getStorageSync("toLng"),
-        // }]
-      });
-      
+      wx.getStorage({
+        key: 'fromLatLng',
+        success(res) {
+          console.log(res.data.lat + "===" + res.data.lng + "===" + wx.getStorageSync("fromAddress")); 
+          console.log(wx.getStorageSync("toLat") + "===" + wx.getStorageSync("toLng") + "===" + wx.getStorageSync("toAddress")); 
+          //显示起点和终点
+          that.setData({
+            markers: [{
+              id: 0,
+              latitude: res.data.lat,
+              longitude: res.data.lng,
+              title: wx.getStorageSync("fromAddress"),
+              iconPath: '/images/icon_Startingpoint.png',
+              width: 24,
+              height: 44,
+              label: {
+                content: wx.getStorageSync("fromAddress"),
+                display: 'ALWAYS',
+                textAlign: 'right'
+              }
+            },
+            {
+              id: 1,
+              latitude: wx.getStorageSync("toLat"),
+              longitude: wx.getStorageSync("toLng"),
+              title: wx.getStorageSync("toAddress"),
+              iconPath: '/images/icon_End.png',
+              width: 24,
+              height: 44,
+              label: {
+                content: wx.getStorageSync("toAddress"),
+                display: 'ALWAYS',
+                textAlign: 'right'
+              }
+            }],
+          });
+        }
+      }) 
     }
-    that.setData({
-      centerLatitude: that.data.latitude,
-      centerLongitude: that.data.longitude
-    })
-    that.getPlace();
+
+
+    // that.setData({
+    //   centerLatitude: that.data.latitude,
+    //   centerLongitude: that.data.longitude
+    // })
+
 
     //获取用户信息
     that.getuserInfo(that);
-
   },
   onReady: function () {
-
     this.mapCtx = wx.createMapContext('myMap'); // myMap为地图的id
     this.includePointsFn();
   },
   // 定义一个 includePointsFn 方法, 参数为需要显示的坐标点(可多个)
   includePointsFn: function () {
-    // 缩放视野展示所有经纬度(小程序API提供)
-    this.mapCtx.includePoints({
-      padding: [80, 50, 80, 50],
-      points: [{
-        latitude: wx.getStorageSync("fromLat"),
-        longitude: wx.getStorageSync("fromLng"),
-      }, {
-        latitude: wx.getStorageSync("toLat"),
-        longitude: wx.getStorageSync("toLng"),
-      }]
+    var that = this;
+    wx.getStorage({
+      key: 'fromLatLng',
+      success(res) {
+        // 缩放视野展示所有经纬度(小程序API提供)
+        that.mapCtx.includePoints({
+          padding: [80, 50, 80, 50],
+          points: [{
+            latitude: res.data.lat,
+            longitude: res.data.lng,
+          }, {
+            latitude: wx.getStorageSync("toLat"),
+            longitude: wx.getStorageSync("toLng"),
+          }]
+        })
+      }
     })
+    
   },
   onShow: function () {
     var that = this;
     //socket接收数据
     wx.onSocketMessage(function (res) {
-      console.log(JSON.parse(res.data));
       if (JSON.parse(res.data).action == "publish" && JSON.parse(res.data).status_code == 200){
         wx.redirectTo({
           url: '../calling-taxis/calling-taxis',
@@ -165,149 +151,89 @@ Page({
         })
       }
     })
-    
-
   },
   oppen: function () {
     var that = this;
-    var from_address = wx.getStorageSync("fromAddress");
-    var to_address = wx.getStorageSync("toAddress");
-    var fromLat = wx.getStorageSync("fromLat");
-    var fromLng = wx.getStorageSync("fromLng");
-    var toLat = wx.getStorageSync("toLat");
-    var toLng = wx.getStorageSync("toLng");
-    //连接成功
-    var data = {
-      "action": "publish",
-      "data": {
-        "from_address": from_address,
-        "from_location": {
-          "lat": fromLat,
-          "lng": fromLng
-        },
-        "to_address": to_address,
-        "to_location": {
-          "lat": toLat,
-          "lng": toLng
+    wx.getStorage({
+      key: 'fromLatLng',
+      success(res) {
+        var from_address = wx.getStorageSync("fromAddress");
+        var to_address = wx.getStorageSync("toAddress");
+        var fromLat = res.data.lat;
+        var fromLng = res.data.lng;
+        var toLat = wx.getStorageSync("toLat");
+        var toLng = wx.getStorageSync("toLng");
+        //连接成功
+        var data = {
+          "action": "publish",
+          "data": {
+            "from_address": from_address,
+            "from_location": {
+              "lat": fromLat,
+              "lng": fromLng
+            },
+            "to_address": to_address,
+            "to_location": {
+              "lat": toLat,
+              "lng": toLng
+            }
+          }
         }
+        //发送数据
+        wx.sendSocketMessage({
+          data: JSON.stringify(data),
+          success: function (res) {
+            console.log("sendSocketMessage 成功1", res)
+          },
+          fail: function (res) {
+            console.log("sendSocketMessage 失败2", res)
+          }
+        });
       }
-    }
-    //发送数据
-    wx.sendSocketMessage({
-      data: JSON.stringify(data),
-      success: function (res) {
-        console.log("sendSocketMessage 成功1", res)
-      },
-      fail: function (res) {
-        console.log("sendSocketMessage 失败2", res)
-      }
-    });
+    })
   },
-
-
-
   /**
    * 回到定位点
    */
   selfLocationClick: function () {
     var that = this;
-    //显示起点和终点
-    that.setData({
-      markers: [{
-        id: 0,
-        latitude: wx.getStorageSync("fromLat"),
-        longitude: wx.getStorageSync("fromLng"),
-        title: wx.getStorageSync("fromAddress"),
-        iconPath: '/images/icon_Startingpoint.png',
-        width: 24,
-        height: 44,
-        label: {
-          content: wx.getStorageSync("fromAddress"),
-          display: 'ALWAYS',
-          textAlign: 'right'
-        }
-      },
-      {
-        id: 1,
-        latitude: wx.getStorageSync("toLat"),
-        longitude: wx.getStorageSync("toLng"),
-        title: wx.getStorageSync("toAddress"),
-        iconPath: '/images/icon_End.png',
-        width: 24,
-        height: 44,
-        label: {
-          content: wx.getStorageSync("toAddress"),
-          display: 'ALWAYS',
-          textAlign: 'right'
-        }
-      }],
-      // includePoints: [{
-      //   latitude: wx.getStorageSync("fromLat"),
-      //   longitude: wx.getStorageSync("fromLng"),
-      // }, {
-      //   latitude: wx.getStorageSync("toLat"),
-      //   longitude: wx.getStorageSync("toLng"),
-      // }],
-      // defaultScale:16
-    });
-    that.includePointsFn();
-  },
-  /**
-   * 逆地址解析
-   */
-  regeocodingAddress: function () {
-    var that = this;
-    qqmapsdk.reverseGeocoder({
-      location: {
-        latitude: wx.getStorageSync("fromLat"),
-        longitude: wx.getStorageSync("fromLng"),
-      },
-      get_poi: 1,
-      poi_options: "radius=500;page_size=20;policy=2",
-      success: function (res) {
+    wx.getStorage({
+      key: 'fromLatLng',
+      success(res) {
+        //显示起点和终点
         that.setData({
-          nowLocation: res.result.formatted_addresses.recommend
+          markers: [{
+            id: 0,
+            latitude: res.data.lat,
+            longitude: res.data.lng,
+            title: wx.getStorageSync("fromAddress"),
+            iconPath: '/images/icon_Startingpoint.png',
+            width: 24,
+            height: 44,
+            label: {
+              content: wx.getStorageSync("fromAddress"),
+              display: 'ALWAYS',
+              textAlign: 'right'
+            }
+          },
+          {
+            id: 1,
+            latitude: wx.getStorageSync("toLat"),
+            longitude: wx.getStorageSync("toLng"),
+            title: wx.getStorageSync("toAddress"),
+            iconPath: '/images/icon_End.png',
+            width: 24,
+            height: 44,
+            label: {
+              content: wx.getStorageSync("toAddress"),
+              display: 'ALWAYS',
+              textAlign: 'right'
+            }
+          }],
         });
-        console.log("通过经纬度解析得到的地址：", res.result.formatted_addresses.recommend);
-        //将解析出来的上车地点实时传到storage里
-        wx.setStorageSync("fromAddress", that.data.nowLocation);
-      },
-      fail: function (res) {
-        console.log(res);
+        that.includePointsFn();
       }
-    });
-  },
-  //初始化获取位置
-  getPlace: function () {
-    console.log("初始化获取位置");
-    var that = this
-    wx.getLocation({
-      type: 'gcj02',
-      success: function (res) {
-        console.log("wx.getLocation展示的数据", res)
-        var latitude = res.latitude
-        var longitude = res.longitude
-        if (!that.data.userSelectedPosition) {
-          that.setData({
-            latitude: latitude,
-            longitude: longitude,
-            centerLatitude: latitude,
-            centerLongitude: longitude
-          });
-          //将初始化的经纬度传到storage里，作为实时改变的上车经纬度
-          wx.setStorageSync("fromLat", that.data.latitude);
-          wx.setStorageSync("fromLng", that.data.longitude);
-          that.regeocodingAddress();
-        }else{
-          that.setData({
-            centerLatitude: wx.getStorageSync("fromLat"),
-            centerLongitude: wx.getStorageSync("fromLng"),
-          });
-          that.regeocodingAddress();
-        }
-
-      }
-    });
+    })
   },
   bindSlide: function () {
     var that = this;
@@ -383,10 +309,8 @@ Page({
     var that = this;
     //remove掉选择了上车地点的标识
     wx.removeStorageSync("selectAds");
-    that.oppen();
     //publish 发起打车订单寻找车辆，发送成功才能跳转
-    console.log("publish 发起打车订单寻找车辆，发送成功才能跳转" + that.data.publish);
-      
+    that.oppen();    
   },
   //返回首页
   backHome:function(){
