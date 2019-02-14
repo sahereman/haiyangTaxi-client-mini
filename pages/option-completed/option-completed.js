@@ -13,7 +13,7 @@ var wxMarkerData = [];
 var bottomHeight = 0;
 var windowHeight = 0;
 var windowWidth = 0;
-var mapId = 'myMap';
+var mapId = 'Map';
 Page({
   data: {
     windowWidth: wx.getSystemInfoSync().windowWidth,
@@ -102,7 +102,7 @@ Page({
     that.getuserInfo(that);
   },
   onReady: function () {
-    this.mapCtx = wx.createMapContext('myMap'); // myMap为地图的id
+    this.mapCtx = wx.createMapContext('Map'); // Map为地图的id
     this.includePointsFn();
   },
   // 定义一个 includePointsFn 方法, 参数为需要显示的坐标点(可多个)

@@ -54,12 +54,11 @@ Page({
   
   onLoad: function (options) {
     var that = this;
-
-    that.setData({
-      latitude: '-80.546518',
-      longitude: '4.042969',
-      nowLocation: "获取位置中..."
-    });
+    // that.setData({
+    //   latitude: '-80.546518',
+    //   longitude: '4.042969',
+    //   nowLocation: "获取位置中..."
+    // });
 
     // toast组件实例
     new app.ToastPannel();
@@ -74,9 +73,6 @@ Page({
     }
     //接收上车地点传过来的value值
     if (options != "" && options.froms == "startLocation" ) {
-      that.setData({
-        mapOn: true
-      });
       wx.getStorage({
         key: 'fromLatLng',
         success(res) {
@@ -85,8 +81,10 @@ Page({
             longitude: res.data.lng,
             centerLatitude: res.data.lat,
             centerLongitude: res.data.lng,
-            userSelectedPosition: true
+            userSelectedPosition: true,
+            mapOn: true
           });
+          console.log("接收上车地点传过来的value值" + that.data.latitude + "====" + that.data.mapOn);
           that.setData({
             nowLocation: wx.getStorageSync("fromAddress")
           }); 
@@ -122,7 +120,6 @@ Page({
       //刚进入页面初次定位时
       that.getPlace(that.selfLocationClick);
     }
-
   },
   onReady: function () {
   },
@@ -313,8 +310,8 @@ Page({
         wx.setStorage({
           key: 'fromLatLng',
           data: {
-            lat: that.data.latitude,
-            lng: that.data.longitude,
+            lat: res.latitude,
+            lng: res.longitude,
           },
           success:function(){
             //逆地址解析得到中心点地点名
@@ -368,10 +365,10 @@ Page({
   /**
    * 移动到中心点
    */
-  mapCtx: function () {
-    var mapCtx = wx.createMapContext("myMap");
-    mapCtx.moveToLocation();
-  },
+  // mapCtx: function () {
+  //   var mapCtx = wx.createMapContext("myMap");
+  //   mapCtx.moveToLocation();
+  // },
   /**
    * 逆地址解析
    */
@@ -424,7 +421,7 @@ Page({
         wx.setStorageSync("fromAddress", that.data.nowLocation);
       },
       fail: function (res) {
-        console.log("逆地址解析失败,重新解析");
+        console.log("逆地址解析失败,重新解析" + that.data.centerLatitude);
       }
     });
   },
@@ -436,8 +433,6 @@ Page({
       success: function (res) {
         var latitude = res.latitude
         var longitude = res.longitude
-        console.log("初始化获取位置" + latitude + "===" + longitude);
-
         if (!that.data.userSelectedPosition){
           that.setData({
             latitude: latitude,
@@ -460,6 +455,7 @@ Page({
               that.setData({
                 mapOn:true
               });
+              
               that.regeocodingAddress();
 
               if (callback != undefined) {

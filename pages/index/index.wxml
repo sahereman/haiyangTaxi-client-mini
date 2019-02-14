@@ -8,7 +8,7 @@
     <view class="home">
       <view class="mapBox" style='height:{{mapHeight}}'>
         <map
-          
+          wx:if='{{mapOn}}'
           id="myMap"
           style="width: 100%; height: 100%;"
           latitude="{{latitude}}"
